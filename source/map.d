@@ -3,6 +3,7 @@ module map;
 import dsfml.graphics;
 import std.exception: enforce;
 import std.conv: to;
+import gfm.math: box2f;
 
 struct Layer
 {
@@ -100,13 +101,21 @@ class Map
         destroy(j);
     }
 
-    void draw(RenderWindow window)
+    /// corner - top left corner of scene
+    void draw(RenderWindow window, Vector2f corner)
     {
+        Vector2i cornerTile = Vector2i(
+                corner.x.to!int / tileSize.x,
+                corner.y.to!int / tileSize.y
+            );
+
+        window.view = new View(FloatRect(corner, corner + Vector2f(800, 600)));
+
         foreach(lay; layers)
         {
-            foreach(y; 0..lay.layerSize.y)
+            foreach(y; cornerTile.y .. lay.layerSize.y)
             {
-                foreach(x; 0..lay.layerSize.x)
+                foreach(x; cornerTile.x .. lay.layerSize.x)
                 {
                     auto coords = Vector2i(x, y);
 

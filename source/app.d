@@ -59,7 +59,7 @@ void main(string[] args)
         window.draw(smile);
         window.draw(smileCover);
 
-		testMap.draw(w.wnd);
+		testMap.draw(w.wnd, Vector2f(100, 100));
 
         w.draw();
 
