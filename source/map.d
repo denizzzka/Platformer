@@ -80,6 +80,19 @@ class Map
 
         destroy(j);
     }
+
+    void draw(RenderWindow window)
+    {
+        foreach(lay; layers)
+        {
+            foreach(spriteIdx; lay.spriteNumbers)
+            {
+                import dsfml.window;
+
+                window.draw(tileSprites[spriteIdx]);
+            }
+        }
+    }
 }
 
 unittest
