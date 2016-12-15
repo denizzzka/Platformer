@@ -34,6 +34,8 @@ class Map
 
         auto j = loadJsonDocument(fileName);
 
+        enforce(j["version"].integer = 1, "Map file version mismatch");
+
         tileSize = Vector2i(
                 j["tilewidth"].integer.to!int,
                 j["tileheight"].integer.to!int
@@ -79,7 +81,7 @@ class Map
 
         foreach(l; j["layers"].array)
         {
-            if("data" in l)
+            if(l["type"].str == "tilelayer")
             {
                 Layer layer;
 
