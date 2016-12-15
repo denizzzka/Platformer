@@ -36,18 +36,52 @@ void main(string[] args)
     auto smileCover = new RectangleShape(Vector2f(60,30));
     smileCover.fillColor = Color.Green;
     smileCover.position = Vector2f(368,200);
-    
+
+	Vector2f currViewPosition = Vector2f(0, 0);
+
     while (window.isOpen())
     {
         Event event;
         
         while(window.pollEvent(event))
         {
-            if(event.type == event.EventType.Closed)
-            {
-                window.close();
+			switch(event.type)
+			{
+				case event.EventType.Closed:
+					window.close();
+					break;
+
+				case Event.EventType.KeyPressed:
+					enum increment = 5;
+
+					switch(event.key.code)
+					{
+						case Keyboard.Key.D:
+							currViewPosition.x += increment;
+							break;
+
+						case Keyboard.Key.A:
+							currViewPosition.x -= increment;
+							break;
+
+						case Keyboard.Key.W:
+							currViewPosition.y -= increment;
+							break;
+
+						case Keyboard.Key.S:
+							currViewPosition.y += increment;
+							break;
+
+						default:
+							break;
+					}
+					break;
+
+				default:
+					break;
             }
         }
+
         if (!window.isOpen())
             break;
         
@@ -59,7 +93,7 @@ void main(string[] args)
         window.draw(smile);
         window.draw(smileCover);
 
-		testMap.draw(w.wnd, Vector2f(100, 100));
+		testMap.draw(w.wnd, currViewPosition);
 
         w.draw();
 

@@ -109,7 +109,7 @@ class Map
                 corner.y.to!int / tileSize.y
             );
 
-        window.view = new View(FloatRect(corner, corner + Vector2f(800, 600)));
+        window.view = new View(FloatRect(corner, corner + window.size));
 
         foreach(lay; layers)
         {
