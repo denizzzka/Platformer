@@ -6,7 +6,6 @@ import std.conv: to;
 
 struct Layer
 {
-    Vector2i tileSize;
     Vector2i layerSize;
     float opacity;
     ushort[] spriteNumbers;
@@ -24,6 +23,7 @@ struct Layer
 class Map
 {
     const string fileName;
+    const Vector2i tileSize;
     Layer[] layers;
     Texture[] tilesets;
     Sprite[] tileSprites;
@@ -33,6 +33,11 @@ class Map
         this.fileName = "resources/maps/"~mapName~".json";
 
         auto j = loadJsonDocument(fileName);
+
+        tileSize = Vector2i(
+                j["tilewidth"].integer.to!int,
+                j["tileheight"].integer.to!int
+            );
 
         foreach(ts; j["tilesets"].array)
         {
@@ -109,7 +114,7 @@ class Map
                     if(spriteNumber != 0)
                     {
                         auto sprite = &tileSprites[spriteNumber - 1];
-                        auto pos = Vector2f(coords.x * 32, coords.y * 32);
+                        auto pos = Vector2f(coords.x * tileSize.x, coords.y * tileSize.y);
 
                         sprite.position = pos;
 
