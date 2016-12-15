@@ -117,19 +117,22 @@ class Map
             {
                 foreach(x; cornerTile.x .. lay.layerSize.x)
                 {
-                    auto coords = Vector2i(x, y);
-
-                    auto idx = lay.coords2index(coords);
-                    auto spriteNumber = lay.spriteNumbers[idx];
-
-                    if(spriteNumber != 0)
+                    if(!(x < 0 || y < 0))
                     {
-                        auto sprite = &tileSprites[spriteNumber - 1];
-                        auto pos = Vector2f(coords.x * tileSize.x, coords.y * tileSize.y);
+                        auto coords = Vector2i(x, y);
 
-                        sprite.position = pos;
+                        auto idx = lay.coords2index(coords);
+                        auto spriteNumber = lay.spriteNumbers[idx];
 
-                        window.draw(*sprite);
+                        if(spriteNumber != 0)
+                        {
+                            auto sprite = &tileSprites[spriteNumber - 1];
+                            auto pos = Vector2f(coords.x * tileSize.x, coords.y * tileSize.y);
+
+                            sprite.position = pos;
+
+                            window.draw(*sprite);
+                        }
                     }
                 }
             }
