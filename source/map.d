@@ -7,6 +7,8 @@ import gfm.math: box2f;
 
 struct Layer
 {
+    string name;
+    Vector2f offset = Vector2f(0, 0);
     Vector2i layerSize;
     float opacity;
     ushort[] spriteNumbers;
@@ -86,8 +88,42 @@ class Map
             {
                 Layer layer;
 
+                layer.name = l["name"].str;
                 layer.layerSize.x = l["width"].integer.to!uint;
                 layer.layerSize.y = l["height"].integer.to!uint;
+
+                {
+                    // Need because TME or JSON library isn't respects JSON float convention
+                    float getOffset(JSONValue j, string fieldName)
+                    {
+                        if(auto json = fieldName in l)
+                        {
+                            if(json.type == JSON_TYPE.FLOAT)
+                                return json.floating;
+                            else
+                                return json.integer.to!float;
+                        }
+                        else
+                        {
+                            return 0;
+                        }
+                    }
+
+                    if("offsetx" in l) layer.offset.x = getOffset(l["offsetx"], "offsetx");
+                    if("offsety" in l) layer.offset.y = getOffset(l["offsety"], "offsety");
+
+                    enforce(
+                            layer.offset.x >= 0 &&
+                            layer.offset.y >= 0,
+                            "Layer "~layer.name~" have negative offset"
+                        );
+
+                    enforce(
+                            layer.offset.x < tileSize.x &&
+                            layer.offset.y < tileSize.y,
+                            "Layer "~layer.name~" offset is too big"
+                        );
+                }
 
                 foreach(d; l["data"].array)
                 {
@@ -127,7 +163,7 @@ class Map
                         if(spriteNumber != 0)
                         {
                             auto sprite = &tileSprites[spriteNumber - 1];
-                            auto pos = Vector2f(coords.x * tileSize.x, coords.y * tileSize.y);
+                            auto pos = Vector2f(coords.x * tileSize.x + lay.offset.x, coords.y * tileSize.y + lay.offset.y);
 
                             sprite.position = pos;
 

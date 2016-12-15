@@ -52,7 +52,7 @@ void main(string[] args)
 					break;
 
 				case Event.EventType.KeyPressed:
-					enum increment = 5;
+					enum increment = 15;
 
 					switch(event.key.code)
 					{
