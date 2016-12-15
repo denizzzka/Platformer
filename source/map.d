@@ -10,6 +10,15 @@ struct Layer
     Vector2i layerSize;
     float opacity;
     ushort[] spriteNumbers;
+
+    private size_t coords2index(Vector2i coords)
+    {
+        auto ret = layerSize.x * coords.y + coords.x;
+
+        assert(ret < spriteNumbers.length);
+
+        return ret;
+    }
 }
 
 class Map
@@ -88,24 +97,24 @@ class Map
     {
         foreach(lay; layers)
         {
-            foreach(spriteIdx; lay.spriteNumbers)
+            foreach(y; 0..lay.layerSize.y)
             {
-                import dsfml.window;
-
-                if(spriteIdx != 0)
+                foreach(x; 0..lay.layerSize.x)
                 {
-                    auto sprite = &tileSprites[spriteIdx - 1];
+                    auto coords = Vector2i(x, y);
 
-                    Vector2f pos;
-                    const idx = lay.spriteNumbers.length - 1;
-                    pos.x = idx % spriteIdx;
-                    pos.y = idx / spriteIdx;
-                    pos.x *= lay.tileSize.x;
-                    pos.y *= lay.tileSize.y;
+                    auto idx = lay.coords2index(coords);
+                    auto spriteNumber = lay.spriteNumbers[idx];
 
-                    sprite.position = Vector2f(10, 10 + spriteIdx * 2);
+                    if(spriteNumber != 0)
+                    {
+                        auto sprite = &tileSprites[spriteNumber - 1];
+                        auto pos = Vector2f(coords.x * 32, coords.y * 32);
 
-                    window.draw(tileSprites[spriteIdx - 1]);
+                        sprite.position = pos;
+
+                        window.draw(*sprite);
+                    }
                 }
             }
         }
