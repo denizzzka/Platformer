@@ -37,25 +37,19 @@ class Map
                 int tileWidth = ts["tilewidth"].integer.to!int;
                 int tileHeight = ts["tileheight"].integer.to!int;
 
-                enforce(tileWidth > 0);
-                enforce(tileHeight > 0);
-
                 size_t columns = tileset.getSize.x / tileWidth;
                 size_t rows = tileset.getSize.y / tileHeight;
 
-                enforce(columns > 0);
-                enforce(rows > 0);
+                enforce(columns * rows == ts["tilecount"].integer);
 
-                foreach(y; 0 .. rows)
+                for(int y; y < rows; y++)
                 {
-                    foreach(x; 0 .. columns)
+                    for(int x; x < columns; x++)
                     {
-                        import std.conv: to;
-
                         IntRect rect;
 
-                        rect.top = (y * tileHeight).to!int;
-                        rect.left = (x * tileWidth).to!int;
+                        rect.top = y * tileHeight;
+                        rect.left = x * tileWidth;
 
                         rect.height = tileHeight;
                         rect.width = tileWidth;
