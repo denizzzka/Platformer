@@ -1,13 +1,13 @@
 module map;
 
-import gfm.math.vector: vec2ui;
 import dsfml.graphics;
 import std.exception: enforce;
 import std.conv: to;
 
 struct Layer
 {
-    vec2ui tileSize;
+    Vector2i tileSize;
+    Vector2i layerSize;
     float opacity;
     ushort[] spriteNumbers;
 }
@@ -69,6 +69,9 @@ class Map
             {
                 Layer layer;
 
+                layer.layerSize.x = l["width"].integer.to!uint;
+                layer.layerSize.y = l["height"].integer.to!uint;
+
                 foreach(d; l["data"].array)
                 {
                     layer.spriteNumbers ~= d.integer.to!ushort;
@@ -89,7 +92,21 @@ class Map
             {
                 import dsfml.window;
 
-                window.draw(tileSprites[spriteIdx]);
+                if(spriteIdx != 0)
+                {
+                    auto sprite = &tileSprites[spriteIdx - 1];
+
+                    Vector2f pos;
+                    const idx = lay.spriteNumbers.length - 1;
+                    pos.x = idx % spriteIdx;
+                    pos.y = idx / spriteIdx;
+                    pos.x *= lay.tileSize.x;
+                    pos.y *= lay.tileSize.y;
+
+                    sprite.position = Vector2f(10, 10 + spriteIdx * 2);
+
+                    window.draw(tileSprites[spriteIdx - 1]);
+                }
             }
         }
     }
