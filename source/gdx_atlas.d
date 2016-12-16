@@ -48,25 +48,30 @@ class TextureAtlas
                 case ReadState.PAGE_DATA:
                     import std.string: indexOf;
 
-                    if(l == "")
+                    if(l == "") // end of page
+                    {
                         state = ReadState.SEARCH_NEW;
+                    }
                     else if(l.indexOf(l, ' ') == -1) // line without spaces is a region name
                     {
                         // TODO: create new region
 
                         state = ReadState.READ_REGION;
                     }
-                    else // it's variable line
+                    else // its variable line
                     {
                         // nothing to do here - all region variables are optional by now
                     }
                     break;
 
                 case ReadState.READ_REGION:
-                    if(l == "")
+                    if(l == "") // end of page
                         state = ReadState.SEARCH_NEW;
                     else if(l[0] != ' ')
+                    {
                         state = ReadState.PAGE_DATA;
+                        goto case ReadState.PAGE_DATA;
+                    }
                     else
                     {
                         // TODO: read region data
