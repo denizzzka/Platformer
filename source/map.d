@@ -4,6 +4,7 @@ import dsfml.graphics;
 import std.exception: enforce;
 import std.conv: to;
 import gfm.math: box2f;
+import misc: loadTexture;
 
 struct Layer
 {
@@ -58,7 +59,7 @@ class Map
         {
             if("image" in ts)
             {
-                auto tileset = loadTexture(ts["image"].str);
+                auto tileset = loadTexture("resources/maps/test_map/"~ts["image"].str);
 
                 int tileWidth = ts["tilewidth"].integer.to!int;
                 int tileHeight = ts["tileheight"].integer.to!int;
@@ -154,7 +155,7 @@ class Map
             {
                 layer.type = Layer.Type.IMAGE;
 
-                auto img = loadTexture(l["image"].str);
+                auto img = loadTexture("resources/maps/test_map/"~l["image"].str);
                 layer.image = new Sprite(img);
                 layer.image.position = layer.offset;
                 layer.image.scale = Vector2f(layer.scale, layer.scale);
@@ -233,16 +234,6 @@ class Map
 unittest
 {
     auto map = new Map("test_map/map_1");
-}
-
-Texture loadTexture(string relativeFileName)
-{
-    string path = "resources/maps/test_map/"~relativeFileName;
-
-    auto tileset = new Texture;
-    enforce(tileset.loadFromFile(path));
-
-    return tileset;
 }
 
 import std.json;
