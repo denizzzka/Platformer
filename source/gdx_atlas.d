@@ -86,6 +86,16 @@ class TextureAtlas
                     else
                     {
                         // TODO: read region data into currRegion
+                        import std.regex;
+
+                        auto rgx = ctRegex!(`^(.+): (.+)$`);
+                        auto m = l[2..$].matchAll(rgx);
+
+                        string name = m.front[1];
+                        string value = m.front[2];
+
+                        import std.stdio;
+                        writeln(name, "=", value);
                     }
                     break;
             }
