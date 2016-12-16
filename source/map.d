@@ -97,7 +97,7 @@ class Map
             // Need because TME or JSON library isn't respects JSON float convention
             float getFloat(JSONValue j, string fieldName, float defaultValue)
             {
-                auto json = (fieldName in l);
+                auto json = (fieldName in j);
 
                 if(json is null)
                 {
