@@ -20,6 +20,7 @@ struct Layer
     float opacity;
     ushort[] spriteNumbers; // for tile layers only
     Sprite image; // for image layers only
+    float parallax = 1;
 
     private size_t coords2index(Vector2i coords)
     {
@@ -96,26 +97,38 @@ class Map
             // Need because TME or JSON library isn't respects JSON float convention
             float getFloat(JSONValue j, string fieldName, float defaultValue)
             {
-                if(auto json = fieldName in l)
-                {
-                    if(json.type == JSON_TYPE.FLOAT)
-                        return json.floating;
-                    else
-                        return json.integer.to!float;
-                }
-                else
+                auto json = (fieldName in l);
+
+                if(json is null)
                 {
                     return defaultValue;
                 }
+                else
+                {
+                    if(json.type == JSON_TYPE.FLOAT)
+                        return json.floating;
+                    else if(json.type == JSON_TYPE.INTEGER)
+                        return json.integer.to!float;
+                    else assert(0);
+                }
             }
 
-            layer.opacity = getFloat(l["opacity"], "opacity", 1);
+            layer.opacity = getFloat(l, "opacity", 1);
+            layer.offset.x = getFloat(l, "offsetx", 0);
+            layer.offset.y = getFloat(l, "offsety", 0);
 
-            if("offsetx" in l) layer.offset.x = getFloat(l["offsetx"], "offsetx", 0);
-            if("offsety" in l) layer.offset.y = getFloat(l["offsety"], "offsety", 0);
+            auto properties = ("properties" in l);
+            if(properties !is null)
+            {
+                layer.parallax = getFloat(*properties, "parallax", 1);
+                import std.stdio; writeln(*properties);
+                import std.stdio; writeln(layer.parallax, " ", layer.opacity);
+            }
 
             if(l["type"].str == "tilelayer")
             {
+                layer.type = Layer.Type.TILES;
+
                 layer.layerSize.x = l["width"].integer.to!uint;
                 layer.layerSize.y = l["height"].integer.to!uint;
 
@@ -143,7 +156,8 @@ class Map
 
                 auto img = loadTexture(l["image"].str);
                 layer.image = new Sprite(img);
-                layer.image.position = Vector2f(layer.offset.x, layer.offset.y);
+                layer.image.position = layer.offset;
+                layer.image.color = Color(255, 255, 255, (255 * layer.opacity).to!ubyte);
             }
             else assert(0);
 
@@ -161,10 +175,10 @@ class Map
                 corner.y.to!int / tileSize.y
             );
 
-        window.view = new View(FloatRect(corner, Vector2f(window.size)));
-
         foreach(lay; layers)
         {
+            window.view = new View(FloatRect(corner * lay.parallax, Vector2f(window.size)));
+
             if(lay.type == Layer.Type.TILES)
             {
                 foreach(y; cornerTile.y .. lay.layerSize.y)
@@ -182,6 +196,7 @@ class Map
                             {
                                 auto sprite = &tileSprites[spriteNumber - 1];
                                 auto pos = Vector2f(coords.x * tileSize.x + lay.offset.x, coords.y * tileSize.y + lay.offset.y);
+                                //pos *= lay.parallax;
 
                                 sprite.position = pos;
 
