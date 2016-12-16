@@ -52,7 +52,7 @@ class TextureAtlas
                         state = ReadState.SEARCH_NEW;
                     else if(l.indexOf(l, ' ') == -1) // line without spaces is a region name
                     {
-                        // TODO: read and store region data
+                        // TODO: create new region
 
                         state = ReadState.READ_REGION;
                     }
