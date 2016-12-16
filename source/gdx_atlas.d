@@ -1,6 +1,5 @@
 module gdx_atlas;
 
-import dsfml.graphics;
 import gfm.math: vec2f;
 
 struct Region
@@ -19,14 +18,14 @@ enum ReadState
 
 class TextureAtlas
 {
-    Texture[] pages;
+    string imageName;
     Region[string] regions;
 
-    this(string path, string file)
+    this(string path)
     {
         import std.stdio: File;
 
-        auto lines = File(path~file).byLine();
+        auto lines = File(path).byLine();
 
         ReadState state = ReadState.SEARCH_NEW;
         Region* currRegion = null;
@@ -44,7 +43,7 @@ class TextureAtlas
                     {
                         import misc: loadTexture;
 
-                        pages ~= loadTexture(path~l);
+                        imageName ~= l;
 
                         state = ReadState.PAGE_DATA;
                     }
@@ -96,5 +95,5 @@ class TextureAtlas
 
 unittest
 {
-    auto atlas = new TextureAtlas("resources/textures/", "GAME.atlas");
+    auto atlas = new TextureAtlas("resources/textures/GAME.atlas");
 }
