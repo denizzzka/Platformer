@@ -1,10 +1,13 @@
 module gdx_atlas;
 
 import dsfml.graphics;
+import gfm.math: vec2f;
 
 struct Region
 {
-    
+    size_t textureIdx;
+    vec2f coords;
+    vec2f offset;
 }
 
 enum ReadState
@@ -17,6 +20,7 @@ enum ReadState
 class TextureAtlas
 {
     Texture[] pages;
+    Region[string] regions;
 
     this(string path, string file)
     {
@@ -32,10 +36,12 @@ class TextureAtlas
 
             string l = __l.to!string;
 
+            Region* currRegion = null;
+
             final switch(state)
             {
                 case ReadState.SEARCH_NEW:
-                    if(l != "")
+                    if(__l.length > 0)
                     {
                         import misc: loadTexture;
 
@@ -48,13 +54,17 @@ class TextureAtlas
                 case ReadState.PAGE_DATA:
                     import std.string: indexOf;
 
-                    if(l == "") // end of page
+                    if(__l.length == 0) // end of page
                     {
                         state = ReadState.SEARCH_NEW;
                     }
                     else if(l.indexOf(l, ' ') == -1) // line without spaces is a region name
                     {
-                        // TODO: create new region
+                        // Creating new region
+                        Region region;
+                        import std.stdio; writeln(l);
+                        regions[l] = region;
+                        currRegion = &regions[l];
 
                         state = ReadState.READ_REGION;
                     }
@@ -65,16 +75,17 @@ class TextureAtlas
                     break;
 
                 case ReadState.READ_REGION:
-                    if(l == "") // end of page
+                    if(__l.length == 0) // end of page
                         state = ReadState.SEARCH_NEW;
-                    else if(l[0] != ' ')
+                    else if(__l[0] != ' ')
                     {
                         state = ReadState.PAGE_DATA;
                         goto case ReadState.PAGE_DATA;
                     }
                     else
                     {
-                        // TODO: read region data
+                        // TODO: read region data into currRegion
+                        assert(currRegion);
                     }
                     break;
             }
