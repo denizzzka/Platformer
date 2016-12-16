@@ -29,14 +29,13 @@ class TextureAtlas
         auto lines = File(path~file).byLine();
 
         ReadState state = ReadState.SEARCH_NEW;
+        Region* currRegion = null;
 
         foreach(__l; lines)
         {
             import std.conv: to;
 
             string l = __l.to!string;
-
-            Region* currRegion = null;
 
             final switch(state)
             {
@@ -62,7 +61,6 @@ class TextureAtlas
                     {
                         // Creating new region
                         Region region;
-                        import std.stdio; writeln(l);
                         regions[l] = region;
                         currRegion = &regions[l];
 
@@ -75,9 +73,13 @@ class TextureAtlas
                     break;
 
                 case ReadState.READ_REGION:
+                    assert(currRegion);
+
                     if(__l.length == 0) // end of page
+                    {
                         state = ReadState.SEARCH_NEW;
-                    else if(__l[0] != ' ')
+                    }
+                    else if(__l[0] != ' ') // end of region
                     {
                         state = ReadState.PAGE_DATA;
                         goto case ReadState.PAGE_DATA;
@@ -85,7 +87,6 @@ class TextureAtlas
                     else
                     {
                         // TODO: read region data into currRegion
-                        assert(currRegion);
                     }
                     break;
             }
