@@ -199,6 +199,7 @@ class Map
                                 auto pos = Vector2f(coords.x * tileSize.x + lay.offset.x, coords.y * tileSize.y + lay.offset.y);
 
                                 sprite.position = pos;
+                                sprite.color = Color(255, 255, 255, (255 * lay.opacity).to!ubyte);
 
                                 window.draw(*sprite);
                             }
