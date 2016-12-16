@@ -94,7 +94,7 @@ class Map
             layer.name = l["name"].str;
 
             // Need because TME or JSON library isn't respects JSON float convention
-            float getOffset(JSONValue j, string fieldName)
+            float getFloat(JSONValue j, string fieldName, float defaultValue)
             {
                 if(auto json = fieldName in l)
                 {
@@ -105,12 +105,14 @@ class Map
                 }
                 else
                 {
-                    return 0;
+                    return defaultValue;
                 }
             }
 
-            if("offsetx" in l) layer.offset.x = getOffset(l["offsetx"], "offsetx");
-            if("offsety" in l) layer.offset.y = getOffset(l["offsety"], "offsety");
+            layer.opacity = getFloat(l["opacity"], "opacity", 1);
+
+            if("offsetx" in l) layer.offset.x = getFloat(l["offsetx"], "offsetx", 0);
+            if("offsety" in l) layer.offset.y = getFloat(l["offsety"], "offsety", 0);
 
             if(l["type"].str == "tilelayer")
             {
