@@ -7,11 +7,19 @@ import gfm.math: box2f;
 
 struct Layer
 {
+    enum Type
+    {
+        TILES,
+        IMAGE
+    }
+
+    Type type;
     string name;
     Vector2f offset = Vector2f(0, 0);
     Vector2i layerSize;
     float opacity;
-    ushort[] spriteNumbers;
+    ushort[] spriteNumbers; // for tile layers only
+    Sprite image; // for image layers only
 
     private size_t coords2index(Vector2i coords)
     {
@@ -48,10 +56,7 @@ class Map
         {
             if("image" in ts)
             {
-                string path = "resources/maps/test_map/"~ts["image"].str;
-
-                auto tileset = new Texture;
-                enforce(tileset.loadFromFile(path));
+                auto tileset = loadTexture(ts["image"].str);
 
                 int tileWidth = ts["tilewidth"].integer.to!int;
                 int tileHeight = ts["tileheight"].integer.to!int;
@@ -84,54 +89,63 @@ class Map
 
         foreach(l; j["layers"].array)
         {
+            Layer layer;
+
+            layer.name = l["name"].str;
+
+            // Need because TME or JSON library isn't respects JSON float convention
+            float getOffset(JSONValue j, string fieldName)
+            {
+                if(auto json = fieldName in l)
+                {
+                    if(json.type == JSON_TYPE.FLOAT)
+                        return json.floating;
+                    else
+                        return json.integer.to!float;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+
+            if("offsetx" in l) layer.offset.x = getOffset(l["offsetx"], "offsetx");
+            if("offsety" in l) layer.offset.y = getOffset(l["offsety"], "offsety");
+
             if(l["type"].str == "tilelayer")
             {
-                Layer layer;
-
-                layer.name = l["name"].str;
                 layer.layerSize.x = l["width"].integer.to!uint;
                 layer.layerSize.y = l["height"].integer.to!uint;
 
-                {
-                    // Need because TME or JSON library isn't respects JSON float convention
-                    float getOffset(JSONValue j, string fieldName)
-                    {
-                        if(auto json = fieldName in l)
-                        {
-                            if(json.type == JSON_TYPE.FLOAT)
-                                return json.floating;
-                            else
-                                return json.integer.to!float;
-                        }
-                        else
-                        {
-                            return 0;
-                        }
-                    }
+                enforce(
+                        layer.offset.x <= 0 &&
+                        layer.offset.y <= 0,
+                        "Layer "~layer.name~" have positive offset"
+                    );
 
-                    if("offsetx" in l) layer.offset.x = getOffset(l["offsetx"], "offsetx");
-                    if("offsety" in l) layer.offset.y = getOffset(l["offsety"], "offsety");
-
-                    enforce(
-                            layer.offset.x >= 0 &&
-                            layer.offset.y >= 0,
-                            "Layer "~layer.name~" have negative offset"
-                        );
-
-                    enforce(
-                            layer.offset.x < tileSize.x &&
-                            layer.offset.y < tileSize.y,
-                            "Layer "~layer.name~" offset is too big"
-                        );
-                }
+                enforce(
+                        layer.offset.x > -tileSize.x &&
+                        layer.offset.y > -tileSize.y,
+                        "Layer "~layer.name~" offset is too big"
+                    );
 
                 foreach(d; l["data"].array)
                 {
                     layer.spriteNumbers ~= d.integer.to!ushort;
                 }
 
-                layers ~= layer;
             }
+            else if(l["type"].str == "imagelayer")
+            {
+                layer.type = Layer.Type.IMAGE;
+
+                auto img = loadTexture(l["image"].str);
+                layer.image = new Sprite(img);
+                layer.image.position = Vector2f(layer.offset.x, layer.offset.y);
+            }
+            else assert(0);
+
+            layers ~= layer;
         }
 
         destroy(j);
@@ -149,29 +163,37 @@ class Map
 
         foreach(lay; layers)
         {
-            foreach(y; cornerTile.y .. lay.layerSize.y)
+            if(lay.type == Layer.Type.TILES)
             {
-                foreach(x; cornerTile.x .. lay.layerSize.x)
+                foreach(y; cornerTile.y .. lay.layerSize.y)
                 {
-                    if(!(x < 0 || y < 0))
+                    foreach(x; cornerTile.x .. lay.layerSize.x)
                     {
-                        auto coords = Vector2i(x, y);
-
-                        auto idx = lay.coords2index(coords);
-                        auto spriteNumber = lay.spriteNumbers[idx];
-
-                        if(spriteNumber != 0)
+                        if(!(x < 0 || y < 0))
                         {
-                            auto sprite = &tileSprites[spriteNumber - 1];
-                            auto pos = Vector2f(coords.x * tileSize.x + lay.offset.x, coords.y * tileSize.y + lay.offset.y);
+                            auto coords = Vector2i(x, y);
 
-                            sprite.position = pos;
+                            auto idx = lay.coords2index(coords);
+                            auto spriteNumber = lay.spriteNumbers[idx];
 
-                            window.draw(*sprite);
+                            if(spriteNumber != 0)
+                            {
+                                auto sprite = &tileSprites[spriteNumber - 1];
+                                auto pos = Vector2f(coords.x * tileSize.x + lay.offset.x, coords.y * tileSize.y + lay.offset.y);
+
+                                sprite.position = pos;
+
+                                window.draw(*sprite);
+                            }
                         }
                     }
                 }
             }
+            else if(lay.type == Layer.Type.IMAGE)
+            {
+                window.draw(lay.image);
+            }
+            else assert(0);
         }
     }
 }
@@ -179,6 +201,16 @@ class Map
 unittest
 {
     auto map = new Map("test_map/map_1");
+}
+
+Texture loadTexture(string relativeFileName)
+{
+    string path = "resources/maps/test_map/"~relativeFileName;
+
+    auto tileset = new Texture;
+    enforce(tileset.loadFromFile(path));
+
+    return tileset;
 }
 
 import std.json;
