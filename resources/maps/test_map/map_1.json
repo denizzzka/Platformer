@@ -2,18 +2,41 @@
  "layers":[
         {
          "height":35,
-         "image":"..\/..\/textures\/clouds.jpg",
-         "name":"sky",
-         "offsetx":202.5,
-         "offsety":-9,
-         "opacity":0.899999976158142,
+         "image":"..\/..\/textures\/Blazing-Sun.jpg",
+         "name":"sun",
+         "offsetx":-207,
+         "offsety":-135,
+         "opacity":1,
          "properties":
             {
-             "parallax":0.2
+             "parallax":0
             },
          "propertytypes":
             {
              "parallax":"float"
+            },
+         "type":"imagelayer",
+         "visible":true,
+         "width":70,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "height":35,
+         "image":"..\/..\/textures\/clouds.jpg",
+         "name":"sky",
+         "offsetx":0,
+         "offsety":-49.5,
+         "opacity":0.800000011920929,
+         "properties":
+            {
+             "parallax":0.1,
+             "scale":2
+            },
+         "propertytypes":
+            {
+             "parallax":"float",
+             "scale":"float"
             },
          "type":"imagelayer",
          "visible":true,

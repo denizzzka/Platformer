@@ -17,7 +17,8 @@ struct Layer
     string name;
     Vector2f offset = Vector2f(0, 0);
     Vector2i layerSize;
-    float opacity;
+    float opacity = 1;
+    float scale = 1; /// scale factor
     ushort[] spriteNumbers; // for tile layers only
     Sprite image; // for image layers only
     float parallax = 1;
@@ -121,8 +122,7 @@ class Map
             if(properties !is null)
             {
                 layer.parallax = getFloat(*properties, "parallax", 1);
-                import std.stdio; writeln(*properties);
-                import std.stdio; writeln(layer.parallax, " ", layer.opacity);
+                layer.scale = getFloat(*properties, "scale", 1);
             }
 
             if(l["type"].str == "tilelayer")
@@ -157,6 +157,7 @@ class Map
                 auto img = loadTexture(l["image"].str);
                 layer.image = new Sprite(img);
                 layer.image.position = layer.offset;
+                layer.image.scale = Vector2f(layer.scale, layer.scale);
                 layer.image.color = Color(255, 255, 255, (255 * layer.opacity).to!ubyte);
             }
             else assert(0);
@@ -196,7 +197,6 @@ class Map
                             {
                                 auto sprite = &tileSprites[spriteNumber - 1];
                                 auto pos = Vector2f(coords.x * tileSize.x + lay.offset.x, coords.y * tileSize.y + lay.offset.y);
-                                //pos *= lay.parallax;
 
                                 sprite.position = pos;
 
