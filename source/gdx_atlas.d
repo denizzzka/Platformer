@@ -1,12 +1,25 @@
 module gdx_atlas;
 
-import std.file: readText;
+import dsfml.graphics;
+
+struct Page
+{
+    
+}
 
 class TextureAtlas
 {
+    Texture[] pages;
+
     this(string filePath)
     {
-        string text = readText(filePath);
+        import std.stdio: File;
+
+        auto lines = File(filePath).byLine();
+
+        foreach(l; lines)
+        {
+        }
     }
 }
 
