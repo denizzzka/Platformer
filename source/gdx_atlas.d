@@ -1,12 +1,13 @@
 module gdx_atlas;
 
 import gfm.math: vec2f;
+import std.regex;
 
 struct Region
 {
     size_t textureIdx;
     vec2f coords;
-    vec2f offset;
+    vec2f size;
 }
 
 enum ReadState
@@ -18,7 +19,7 @@ enum ReadState
 
 class TextureAtlas
 {
-    string imageName;
+    string[] texturesNames;
     Region[string] regions;
 
     this(string path)
@@ -43,7 +44,7 @@ class TextureAtlas
                     {
                         import misc: loadTexture;
 
-                        imageName ~= l;
+                        texturesNames ~= l;
 
                         state = ReadState.PAGE_DATA;
                     }
@@ -60,6 +61,7 @@ class TextureAtlas
                     {
                         // Creating new region
                         Region region;
+                        region.textureIdx = texturesNames.length - 1;
                         regions[l] = region;
                         currRegion = &regions[l];
 
@@ -86,16 +88,25 @@ class TextureAtlas
                     else
                     {
                         // TODO: read region data into currRegion
-                        import std.regex;
-
-                        auto rgx = ctRegex!(`^(.+): (.+)$`);
-                        auto m = l[2..$].matchAll(rgx);
+                        auto rgx = ctRegex!(`^  (.+): (.+)$`);
+                        auto m = l.matchAll(rgx);
 
                         string name = m.front[1];
                         string value = m.front[2];
 
-                        import std.stdio;
-                        writeln(name, "=", value);
+                        switch(name)
+                        {
+                            case "xy":
+                                currRegion.coords = parseCoords(value);
+                                break;
+
+                            case "size":
+                                currRegion.size = parseCoords(value);
+                                break;
+
+                            default:
+                                break;
+                        }
                     }
                     break;
             }
@@ -105,5 +116,26 @@ class TextureAtlas
 
 unittest
 {
-    auto atlas = new TextureAtlas("resources/textures/GAME.atlas");
+    auto a = new TextureAtlas("resources/textures/GAME.atlas");
+
+    assert(a.texturesNames.length == 1);
+    assert(a.texturesNames[0] == "GAME.png");
+    assert(a.regions["watergun-skin"].textureIdx == 0);
+    assert(a.regions["watergun-skin"].coords == vec2f(283, 92));
+    assert(a.regions["watergun-skin"].size == vec2f(68, 30));
+}
+
+private vec2f parseCoords(string s)
+{
+    import std.conv: to;
+
+    auto rgx = ctRegex!(`^(.+), (.+)$`);
+    auto m = s.matchAll(rgx);
+
+    vec2f ret;
+
+    ret.x = m.front[1].to!float;
+    ret.y = m.front[2].to!float;
+
+    return ret;
 }
