@@ -10,7 +10,6 @@ struct Region
 enum ReadState
 {
     SEARCH_NEW,
-    NAME,
     PAGE_DATA,
     READ_REGION
 }
@@ -27,19 +26,52 @@ class TextureAtlas
 
         ReadState state = ReadState.SEARCH_NEW;
 
-        foreach(l; lines)
+        foreach(__l; lines)
         {
             import std.conv: to;
 
-            string line = l.to!string;
+            string l = __l.to!string;
 
-            if(state == ReadState.SEARCH_NEW && l != "")
+            final switch(state)
             {
-                state = ReadState.NAME;
+                case ReadState.SEARCH_NEW:
+                    if(l != "")
+                    {
+                        import misc: loadTexture;
 
-                import misc: loadTexture;
+                        pages ~= loadTexture(path~l);
 
-                pages ~= loadTexture(path~line);
+                        state = ReadState.PAGE_DATA;
+                    }
+                    break;
+
+                case ReadState.PAGE_DATA:
+                    import std.string: indexOf;
+
+                    if(l == "")
+                        state = ReadState.SEARCH_NEW;
+                    else if(l.indexOf(l, ' ') == -1) // line without spaces is a region name
+                    {
+                        // TODO: read and store region data
+
+                        state = ReadState.READ_REGION;
+                    }
+                    else // it's variable line
+                    {
+                        // nothing to do here - all region variables are optional by now
+                    }
+                    break;
+
+                case ReadState.READ_REGION:
+                    if(l == "")
+                        state = ReadState.SEARCH_NEW;
+                    else if(l[0] != ' ')
+                        state = ReadState.PAGE_DATA;
+                    else
+                    {
+                        // TODO: read region data
+                    }
+                    break;
             }
         }
     }
