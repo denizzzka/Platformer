@@ -2,13 +2,16 @@ module gdx_atlas;
 
 import std.file: readText;
 
-void atlasRead(string filePath)
+class TextureAtlas
 {
-    string text = readText(filePath);
+    this(string filePath)
+    {
+        string text = readText(filePath);
+    }
 }
 
 unittest
 {
     string path = "resources/textures/GAME.atlas";
-    atlasRead(path);
+    auto atlas = new TextureAtlas(path);
 }
