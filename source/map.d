@@ -171,22 +171,36 @@ class Map
     /// corner - top left corner of scene
     void draw(RenderWindow window, Vector2f corner)
     {
-        Vector2i cornerTile = Vector2i(
-                corner.x.to!int / tileSize.x,
-                corner.y.to!int / tileSize.y
-            );
-
         foreach(lay; layers)
         {
             window.view = new View(FloatRect(corner * lay.parallax, Vector2f(window.size)));
 
             if(lay.type == Layer.Type.TILES)
             {
-                foreach(y; cornerTile.y .. lay.layerSize.y)
+                Vector2i cornerTile = Vector2i(
+                        corner.x.to!int / tileSize.x,
+                        corner.y.to!int / tileSize.y
+                    );
+
+                Vector2i tilesScreenSize = window.size;
                 {
-                    foreach(x; cornerTile.x .. lay.layerSize.x)
+                    tilesScreenSize.x /= tileSize.x;
+                    tilesScreenSize.y /= tileSize.y;
+
+                    tilesScreenSize.x += 2;
+                    tilesScreenSize.y += 2;
+                }
+
+                Vector2i latestTile = cornerTile + tilesScreenSize;
+
+                foreach(y; cornerTile.y .. latestTile.y)
+                {
+                    foreach(x; cornerTile.x .. latestTile.x)
                     {
-                        if(!(x < 0 || y < 0))
+                        if(
+                            x >= 0 && x < lay.layerSize.x &&
+                            y >= 0 && y < lay.layerSize.y
+                        )
                         {
                             auto coords = Vector2i(x, y);
 
