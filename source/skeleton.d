@@ -92,6 +92,20 @@ class Skeleton
 
             foreach(boneName, boneJson; j["bones"].object)
             {
+                foreach(timelineType, keyframeData; boneJson.object)
+                {
+                    switch(timelineType)
+                    {
+                        case "rotate":
+                            break;
+
+                        case "translate":
+                            break;
+
+                        default:
+                            enforce(0, "Unknown timeline type: "~timelineType);
+                    }
+                }
             }
         }
     }
