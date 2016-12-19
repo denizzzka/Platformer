@@ -6,16 +6,18 @@ import gfm.math: vec2f;
 
 struct Bone
 {
-    Bone* parent;
     Bone[] children;
 
     float rotation;
     vec2f coords;
     vec2f scale;
+    debug float length;
 }
 
 class Skeleton
 {
+    Bone root;
+
     this(string fileName)
     {
         import std.file: readText;
@@ -28,13 +30,25 @@ class Skeleton
         {
             enforce(!(i == 0 && ("parent" in j)), "root must not contain parent");
 
-            auto b = new Bone;
-            if(i) b.parent = bonesNames[j["parent"].str];
+            Bone* b;
+
+            if(i)
+            {
+                Bone* parent = *(j["parent"].str in bonesNames);
+                parent.children.length++;
+                b = &parent.children[$-1];
+            }
+            else
+            {
+                b = &root;
+            }
+
             b.rotation = j.optionalJson("rotation", 0);
             b.coords.x = j.optionalJson("x", 0);
             b.coords.y = j.optionalJson("y", 0);
             b.scale.x = j.optionalJson("scaleX", 1);
             b.scale.y = j.optionalJson("scaleY", 1);
+            debug b.length = j.optionalJson("length", 0);
 
             bonesNames[j["name"].str] = b;
         }
