@@ -28,16 +28,36 @@ enum CurveType
 struct Keyframe
 {
     float time;
-    float rotate;
-    vec2f translate;
     CurveType curveType = CurveType.LINEAR;
+}
+
+struct RotateKeyframe
+{
+    Keyframe keyframe;
+    alias keyframe this;
+
+    float rotate;
+}
+
+struct TranslateKeyframe
+{
+    Keyframe keyframe;
+    alias keyframe this;
+
+    vec2f translate;
+}
+
+struct Timeline
+{
+    RotateKeyframe[] rotations;
+    TranslateKeyframe[] translations;
 }
 
 class Skeleton
 {
     Bone root;
     Slot[] slots;
-    Keyframe[] keyframes;
+    Timeline[] timelines;
 
     this(string fileName)
     {
@@ -45,7 +65,7 @@ class Skeleton
 
         Bone*[string] bonesNames;
         Slot*[string] slotsNames;
-        Keyframe*[string] keyframesNames;
+        Timeline*[string] timelinesNames;
 
         auto json = fileName.readText.parseJSON;
 
@@ -86,9 +106,9 @@ class Skeleton
 
         foreach(keyName, j; json["animations"].object)
         {
-            keyframes.length++;
-            Keyframe* k = &keyframes[$-1];
-            keyframesNames[keyName] = k;
+            timelines.length++;
+            Timeline* t = &timelines[$-1];
+            timelinesNames[keyName] = t;
 
             foreach(boneName, boneJson; j["bones"].object)
             {
