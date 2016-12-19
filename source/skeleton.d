@@ -86,9 +86,9 @@ class Skeleton
     {
         import std.file: readText;
 
-        Bone*[string] bonesNames;
-        Slot*[string] slotsNames;
-        Animation*[string] animationsNames;
+        Bone*[string] bonesByNames;
+        Slot*[string] slotsByNames;
+        Animation*[string] animationsByNames;
 
         auto json = fileName.readText.parseJSON;
 
@@ -100,7 +100,7 @@ class Skeleton
 
             if(i)
             {
-                Bone* parent = *(j["parent"].str in bonesNames);
+                Bone* parent = *(j["parent"].str in bonesByNames);
                 parent.children.length++;
                 b = &parent.children[$-1];
             }
@@ -116,27 +116,27 @@ class Skeleton
             b.scale.y = j.optionalJson("scaleY", 1);
             debug b.length = j.optionalJson("length", 0);
 
-            bonesNames[j["name"].str] = b;
+            bonesByNames[j["name"].str] = b;
         }
 
         foreach(i, j; json["slots"].array)
         {
             slots.length++;
-            slotsNames[j["name"].str] = &slots[$-1];
+            slotsByNames[j["name"].str] = &slots[$-1];
 
-            slots[$-1].bone = bonesNames[j["bone"].str];
+            slots[$-1].bone = bonesByNames[j["bone"].str];
         }
 
         foreach(animationName, j; json["animations"].object)
         {
             animations.length++;
             Animation* animation = &animations[$-1];
-            animationsNames[animationName] = animation;
+            animationsByNames[animationName] = animation;
 
             foreach(boneName, boneJson; j["bones"].object)
             {
                 Timeline timeline;
-                timeline.bone = bonesNames[boneName];
+                timeline.bone = bonesByNames[boneName];
 
                 foreach(timelineType, keyframeData; boneJson.object)
                 {
