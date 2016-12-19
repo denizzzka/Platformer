@@ -14,18 +14,26 @@ struct Bone
     debug float length;
 }
 
+struct Slot
+{
+    Bone* bone;
+}
+
 class Skeleton
 {
     Bone root;
+    Slot[] slots;
 
     this(string fileName)
     {
         import std.file: readText;
 
+        Bone*[string] bonesNames;
+        Slot*[string] slotsNames;
+
         auto json = fileName.readText.parseJSON;
 
         {
-            Bone*[string] bonesNames;
 
             foreach(i, j; json["bones"].array)
             {
@@ -52,6 +60,17 @@ class Skeleton
                 debug b.length = j.optionalJson("length", 0);
 
                 bonesNames[j["name"].str] = b;
+            }
+        }
+
+        {
+            foreach(i, j; json["slots"].array)
+            {
+                slots.length++;
+                slotsNames[j["name"].str] = &slots[$-1];
+
+                slots[$-1].bone = bonesNames[j["bone"].str];
+
             }
         }
     }
