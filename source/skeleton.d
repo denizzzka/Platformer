@@ -76,6 +76,13 @@ struct Animation
     Timeline[] timelines;
 }
 
+struct Timepoint
+{
+    Bone* bone;
+    RotateKeyframe rotate; // TODO: rename struct to Rotate
+    TranslateKeyframe translate; // TODO: rename struct to Translate
+}
+
 class Skeleton
 {
     Bone root;
@@ -172,17 +179,28 @@ class Skeleton
         }
     }
 
-    struct CalculatedFrame
+    void callRecursive(string animationName, float time, void delegate(vec2f coords) dg)
     {
-        CalculatedFrame[] children;
-        vec2f vertex;
+        auto animation = (animationName in animationsByNames);
+        assert(animation);
+
+        Timepoint tp;
+        tp.bone = &root;
+        tp.rotate.time = time;
+        tp.translate.time = time;
+
+        callRecursive(*animation, dg, tp);
     }
 
-    CalculatedFrame calc(float time)
+    void callRecursive(Animation* animation, void delegate(vec2f coords) dg, Timepoint tp)
     {
-        CalculatedFrame ret;
+        foreach(t; (*animation).timelines)
+        {
+            Timepoint tp;
+        }
 
-        return ret;
+        vec2f c;
+        dg(c);
     }
 }
 
@@ -190,7 +208,7 @@ unittest
 {
     auto sk = new Skeleton("resources/animations/actor_pretty.json");
 
-    sk.calc(1);
+    sk.callRecursive("run-forward", 1, (vec2f){});
 }
 
 private float optionalJson(JSONValue json, string name, float defaultValue)
