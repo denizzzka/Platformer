@@ -107,16 +107,26 @@ class Skeleton
         foreach(keyName, j; json["animations"].object)
         {
             timelines.length++;
-            Timeline* t = &timelines[$-1];
-            timelinesNames[keyName] = t;
+            Timeline* timeline = &timelines[$-1];
+            timelinesNames[keyName] = timeline;
 
             foreach(boneName, boneJson; j["bones"].object)
             {
                 foreach(timelineType, keyframeData; boneJson.object)
                 {
+                    import misc: getFloatFromJson;
+
                     switch(timelineType)
                     {
                         case "rotate":
+                            foreach(t; keyframeData.array)
+                            {
+                                RotateKeyframe k;
+                                k.time = t.getFloatFromJson("time", 0);
+                                k.rotate = t.getFloatFromJson("angle", 0);
+
+                                timeline.rotations ~= k;
+                            }
                             break;
 
                         case "translate":
