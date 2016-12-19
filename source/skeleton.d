@@ -74,7 +74,7 @@ class Skeleton
 {
     Bone root;
     Slot[] slots;
-    Timeline[] timelines;
+    Timeline[] animations;
 
     this(string fileName)
     {
@@ -82,7 +82,7 @@ class Skeleton
 
         Bone*[string] bonesNames;
         Slot*[string] slotsNames;
-        Timeline*[string] timelinesNames;
+        Timeline*[string] animationsNames;
 
         auto json = fileName.readText.parseJSON;
 
@@ -121,11 +121,11 @@ class Skeleton
             slots[$-1].bone = bonesNames[j["bone"].str];
         }
 
-        foreach(keyName, j; json["animations"].object)
+        foreach(animationName, j; json["animations"].object)
         {
-            timelines.length++;
-            Timeline* timeline = &timelines[$-1];
-            timelinesNames[keyName] = timeline;
+            animations.length++;
+            Timeline* timeline = &animations[$-1];
+            animationsNames[animationName] = timeline;
 
             foreach(boneName, boneJson; j["bones"].object)
             {
