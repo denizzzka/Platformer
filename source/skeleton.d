@@ -3,6 +3,7 @@ module skeleton;
 import std.json;
 import std.exception: enforce;
 import gfm.math: vec2f;
+import misc: getFloatFromJson;
 
 struct Bone
 {
@@ -19,10 +20,19 @@ struct Slot
     Bone* bone;
 }
 
+struct BezierCurve
+{
+    float cx1;
+    float cy1;
+    float cx2;
+    float cy2;
+}
+
 enum CurveType
 {
     LINEAR,
-    STEPPED
+    STEPPED,
+    BEZIER
 }
 
 struct Keyframe
@@ -114,8 +124,6 @@ class Skeleton
             {
                 foreach(timelineType, keyframeData; boneJson.object)
                 {
-                    import misc: getFloatFromJson;
-
                     switch(timelineType)
                     {
                         case "rotate":
@@ -123,6 +131,8 @@ class Skeleton
                             {
                                 RotateKeyframe k;
                                 k.time = t.getFloatFromJson("time", 0);
+                                BezierCurve bezier;
+                                k.curveType = t.curveTypeRead(bezier);
                                 k.rotate = t.getFloatFromJson("angle", 0);
 
                                 timeline.rotations ~= k;
@@ -164,5 +174,41 @@ private float optionalJson(JSONValue json, string name, float defaultValue)
     else
     {
         return defaultValue;
+    }
+}
+
+private CurveType curveTypeRead(JSONValue j, out BezierCurve bezier)
+{
+    auto v = ("curve" in j);
+
+    if(v == null)
+    {
+        return CurveType.LINEAR;
+    }
+    else
+    {
+        if(v.type == JSON_TYPE.STRING)
+        {
+            switch(v.str)
+            {
+                case "linear":
+                    return CurveType.LINEAR;
+
+                case "stepped":
+                    return CurveType.STEPPED;
+
+                default:
+                    assert(0, "Unsupported curve type: "~v.str);
+            }
+        }
+        else
+        {
+            bezier.cx1 = v.array[0].getFloatFromJson;
+            bezier.cy1 = v.array[1].getFloatFromJson;
+            bezier.cx2 = v.array[2].getFloatFromJson;
+            bezier.cy1 = v.array[3].getFloatFromJson;
+
+            return CurveType.BEZIER;
+        }
     }
 }
