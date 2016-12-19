@@ -192,15 +192,15 @@ class Skeleton
         callRecursive(*animation, dg, tp);
     }
 
-    void callRecursive(Animation* animation, void delegate(vec2f coords) dg, Timepoint tp)
+    void callRecursive(Animation* animation, void delegate(vec2f coords) dg, Timepoint timepoint)
     {
-        foreach(t; (*animation).timelines)
-        {
-            Timepoint tp;
-        }
+        dg(timepoint.translate.translate);
 
-        vec2f c;
-        dg(c);
+        foreach(tp; timepoint.bone.children)
+        {
+            timepoint.bone = &tp;
+            callRecursive(animation, dg, timepoint);
+        }
     }
 }
 
@@ -208,7 +208,8 @@ unittest
 {
     auto sk = new Skeleton("resources/animations/actor_pretty.json");
 
-    sk.callRecursive("run-forward", 1, (vec2f){});
+    import std.stdio;
+    sk.callRecursive("run-forward", 1, (vec2f coords){writeln(coords);});
 }
 
 private float optionalJson(JSONValue json, string name, float defaultValue)
