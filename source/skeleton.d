@@ -130,6 +130,15 @@ class Skeleton
                             break;
 
                         case "translate":
+                            foreach(t; keyframeData.array)
+                            {
+                                TranslateKeyframe k;
+                                k.time = t.getFloatFromJson("time", 0);
+                                k.translate.x = t.getFloatFromJson("x", 0);
+                                k.translate.y = t.getFloatFromJson("y", 0);
+
+                                timeline.translations ~= k;
+                            }
                             break;
 
                         default:
