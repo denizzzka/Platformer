@@ -133,11 +133,16 @@ class Skeleton
         {
             animationsByNames[animationName] = animationsByNames.length;
 
-            foreach(boneName, boneJson; j["bones"].object)
+            foreach(bone; bonesByNames.byKeyValue)
             {
-                auto bone = bonesByNames[boneName];
-                bone.animations.length++;
-                Timeline* timeline = &bone.animations[$-1];
+                auto boneJson = (bone.key in j);
+                if(boneJson is null)
+                {
+                    continue;
+                }
+
+                bone.value.animations.length++;
+                Timeline* timeline = &bone.value.animations[$-1];
 
                 foreach(timelineType, keyframeData; boneJson.object)
                 {
@@ -187,6 +192,8 @@ class Skeleton
 
     void callRecursive(size_t animationIdx, void delegate(Timepoint) dg, Timepoint timepoint)
     {
+        //auto timeline = timepoint.bone.animations[animationIdx];
+
         dg(timepoint);
 
         foreach(tp; timepoint.bone.children)
