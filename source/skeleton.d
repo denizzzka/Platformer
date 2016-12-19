@@ -66,15 +66,21 @@ struct TranslateKeyframe
 
 struct Timeline
 {
+    Bone* bone;
     RotateKeyframe[] rotations;
     TranslateKeyframe[] translations;
+}
+
+struct Animation
+{
+    Timeline[] timelines;
 }
 
 class Skeleton
 {
     Bone root;
     Slot[] slots;
-    Timeline[] animations;
+    Animation[] animations;
 
     this(string fileName)
     {
@@ -82,7 +88,7 @@ class Skeleton
 
         Bone*[string] bonesNames;
         Slot*[string] slotsNames;
-        Timeline*[string] animationsNames;
+        Animation*[string] animationsNames;
 
         auto json = fileName.readText.parseJSON;
 
@@ -124,11 +130,14 @@ class Skeleton
         foreach(animationName, j; json["animations"].object)
         {
             animations.length++;
-            Timeline* timeline = &animations[$-1];
-            animationsNames[animationName] = timeline;
+            Animation* animation = &animations[$-1];
+            animationsNames[animationName] = animation;
 
             foreach(boneName, boneJson; j["bones"].object)
             {
+                Timeline timeline;
+                timeline.bone = bonesNames[boneName];
+
                 foreach(timelineType, keyframeData; boneJson.object)
                 {
                     switch(timelineType)
