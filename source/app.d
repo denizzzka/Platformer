@@ -2,10 +2,12 @@ import dsfml.graphics;
 import dlangui.platforms.dsfml.dsfmlapp : DSFMLWindow, DSFMLPlatform, initDSFMLApp, dsfmlPlatform, uninitDSFMLApp;
 import myui;
 import map;
+import skeleton;
 
 void main(string[] args)
 {
 	auto testMap = new Map("test_map/map_1");
+    auto skelet = new Skeleton("resources/animations/actor_pretty.json");
 
     initDSFMLApp();
 
@@ -94,6 +96,14 @@ void main(string[] args)
         window.draw(smileCover);
 
 		testMap.draw(w.wnd, currViewPosition);
+        skelet.callRecursive(
+                "run-forward", 1,
+                (Timepoint tp)
+                {
+                    import std.stdio;
+                    writeln(tp);
+                }
+            );
 
         w.draw();
 
