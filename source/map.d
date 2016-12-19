@@ -97,23 +97,7 @@ class Map
             layer.name = l["name"].str;
 
             // Need because TME or JSON library isn't respects JSON float convention
-            float getFloat(JSONValue j, string fieldName, float defaultValue)
-            {
-                auto json = (fieldName in j);
-
-                if(json is null)
-                {
-                    return defaultValue;
-                }
-                else
-                {
-                    if(json.type == JSON_TYPE.FLOAT)
-                        return json.floating;
-                    else if(json.type == JSON_TYPE.INTEGER)
-                        return json.integer.to!float;
-                    else assert(0);
-                }
-            }
+            import misc: getFloat = getFloatFromJson;
 
             layer.opacity = getFloat(l, "opacity", 1);
             layer.offset.x = getFloat(l, "offsetx", 0);
