@@ -40,6 +40,12 @@ struct Keyframe
     float time;
     CurveType curveType = CurveType.LINEAR;
     BezierCurve bezier;
+
+    void fillCommonFromJson(in JSONValue j)
+    {
+        time = j.getFloatFromJson("time", 0);
+        curveType = j.curveTypeRead(bezier);
+    }
 }
 
 struct RotateKeyframe
@@ -131,8 +137,7 @@ class Skeleton
                             foreach(t; keyframeData.array)
                             {
                                 RotateKeyframe k;
-                                k.time = t.getFloatFromJson("time", 0);
-                                k.curveType = t.curveTypeRead(k.bezier);
+                                k.fillCommonFromJson(t);
                                 k.rotate = t.getFloatFromJson("angle", 0);
 
                                 timeline.rotations ~= k;
@@ -143,7 +148,7 @@ class Skeleton
                             foreach(t; keyframeData.array)
                             {
                                 TranslateKeyframe k;
-                                k.time = t.getFloatFromJson("time", 0);
+                                k.fillCommonFromJson(t);
                                 k.translate.x = t.getFloatFromJson("x", 0);
                                 k.translate.y = t.getFloatFromJson("y", 0);
 
