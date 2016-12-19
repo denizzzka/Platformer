@@ -4,6 +4,7 @@ import std.json;
 import std.exception: enforce;
 import gfm.math: vec2f;
 import misc: getFloatFromJson;
+import std.stdio;
 
 struct Bone
 {
@@ -80,10 +81,17 @@ class Skeleton
     Bone root;
     size_t[string] animationsByNames;
 
+    private struct NamedBone
+    {
+        string name;
+        Bone* bone;
+    }
+
     this(string fileName)
     {
         import std.file: readText;
 
+        NamedBone[] bonesList;
         Bone*[string] bonesByNames;
 
         auto json = fileName.readText.parseJSON;
@@ -112,27 +120,39 @@ class Skeleton
             b.scale.y = j.optionalJson("scaleY", 1);
             debug b.length = j.optionalJson("length", 0);
 
-            bonesByNames[j["name"].str] = b;
-            debug b.name = j["name"].str;
-            import std.stdio; writeln(b.name, " b=");
+            string name = j["name"].str;
+            bonesList ~= NamedBone(name, b);
+            bonesByNames[name] = b;
+            debug b.name = name;
+
+            writeln("Added ", b.name, " ptr=", b);
         }
 
         foreach(animationName, j; json["animations"].object)
         {
             animationsByNames[animationName] = animationsByNames.length;
 
-            foreach(boneName; bonesByNames.byKey)
+            foreach(ref bl; bonesList)
             {
-                Bone* bone = *(boneName in bonesByNames);
+                string boneName = bl.name;
+                Bone* bone = bl.bone;
+                assert(bone);
+
                 bone.animations.length++;
                 Timeline* timeline = &bone.animations[$-1];
 
                 auto boneJson = (boneName in j["bones"].object);
 
+                write("Animation ", animationName, " bone=", boneName, " bone.animations.length=", bone.animations.length, " ptr=", bone);
+
                 if(boneJson is null) // animation isn't specified for this bone, using default timeline values
                 {
-                    import std.stdio; writeln("Adding ", boneName, " using default. length=", bone.animations.length, " ptr=", bone);
+                    writeln(" using default.");
                     continue;
+                }
+                else
+                {
+                    writeln("");
                 }
 
                 foreach(timelineType, keyframeData; boneJson.object)
@@ -164,9 +184,6 @@ class Skeleton
                             enforce(0, "Unknown timeline type: "~timelineType);
                     }
                 }
-
-                import std.stdio;
-                writeln("root=", root.animations.length, ", Adding ", boneName, ", length=", bone.animations.length, " ptr=", bone);
             }
         }
     }
@@ -186,14 +203,15 @@ class Skeleton
 
     void callRecursive(in size_t animationIdx, void delegate(Timepoint) dg, Timepoint timepoint)
     {
-        import std.stdio;
+        //~ assert(timepoint.bone.animations.length == root.animations.length);
+        assert(animationIdx < root.animations.length);
 
         writeln(">> ", timepoint.bone.animations.length, " bone_name=", timepoint.bone.name, " ptr=", timepoint.bone, " children:");
 
         foreach(ref chi; timepoint.bone.children)
             writeln(chi.name);
 
-        auto timeline = timepoint.bone.animations[animationIdx];
+        //~ auto timeline = timepoint.bone.animations[animationIdx];
 
         dg(timepoint);
 
@@ -207,9 +225,11 @@ class Skeleton
 
 unittest
 {
+    //~ import core.memory;
+    //~ GC.disable();
+
     auto sk = new Skeleton("resources/animations/actor_pretty.json");
 
-    import std.stdio;
     sk.callRecursive("run-forward", 1, (tp){});
 }
 
