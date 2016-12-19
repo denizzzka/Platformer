@@ -39,6 +39,7 @@ struct Keyframe
 {
     float time;
     CurveType curveType = CurveType.LINEAR;
+    BezierCurve bezier;
 }
 
 struct RotateKeyframe
@@ -131,8 +132,7 @@ class Skeleton
                             {
                                 RotateKeyframe k;
                                 k.time = t.getFloatFromJson("time", 0);
-                                BezierCurve bezier;
-                                k.curveType = t.curveTypeRead(bezier);
+                                k.curveType = t.curveTypeRead(k.bezier);
                                 k.rotate = t.getFloatFromJson("angle", 0);
 
                                 timeline.rotations ~= k;
