@@ -13,6 +13,8 @@ struct Bone
     vec2f coords;
     vec2f scale;
     debug float length;
+
+    Timeline[] animations;
 }
 
 struct Slot
@@ -66,14 +68,8 @@ struct TranslateKeyframe
 
 struct Timeline
 {
-    Bone* bone;
     RotateKeyframe[] rotations;
     TranslateKeyframe[] translations;
-}
-
-struct Animation
-{
-    Timeline[] timelines;
 }
 
 struct Timepoint
@@ -87,8 +83,7 @@ class Skeleton
 {
     Bone root;
     Slot[] slots;
-    Animation[] animations;
-    Animation*[string] animationsByNames;
+    size_t[string] animationsByNames;
 
     this(string fileName)
     {
@@ -136,15 +131,13 @@ class Skeleton
 
         foreach(animationName, j; json["animations"].object)
         {
-            animations.length++;
-            Animation* animation = &animations[$-1];
-            animationsByNames[animationName] = animation;
+            animationsByNames[animationName] = animationsByNames.length;
 
             foreach(boneName, boneJson; j["bones"].object)
             {
-                animation.timelines.length++;
-                Timeline* timeline = &animation.timelines[$-1];
-                timeline.bone = bonesByNames[boneName];
+                auto bone = bonesByNames[boneName];
+                bone.animations.length++;
+                Timeline* timeline = &bone.animations[$-1];
 
                 foreach(timelineType, keyframeData; boneJson.object)
                 {
@@ -192,14 +185,14 @@ class Skeleton
         callRecursive(*animation, dg, tp);
     }
 
-    void callRecursive(Animation* animation, void delegate(Timepoint) dg, Timepoint timepoint)
+    void callRecursive(size_t animationIdx, void delegate(Timepoint) dg, Timepoint timepoint)
     {
         dg(timepoint);
 
         foreach(tp; timepoint.bone.children)
         {
             timepoint.bone = &tp;
-            callRecursive(animation, dg, timepoint);
+            callRecursive(animationIdx, dg, timepoint);
         }
     }
 }
