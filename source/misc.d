@@ -14,7 +14,7 @@ Texture loadTexture(string path)
 }
 
 /// Need because TME or JSON library isn't respects JSON float convention
-float getFloatFromJson(JSONValue j, string fieldName, float defaultValue)
+float getFloatFromJson(inout JSONValue j, string fieldName, float defaultValue)
 {
 
     auto json = (fieldName in j);
