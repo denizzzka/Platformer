@@ -18,11 +18,6 @@ struct Bone
     Timeline[] animations;
 }
 
-struct Slot
-{
-    Bone* bone;
-}
-
 struct BezierCurve
 {
     float cx1;
@@ -83,7 +78,6 @@ struct Timepoint
 class Skeleton
 {
     Bone root;
-    //~ Slot[] slots;
     size_t[string] animationsByNames;
 
     this(string fileName)
@@ -91,7 +85,6 @@ class Skeleton
         import std.file: readText;
 
         Bone*[string] bonesByNames;
-        Slot*[string] slotsByNames;
 
         auto json = fileName.readText.parseJSON;
 
@@ -123,14 +116,6 @@ class Skeleton
             debug b.name = j["name"].str;
             import std.stdio; writeln(b.name, " b=");
         }
-
-        //~ foreach(i, j; json["slots"].array)
-        //~ {
-            //~ slots.length++;
-            //~ slotsByNames[j["name"].str] = &slots[$-1];
-
-            //~ slots[$-1].bone = bonesByNames[j["bone"].str];
-        //~ }
 
         foreach(animationName, j; json["animations"].object)
         {
@@ -189,7 +174,7 @@ class Skeleton
     void callRecursive(string animationName, float time, void delegate(Timepoint) dg)
     {
         auto animation = (animationName in animationsByNames);
-        assert(animation);
+        enforce(animation != null);
 
         Timepoint tp;
         tp.bone = &root;
