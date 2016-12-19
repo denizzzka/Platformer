@@ -81,6 +81,7 @@ class Skeleton
     Bone root;
     Slot[] slots;
     Animation[] animations;
+    Animation*[string] animationsByNames;
 
     this(string fileName)
     {
@@ -88,7 +89,6 @@ class Skeleton
 
         Bone*[string] bonesByNames;
         Slot*[string] slotsByNames;
-        Animation*[string] animationsByNames;
 
         auto json = fileName.readText.parseJSON;
 
@@ -171,11 +171,26 @@ class Skeleton
             }
         }
     }
+
+    struct CalculatedFrame
+    {
+        CalculatedFrame[] children;
+        vec2f vertex;
+    }
+
+    CalculatedFrame calc(float time)
+    {
+        CalculatedFrame ret;
+
+        return ret;
+    }
 }
 
 unittest
 {
     auto sk = new Skeleton("resources/animations/actor_pretty.json");
+
+    sk.calc(1);
 }
 
 private float optionalJson(JSONValue json, string name, float defaultValue)
