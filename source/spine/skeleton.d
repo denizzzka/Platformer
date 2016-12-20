@@ -23,9 +23,9 @@ class Skeleton
 
     ~this()
     {
-        spSkeleton_dispose(skeleton);
         spAnimationState_dispose(state);
         spAnimationStateData_dispose(stateData);
+        spSkeleton_dispose(skeleton);
     }
 }
 
