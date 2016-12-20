@@ -77,7 +77,7 @@ void spAtlas_dispose (spAtlas* atlas);
 
 char* _spUtil_readFile(const(char)* path, int* length)
 {
-    return _readFile(path, length);
+    return _readFile(path, length); // TODO: it is need to set up something like errno here
 }
 
 char* _readFile (const(char)* path, int* length);
