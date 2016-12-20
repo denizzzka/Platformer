@@ -17,6 +17,13 @@ struct Bone
     debug float length;
 
     Timeline[] animations;
+
+    Bone* addEmptyChild()
+    {
+        children ~= Bone();
+
+        return &children[$-1];
+    }
 }
 
 struct BezierCurve
@@ -85,8 +92,6 @@ class Skeleton
     {
         import std.file: readText;
 
-        Bone*[string] bonesByNames;
-
         auto json = fileName.readText.parseJSON;
 
         foreach(i, j; json["bones"].array)
@@ -94,16 +99,19 @@ class Skeleton
             enforce(!(i == 0 && ("parent" in j)), "root must not contain any parent");
 
             Bone* b;
+            string name = j["name"].str;
 
-            if(j["name"].str == "root")
+            if(name == "root")
             {
                 b = &root;
             }
             else
             {
-                Bone* parent = bonesByNames[j["parent"].str];
-                parent.children.length++;
-                b = &parent.children[$-1];
+                Bone* parent = findBone(j["parent"].str);
+                b = parent.addEmptyChild;
+
+                debug(skeleton)
+                    writeln("Parent for next bone is ", parent.name, ", parent.ptr=", parent);
             }
 
             b.rotation = j.optionalJson("rotation", 0);
@@ -112,9 +120,6 @@ class Skeleton
             b.scale.x = j.optionalJson("scaleX", 1);
             b.scale.y = j.optionalJson("scaleY", 1);
             debug b.length = j.optionalJson("length", 0);
-
-            string name = j["name"].str;
-            bonesByNames[name] = b;
             debug b.name = name;
 
             debug(skeleton)
@@ -125,11 +130,11 @@ class Skeleton
         {
             animationsByNames[animationName] = animationsByNames.length;
 
-            foreach(ref kv; bonesByNames.byKeyValue)
+            foreach(ref bone; getBonesList())
             {
-                string boneName = kv.key;
-                Bone* bone = kv.value;
                 assert(bone);
+
+                string boneName = bone.name;
 
                 bone.animations.length++;
                 Timeline* timeline = &bone.animations[$-1];
@@ -200,12 +205,47 @@ class Skeleton
         void getBoneString(Bone* b, size_t depth)
         {
             foreach(i; 0 .. depth)
-                ret~=" ";
+                ret~="  ";
 
-            ret ~= b.name~"\n";
+            import std.conv: to;
+            ret ~= b.name~" ptr="~b.to!string~" children.length="~b.children.length.to!string~"\n";
         }
 
         treeTraversal(&getBoneString, &root);
+
+        return ret;
+    }
+
+    private Bone* findBone(string name)
+    {
+        Bone* ret;
+
+        treeTraversal(
+                (bone, lvl)
+                {
+                    if(bone.name == name)
+                    {
+                        ret = bone;
+                        return;
+                    }
+                },
+                &root
+            );
+
+        return ret;
+    }
+
+    private Bone*[] getBonesList()
+    {
+        Bone*[] ret;
+
+        treeTraversal(
+                (bone, lvl)
+                {
+                    ret ~= bone;
+                },
+                &root
+            );
 
         return ret;
     }
@@ -225,7 +265,7 @@ class Skeleton
 
     void callRecursive(in size_t animationIdx, void delegate(Timepoint) dg, Timepoint timepoint)
     {
-        //~ assert(timepoint.bone.animations.length == root.animations.length);
+        assert(timepoint.bone.animations.length == root.animations.length);
         assert(animationIdx < root.animations.length);
 
         writeln(">> ", timepoint.bone.animations.length, " bone_name=", timepoint.bone.name, " ptr=", timepoint.bone, " children:");
@@ -233,7 +273,7 @@ class Skeleton
         foreach(ref chi; timepoint.bone.children)
             writeln(chi.name);
 
-        //~ auto timeline = timepoint.bone.animations[animationIdx];
+        auto timeline = timepoint.bone.animations[animationIdx];
 
         dg(timepoint);
 
@@ -247,9 +287,6 @@ class Skeleton
 
 unittest
 {
-    //~ import core.memory;
-    //~ GC.disable();
-
     auto sk = new Skeleton("resources/animations/actor_pretty.json");
 
     sk.treeTraversal((bone, lvl){}, &sk.root);
