@@ -78,9 +78,8 @@ struct Timeline
 
 struct Timepoint
 {
-    Bone* bone;
-    RotateKeyframe rotate; // TODO: rename struct to Rotate
-    TranslateKeyframe translate; // TODO: rename struct to Translate
+    float rotate;
+    vec2f translate;
 }
 
 class Skeleton
@@ -250,23 +249,19 @@ class Skeleton
         return ret;
     }
 
-    void calcTimepoint(string animationName, float time, void delegate(Timepoint) dg)
+    void calcTimepoint(string animationName, float time, void delegate(Bone*, Timepoint) dg)
     {
         auto animationIdx = animationsByNames[animationName];
 
         Timepoint rootTp;
-        rootTp.bone = &root;
-        rootTp.rotate.time = time;
-        rootTp.translate.time = time;
 
         void boneDg(Bone* bone, size_t lvl)
         {
             Timepoint tp = rootTp;
-            tp.bone = bone;
             //~ tp.rotate.rotate = bone.animations[animationIdx].rotations[0].rotate;
             //~ tp.translate.translate = bone.animations[animationIdx].translations[0].translate;
 
-            dg(tp);
+            dg(bone, tp);
         }
 
         treeTraversal(&boneDg, &root);
@@ -280,7 +275,7 @@ unittest
     debug(skeleton)
         writeln(sk);
 
-    sk.calcTimepoint("run-forward", 1, (tp){});
+    sk.calcTimepoint("run-forward", 1, (bone, tp){});
 }
 
 private float optionalJson(JSONValue json, string name, float defaultValue)
