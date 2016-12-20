@@ -125,7 +125,8 @@ class Skeleton
             bonesByNames[name] = b;
             debug b.name = name;
 
-            writeln("Added ", b.name, " ptr=", b);
+            debug(skeleton)
+                writeln("Added ", b.name, " ptr=", b);
         }
 
         foreach(animationName, j; json["animations"].object)
@@ -143,16 +144,20 @@ class Skeleton
 
                 auto boneJson = (boneName in j["bones"].object);
 
-                write("Animation ", animationName, " bone=", boneName, " bone.animations.length=", bone.animations.length, " ptr=", bone);
+                debug(skeleton)
+                    write("Animation ", animationName, " bone=", boneName, " bone.animations.length=", bone.animations.length, " ptr=", bone);
 
                 if(boneJson is null) // animation isn't specified for this bone, using default timeline values
                 {
-                    writeln(" using default.");
+                    debug(skeleton)
+                        writeln(" using default.");
+
                     continue;
                 }
                 else
                 {
-                    writeln("");
+                    debug(skeleton)
+                        writeln("");
                 }
 
                 foreach(timelineType, keyframeData; boneJson.object)
@@ -186,6 +191,31 @@ class Skeleton
                 }
             }
         }
+    }
+
+    private void treeTraversal(void delegate(Bone*, size_t) dg, Bone* curr, size_t depth = 0)
+    {
+        dg(curr, depth);
+
+        foreach(ref c; curr.children)
+            treeTraversal(dg, &c, depth + 1);
+    }
+
+    debug override string toString()
+    {
+        string ret;
+
+        void getBoneString(Bone* b, size_t depth)
+        {
+            foreach(i; 0 .. depth)
+                ret~=" ";
+
+            ret ~= b.name~"\n";
+        }
+
+        treeTraversal(&getBoneString, &root);
+
+        return ret;
     }
 
     void callRecursive(string animationName, float time, void delegate(Timepoint) dg)
@@ -230,7 +260,9 @@ unittest
 
     auto sk = new Skeleton("resources/animations/actor_pretty.json");
 
-    sk.callRecursive("run-forward", 1, (tp){});
+    sk.treeTraversal((bone, lvl){}, &sk.root);
+    writeln(sk);
+    //sk.callRecursive("run-forward", 1, (tp){});
 }
 
 private float optionalJson(JSONValue json, string name, float defaultValue)
