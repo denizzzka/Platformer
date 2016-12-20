@@ -5,7 +5,7 @@ import std.exception;
 
 class Atlas
 {
-    private spAtlas* atlas;
+    package spAtlas* atlas;
 
     this(string filename)
     {
@@ -67,9 +67,9 @@ struct spAtlasPage
 	spAtlasPage* next;
 };
 
-private:
+package struct spAtlas;
 
-struct spAtlas;
+private:
 
 spAtlas* spAtlas_createFromFile (const(char)* path, void* rendererObject);
 

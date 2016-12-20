@@ -27,7 +27,11 @@ void _spAtlasPage_disposeTexture(spAtlasPage* self)
 unittest
 {
     import spine.atlas;
+    import spine.skeleton;
 
     auto a = new Atlas("resources/textures/GAME.atlas");
+    auto sk = new Skeleton("resources/animations/actor_pretty.json", a, 1);
+
     destroy(a);
+    destroy(sk);
 }
