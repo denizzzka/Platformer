@@ -250,41 +250,26 @@ class Skeleton
         return ret;
     }
 
-    void callRecursive(string animationName, float time, void delegate(Timepoint) dg)
+    void calcTimepoint(string animationName, float time, void delegate(Timepoint) dg)
     {
-        auto animation = (animationName in animationsByNames);
-        enforce(animation != null);
+        auto animationIdx = animationsByNames[animationName];
 
-        Timepoint tp;
-        tp.bone = &root;
-        tp.rotate.time = time;
-        tp.translate.time = time;
+        Timepoint rootTp;
+        rootTp.bone = &root;
+        rootTp.rotate.time = time;
+        rootTp.translate.time = time;
 
-        callRecursive(*animation, dg, tp);
-    }
-
-    void callRecursive(in size_t animationIdx, void delegate(Timepoint) dg, Timepoint timepoint)
-    {
-        assert(timepoint.bone.animations.length == root.animations.length);
-        assert(animationIdx < root.animations.length);
-
-        debug(skeleton_deep)
+        void boneDg(Bone* bone, size_t lvl)
         {
-            writeln(">> ", timepoint.bone.animations.length, " bone_name=", timepoint.bone.name, " ptr=", timepoint.bone, " children:");
+            Timepoint tp = rootTp;
+            tp.bone = bone;
+            //~ tp.rotate.rotate = bone.animations[animationIdx].rotations[0].rotate;
+            //~ tp.translate.translate = bone.animations[animationIdx].translations[0].translate;
 
-            foreach(ref chi; timepoint.bone.children)
-                writeln(chi.name);
+            dg(tp);
         }
 
-        auto timeline = timepoint.bone.animations[animationIdx];
-
-        dg(timepoint);
-
-        foreach(ref tp; timepoint.bone.children)
-        {
-            timepoint.bone = &tp;
-            callRecursive(animationIdx, dg, timepoint);
-        }
+        treeTraversal(&boneDg, &root);
     }
 }
 
@@ -295,7 +280,7 @@ unittest
     debug(skeleton)
         writeln(sk);
 
-    sk.callRecursive("run-forward", 1, (tp){});
+    sk.calcTimepoint("run-forward", 1, (tp){});
 }
 
 private float optionalJson(JSONValue json, string name, float defaultValue)
