@@ -7,15 +7,27 @@ private extern(C):
 
 void _spAtlasPage_createTexture(spAtlasPage* self, const(char)* path)
 {
-	//~ Texture* texture = textures::LoadTexture(path);
-	//~ self->width = texture->width;
-	//~ self->height = texture->height;
-	//~ self->rendererObject = texture;
+    import misc: loadTexture;
+    import std.string: fromStringz;
+    import std.conv: to;
+
+    Texture t = loadTexture(path.fromStringz.to!string);
+
+	self.width = t.getSize.x;
+	self.height = t.getSize.y;
+	self.rendererObject = cast(void*) t;
 }
 
 void _spAtlasPage_disposeTexture(spAtlasPage* self)
 {
-	//~ Texture* texture = (Texture*)self->rendererObject;
-	//~ render::ReleaseTexture(texture);
+    Texture t = cast(Texture) self.rendererObject;
+    destroy(t);
 }
 
+unittest
+{
+    import spine.atlas;
+
+    auto a = new Atlas("resources/textures/GAME.atlas");
+    destroy(a);
+}
