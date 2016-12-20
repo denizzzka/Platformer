@@ -11,6 +11,8 @@ class Skeleton
     {
         spSkeletonJson* json = spSkeletonJson_create(atlas.atlas);
         spSkeletonData* data = spSkeletonJson_readSkeletonDataFile(json, filename.toStringz);
+        assert(data);
+        spSkeletonJson_dispose(json);
         skeleton = spSkeleton_create(data);
     }
 
@@ -29,6 +31,7 @@ struct spSkeletonData;
 struct spSkeletonJson;
 
 spSkeletonJson* spSkeletonJson_create(spAtlas* atlas);
+void spSkeletonJson_dispose(spSkeletonJson* json);
 
 spSkeletonData* spSkeletonJson_readSkeletonDataFile(spSkeletonJson*, const(char)* path);
 
