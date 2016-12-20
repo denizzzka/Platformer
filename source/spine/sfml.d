@@ -29,6 +29,7 @@ class SkeletonInstanceDrawable : Drawable
         {
             spSlot* slot = skeleton.skeleton.drawOrder[i];
             const spAttachment* attachment = slot.attachment;
+
             if(attachment is null)
                 continue;
 
@@ -38,9 +39,11 @@ class SkeletonInstanceDrawable : Drawable
                 case spBlendMode.SP_BLEND_MODE_ADDITIVE:
                     blend = BlendMode.Add;
                     break;
+
                 case spBlendMode.SP_BLEND_MODE_MULTIPLY:
                     blend = BlendMode.Multiply;
                     break;
+
                 case spBlendMode.SP_BLEND_MODE_SCREEN:
                 default:
                     blend = BlendMode.Alpha;
@@ -57,16 +60,16 @@ class SkeletonInstanceDrawable : Drawable
 
             //~ if(attachment)
             //~ {
-                //~ auto regionAttachment = attachment;
-                //~ texture = cast(Texture)(cast(spAtlasRegion)regionAttachment.rendererObject).page.rendererObject;
+                //~ texture = attachment.rendererObject.page.rendererObject;
                 //~ regionAttachment.computeWorldVertices(slot.bone, worldVertices);
+
                 //~ auto r = to!ubyte(skeleton.r * slot.r * 255f);
                 //~ auto g = to!ubyte(skeleton.g * slot.g * 255f);
                 //~ auto b = to!ubyte(skeleton.b * slot.b * 255f);
                 //~ auto a = to!ubyte(skeleton.a * slot.a * 255f);
 
                 //~ Vector2u size = texture.getSize();
-                //~ with(vertices[0]) {
+                //~ with(vertices[0]){
                     //~ color.r = r;
                     //~ color.g = g;
                     //~ color.b = b;
@@ -86,7 +89,7 @@ class SkeletonInstanceDrawable : Drawable
                     //~ texCoords.x = regionAttachment.uvs[X2] * size.x;
                     //~ texCoords.y = regionAttachment.uvs[Y2] * size.y;
                 //~ }
-                //~ with(vertices[2]) {
+                //~ with(vertices[2]){
                     //~ color.r = r;
                     //~ color.g = g;
                     //~ color.b = b;
@@ -115,8 +118,8 @@ class SkeletonInstanceDrawable : Drawable
                     //~ append(vertices[2]);
                     //~ append(vertices[3]);
                 //~ }
-
-            //~ } else if(cast(MeshAttachment)attachment) {
+            //~ }
+                //~ else if(cast(MeshAttachment)attachment){
                 //~ MeshAttachment mesh = cast(MeshAttachment)attachment;
                 //~ texture = cast(Texture)(cast(AtlasRegion)mesh.rendererObject).page.rendererObject;
                 //~ mesh.computeWorldVertices(slot, worldVertices);
