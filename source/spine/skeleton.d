@@ -1,13 +1,13 @@
 module spine.skeleton;
 
 import spine.atlas;
+import spine.animation;
 import std.string: toStringz;
 
 class Skeleton
 {
-    private spSkeleton* skeleton;
-    private spAnimationState* state;
-    private spAnimationStateData* stateData;
+    package spSkeleton* skeleton;
+    private AnimationState state;
 
     this(string filename, Atlas atlas, float scale)
     {
@@ -17,23 +17,22 @@ class Skeleton
         spSkeletonJson_dispose(json);
         skeleton = spSkeleton_create(data);
 
-        stateData = spAnimationStateData_create(data);
-        state = spAnimationState_create(stateData);
+        state = new AnimationState(data);
     }
 
     ~this()
     {
-        spAnimationState_dispose(state);
-        spAnimationStateData_dispose(stateData);
         spSkeleton_dispose(skeleton);
     }
 }
 
-private extern(C):
-
-struct spSkeleton;
+extern(C):
 
 struct spSkeletonData;
+
+private:
+
+struct spSkeleton;
 
 struct spSkeletonJson;
 
@@ -46,13 +45,4 @@ spSkeleton* spSkeleton_create (spSkeletonData* data);
 
 void spSkeleton_dispose (spSkeleton* self);
 
-struct spAnimationStateData;
-
-struct spAnimationState;
-
-spAnimationStateData* spAnimationStateData_create (spSkeletonData* skeletonData);
-void spAnimationStateData_dispose (spAnimationStateData* self);
-
-/* @param data May be 0 for no mixing. */
-spAnimationState* spAnimationState_create (spAnimationStateData* data);
-void spAnimationState_dispose (spAnimationState* self);
+void spSkeleton_setToSetupPose (const(spSkeleton)* self);
