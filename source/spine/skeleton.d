@@ -4,25 +4,41 @@ import spine.atlas;
 import spine.animation;
 import std.string: toStringz;
 
-class Skeleton
+class SkeletonData
 {
-    package spSkeleton* skeleton;
-    private AnimationState state;
+    package spSkeletonData* skeleton;
 
     this(string filename, Atlas atlas, float scale)
     {
         spSkeletonJson* json = spSkeletonJson_create(atlas.atlas);
-        spSkeletonData* data = spSkeletonJson_readSkeletonDataFile(json, filename.toStringz);
-        assert(data);
+        skeleton = spSkeletonJson_readSkeletonDataFile(json, filename.toStringz);
+        assert(skeleton);
         spSkeletonJson_dispose(json);
-        skeleton = spSkeleton_create(data);
-
-        state = new AnimationState(data);
     }
 
     ~this()
     {
-        spSkeleton_dispose(skeleton);
+        spSkeletonData_dispose(skeleton);
+    }
+
+    SkeletonInstance createInstance()
+    {
+        return new SkeletonInstance(skeleton);
+    }
+}
+
+class SkeletonInstance
+{
+    spSkeleton* skeleton;
+
+    private this(spSkeletonData* skeletonData)
+    {
+        skeleton = spSkeleton_create(skeletonData);
+    }
+
+    ~this()
+    {
+        spSkeleton_dispose (skeleton);
     }
 }
 
@@ -36,10 +52,11 @@ struct spSkeleton;
 
 struct spSkeletonJson;
 
+spSkeletonData* spSkeletonJson_readSkeletonDataFile(spSkeletonJson*, const(char)* path);
+void spSkeletonData_dispose (spSkeletonData* self);
+
 spSkeletonJson* spSkeletonJson_create(spAtlas* atlas);
 void spSkeletonJson_dispose(spSkeletonJson* json);
-
-spSkeletonData* spSkeletonJson_readSkeletonDataFile(spSkeletonJson*, const(char)* path);
 
 spSkeleton* spSkeleton_create (spSkeletonData* data);
 

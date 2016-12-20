@@ -30,8 +30,10 @@ unittest
     import spine.skeleton;
 
     auto a = new Atlas("resources/textures/GAME.atlas");
-    auto sk = new Skeleton("resources/animations/actor_pretty.json", a, 1);
+    auto sd = new SkeletonData("resources/animations/actor_pretty.json", a, 1);
+    auto si = sd.createInstance();
 
     destroy(a);
-    destroy(sk);
+    destroy(sd);
+    destroy(si);
 }
