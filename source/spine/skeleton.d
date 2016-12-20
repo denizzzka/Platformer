@@ -6,24 +6,24 @@ import std.string: toStringz;
 
 class SkeletonData
 {
-    package spSkeletonData* skeleton;
+    package spSkeletonData* skeletonData;
 
     this(string filename, Atlas atlas, float scale)
     {
         spSkeletonJson* json = spSkeletonJson_create(atlas.atlas);
-        skeleton = spSkeletonJson_readSkeletonDataFile(json, filename.toStringz);
-        assert(skeleton);
+        skeletonData = spSkeletonJson_readSkeletonDataFile(json, filename.toStringz);
+        assert(skeletonData);
         spSkeletonJson_dispose(json);
     }
 
     ~this()
     {
-        spSkeletonData_dispose(skeleton);
+        spSkeletonData_dispose(skeletonData);
     }
 
     SkeletonInstance createInstance()
     {
-        return new SkeletonInstance(skeleton);
+        return new SkeletonInstance(skeletonData);
     }
 }
 

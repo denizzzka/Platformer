@@ -2,21 +2,38 @@ module spine.animation;
 
 import spine.skeleton;
 
-class AnimationState
+class AnimationStateData
 {
-    private spAnimationState* state;
     private spAnimationStateData* stateData;
 
     package this(spSkeletonData* skeletonData)
     {
         stateData = spAnimationStateData_create(skeletonData);
+    }
+
+    ~this()
+    {
+        spAnimationStateData_dispose(stateData);
+    }
+
+    AnimationStateInstance createInstance()
+    {
+        return new AnimationStateInstance(stateData);
+    }
+}
+
+class AnimationStateInstance
+{
+    private spAnimationState* state;
+
+    package this(spAnimationStateData* stateData)
+    {
         state = spAnimationState_create(stateData);
     }
 
     ~this()
     {
         spAnimationState_dispose(state);
-        spAnimationStateData_dispose(stateData);
     }
 }
 
