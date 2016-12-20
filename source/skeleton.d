@@ -8,7 +8,7 @@ import std.stdio;
 
 struct Bone
 {
-    debug string name;
+    string name; // TODO: make it available only for debug
     Bone[] children;
 
     float rotation;
@@ -268,10 +268,13 @@ class Skeleton
         assert(timepoint.bone.animations.length == root.animations.length);
         assert(animationIdx < root.animations.length);
 
-        writeln(">> ", timepoint.bone.animations.length, " bone_name=", timepoint.bone.name, " ptr=", timepoint.bone, " children:");
+        debug(skeleton_deep)
+        {
+            writeln(">> ", timepoint.bone.animations.length, " bone_name=", timepoint.bone.name, " ptr=", timepoint.bone, " children:");
 
-        foreach(ref chi; timepoint.bone.children)
-            writeln(chi.name);
+            foreach(ref chi; timepoint.bone.children)
+                writeln(chi.name);
+        }
 
         auto timeline = timepoint.bone.animations[animationIdx];
 
@@ -289,8 +292,9 @@ unittest
 {
     auto sk = new Skeleton("resources/animations/actor_pretty.json");
 
-    sk.treeTraversal((bone, lvl){}, &sk.root);
-    writeln(sk);
+    debug(skeleton)
+        writeln(sk);
+
     sk.callRecursive("run-forward", 1, (tp){});
 }
 
