@@ -2,10 +2,17 @@ import dsfml.graphics;
 import dlangui.platforms.dsfml.dsfmlapp : DSFMLWindow, DSFMLPlatform, initDSFMLApp, dsfmlPlatform, uninitDSFMLApp;
 import myui;
 import map;
+import spine.atlas;
+import spine.skeleton;
+import spine.sfml;
 
 void main(string[] args)
 {
 	auto testMap = new Map("test_map/map_1");
+
+    auto a = new Atlas("resources/textures/GAME.atlas");
+    auto sd = new SkeletonData("resources/animations/actor_pretty.json", a, 1);
+    auto skelet = sd.createDrawableInstance;
 
     initDSFMLApp();
 
@@ -94,6 +101,8 @@ void main(string[] args)
         window.draw(smileCover);
 
 		testMap.draw(w.wnd, currViewPosition);
+
+        skelet.draw(w.wnd);
 
         w.draw();
 

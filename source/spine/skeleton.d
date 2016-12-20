@@ -48,7 +48,45 @@ struct spSkeletonData;
 
 private:
 
-struct spSkeleton;
+struct spSlot
+{
+	const(void)* data; //spSlotData
+	const(void)* bone; //spBone
+	float r, g, b, a;
+	const(void)* attachment; //spAttachment
+
+	int attachmentVerticesCapacity;
+	int attachmentVerticesCount;
+	float* attachmentVertices;
+}
+
+struct spSkeleton
+{
+    const(spSkeletonData)* data;
+
+    int bonesCount;
+    void** bones; //spBone
+    const(void)* root; //spBone
+
+    int slotsCount;
+    spSlot** slots;
+    spSlot** drawOrder;
+
+    int ikConstraintsCount;
+    void** ikConstraints; //spIkConstraint
+
+    int transformConstraintsCount;
+    void** transformConstraints; //spTransformConstraint
+
+    int pathConstraintsCount;
+    void** pathConstraints; //spPathConstraint
+
+    const(void)* skin; //spSkin
+    float r, g, b, a;
+    float time;
+    int/*bool*/flipX, flipY;
+    float x, y;
+}
 
 struct spSkeletonJson;
 

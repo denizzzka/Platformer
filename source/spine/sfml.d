@@ -15,8 +15,9 @@ class SkeletonInstanceDrawable : Drawable
         skeleton = si;
     }
 
-    void draw(RenderTarget renderTarget, RenderStates renderStates)
+    void draw(RenderTarget renderTarget, RenderStates renderStates = RenderStates())
     {
+        for (int i = 0; i < skeleton.skeleton.slotsCount; ++i){}
     }
 }
 
