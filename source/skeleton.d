@@ -81,36 +81,29 @@ class Skeleton
     Bone root;
     size_t[string] animationsByNames;
 
-    private struct NamedBone
-    {
-        string name;
-        Bone* bone;
-    }
-
     this(string fileName)
     {
         import std.file: readText;
 
-        NamedBone[] bonesList;
         Bone*[string] bonesByNames;
 
         auto json = fileName.readText.parseJSON;
 
         foreach(i, j; json["bones"].array)
         {
-            enforce(!(i == 0 && ("parent" in j)), "root must not contain parent");
+            enforce(!(i == 0 && ("parent" in j)), "root must not contain any parent");
 
             Bone* b;
 
-            if(i)
+            if(j["name"].str == "root")
             {
-                Bone* parent = *(j["parent"].str in bonesByNames);
-                parent.children.length++;
-                b = &parent.children[$-1];
+                b = &root;
             }
             else
             {
-                b = &root;
+                Bone* parent = bonesByNames[j["parent"].str];
+                parent.children.length++;
+                b = &parent.children[$-1];
             }
 
             b.rotation = j.optionalJson("rotation", 0);
@@ -121,7 +114,6 @@ class Skeleton
             debug b.length = j.optionalJson("length", 0);
 
             string name = j["name"].str;
-            bonesList ~= NamedBone(name, b);
             bonesByNames[name] = b;
             debug b.name = name;
 
@@ -133,10 +125,10 @@ class Skeleton
         {
             animationsByNames[animationName] = animationsByNames.length;
 
-            foreach(ref bl; bonesList)
+            foreach(ref kv; bonesByNames.byKeyValue)
             {
-                string boneName = bl.name;
-                Bone* bone = bl.bone;
+                string boneName = kv.key;
+                Bone* bone = kv.value;
                 assert(bone);
 
                 bone.animations.length++;
