@@ -42,23 +42,114 @@ class SkeletonInstance
     }
 }
 
-extern(C):
+package extern(C):
 
-struct spSkeletonData;
+enum spTransformMode
+{
+	SP_TRANSFORMMODE_NORMAL,
+	SP_TRANSFORMMODE_ONLYTRANSLATION,
+	SP_TRANSFORMMODE_NOROTATIONORREFLECTION,
+	SP_TRANSFORMMODE_NOSCALE,
+	SP_TRANSFORMMODE_NOSCALEORREFLECTION
+};
 
-private:
+struct spBoneData
+{
+	const int index;
+	const (char*) name;
+	const (spBoneData*) parent;
+	float length;
+	float x, y, rotation, scaleX, scaleY, shearX, shearY;
+	spTransformMode transformMode;
+}
+
+struct spSkin;
+struct spEventData;
+struct spAnimation;
+struct spIkConstraintData;
+struct spTransformConstraintData;
+struct spPathConstraintData;
+
+struct spSkeletonData
+{
+	const (char)* __version;
+	const (char)* hash;
+	float width, height;
+
+	int bonesCount;
+	spBoneData** bones;
+
+	int slotsCount;
+	spSlotData** slots;
+
+	int skinsCount;
+	spSkin** skins;
+	spSkin* defaultSkin;
+
+	int eventsCount;
+	spEventData** events;
+
+	int animationsCount;
+	spAnimation** animations;
+
+	int ikConstraintsCount;
+	spIkConstraintData** ikConstraints;
+
+	int transformConstraintsCount;
+	spTransformConstraintData** transformConstraints;
+
+	int pathConstraintsCount;
+	spPathConstraintData** pathConstraints;
+}
+
+enum spAttachmentType
+{
+	SP_ATTACHMENT_REGION,
+	SP_ATTACHMENT_BOUNDING_BOX,
+	SP_ATTACHMENT_MESH,
+	SP_ATTACHMENT_LINKED_MESH,
+	SP_ATTACHMENT_PATH
+}
+
+struct spAttachment
+{
+	const(char*) name;
+	const spAttachmentType type;
+	const(void*) vtable;
+	void* attachmentLoader;
+}
+
+enum spBlendMode
+{
+	SP_BLEND_MODE_NORMAL,
+    SP_BLEND_MODE_ADDITIVE,
+    SP_BLEND_MODE_MULTIPLY,
+    SP_BLEND_MODE_SCREEN
+}
+
+struct spSlotData
+{
+	const int index;
+	const(char*) name;
+	const(void*) boneData; //spBoneData
+	const(char*) attachmentName;
+	float r, g, b, a;
+	spBlendMode blendMode;
+}
 
 struct spSlot
 {
-	const(void)* data; //spSlotData
+	const(spSlotData)* data;
 	const(void)* bone; //spBone
 	float r, g, b, a;
-	const(void)* attachment; //spAttachment
+	const(spAttachment)* attachment;
 
 	int attachmentVerticesCapacity;
 	int attachmentVerticesCount;
 	float* attachmentVertices;
 }
+
+private:
 
 struct spSkeleton
 {

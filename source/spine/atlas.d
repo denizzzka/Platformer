@@ -53,6 +53,8 @@ enum spAtlasWrap
 	SP_ATLAS_REPEAT
 };
 
+package:
+
 struct spAtlasPage
 {
 	const spAtlas* atlas;
@@ -67,7 +69,25 @@ struct spAtlasPage
 	spAtlasPage* next;
 };
 
-package struct spAtlas;
+struct spAtlas;
+
+struct spAtlasRegion
+{
+    const(char)* name;
+    int x, y, width, height;
+    float u, v, u2, v2;
+    int offsetX, offsetY;
+    int originalWidth, originalHeight;
+    int index;
+    int/*bool*/rotate;
+    int/*bool*/flip;
+    int* splits;
+    int* pads;
+
+    spAtlasPage* page;
+
+    spAtlasRegion* next;
+};
 
 private:
 
