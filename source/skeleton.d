@@ -291,7 +291,7 @@ unittest
 
     sk.treeTraversal((bone, lvl){}, &sk.root);
     writeln(sk);
-    //sk.callRecursive("run-forward", 1, (tp){});
+    sk.callRecursive("run-forward", 1, (tp){});
 }
 
 private float optionalJson(JSONValue json, string name, float defaultValue)
