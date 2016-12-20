@@ -126,7 +126,7 @@ class Skeleton
             debug b.name = name;
 
             debug(skeleton)
-                writeln("Added ", b.name, " ptr=", b);
+                writeln("Added bone ", b.name, ", ptr=", b);
         }
 
         foreach(animationName, j; json["animations"].object)
