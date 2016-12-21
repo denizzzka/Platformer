@@ -89,8 +89,11 @@ struct spBone
 struct spSkin;
 struct spEventData;
 struct spAnimation;
+struct spIkConstraint;
 struct spIkConstraintData;
+struct spTransformConstraint;
 struct spTransformConstraintData;
+struct spPathConstraint;
 struct spPathConstraintData;
 
 struct spSkeletonData
@@ -156,7 +159,7 @@ struct spSlotData
 	const(char*) name;
 	const(spBoneData*) boneData;
 	const(char*) attachmentName;
-	float r, g, b, a;
+	float r=0, g=0, b=0, a=0;
 	spBlendMode blendMode;
 }
 
