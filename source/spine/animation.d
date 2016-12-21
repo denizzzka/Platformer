@@ -7,9 +7,9 @@ class AnimationStateData
     package spAnimationStateData* stateData;
     alias stateData this;
 
-    package this(spSkeletonData* skeletonData)
+    package this(SkeletonData sd)
     {
-        stateData = spAnimationStateData_create(skeletonData);
+        stateData = spAnimationStateData_create(sd);
     }
 
     ~this()
