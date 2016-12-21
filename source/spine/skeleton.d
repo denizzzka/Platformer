@@ -65,6 +65,7 @@ struct spBoneData
 	spTransformMode transformMode;
 }
 
+struct spBone;
 struct spSkin;
 struct spEventData;
 struct spAnimation;
@@ -133,7 +134,7 @@ struct spSlotData
 {
 	const int index;
 	const(char*) name;
-	const(void*) boneData; //spBoneData
+	const(spBoneData*) boneData;
 	const(char*) attachmentName;
 	float r, g, b, a;
 	spBlendMode blendMode;
@@ -142,7 +143,7 @@ struct spSlotData
 struct spSlot
 {
 	const(spSlotData)* data;
-	const(void)* bone; //spBone
+	const(spBone)* bone;
 	float r, g, b, a;
 	const(spAttachment)* attachment;
 
@@ -158,8 +159,8 @@ struct spSkeleton
     const(spSkeletonData)* data;
 
     int bonesCount;
-    void** bones; //spBone
-    const(void)* root; //spBone
+    spBone** bones;
+    const(spBone)* root;
 
     int slotsCount;
     spSlot** slots;
