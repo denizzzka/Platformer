@@ -5,7 +5,6 @@ import spine.skeleton;
 import spine.animation;
 import dsfml.graphics;
 import dsfml.graphics.drawable;
-import std.conv: to;
 
 enum SPINE_MESH_VERTEX_COUNT_MAX = 1000;
 
@@ -71,15 +70,7 @@ class SkeletonInstanceDrawable : Drawable
                 texture = cast(Texture)(cast(spAtlasRegion*)regionAttachment.rendererObject).page.rendererObject;
                 spRegionAttachment_computeWorldVertices(regionAttachment, slot.bone, worldVertices.ptr);
 
-                Color _c;
-                with(_c)
-                {
-                    r = (skeleton.r * slot.r * 255.0f).to!ubyte;
-                    g = (skeleton.g * slot.g * 255.0f).to!ubyte;
-                    b = (skeleton.b * slot.b * 255.0f).to!ubyte;
-                    a = (skeleton.a * slot.a * 255.0f).to!ubyte;
-                }
-
+                Color _c = colorize(skeleton, slot);
                 Vector2u size = texture.getSize();
 
                 with(spVertexIndex)
@@ -138,14 +129,7 @@ class SkeletonInstanceDrawable : Drawable
                 texture = cast(Texture)(cast(spAtlasRegion*)mesh.rendererObject).page.rendererObject;
                 spMeshAttachment_computeWorldVertices(mesh, slot, worldVertices.ptr);
 
-                with(vertex.color)
-                {
-                    r = (skeleton.r * slot.r * 255.0f).to!ubyte;
-                    g = (skeleton.g * slot.g * 255.0f).to!ubyte;
-                    b = (skeleton.b * slot.b * 255.0f).to!ubyte;
-                    a = (skeleton.a * slot.a * 255.0f).to!ubyte;
-                }
-
+                vertex.color = colorize(skeleton, slot);
                 Vector2u size = texture.getSize();
 
                 foreach(_i; 0 .. mesh.trianglesCount)
@@ -210,6 +194,23 @@ unittest
     destroy(sd);
     destroy(si1);
     destroy(si2);
+}
+
+Color colorize(spSkeleton* skeleton,  spSlot* slot)
+{
+    import std.conv: to;
+
+    Color ret;
+
+    with(ret)
+    {
+        r = (skeleton.r * slot.r * 255.0f).to!ubyte;
+        g = (skeleton.g * slot.g * 255.0f).to!ubyte;
+        b = (skeleton.b * slot.b * 255.0f).to!ubyte;
+        a = (skeleton.a * slot.a * 255.0f).to!ubyte;
+    }
+
+    return ret;
 }
 
 private extern(C):

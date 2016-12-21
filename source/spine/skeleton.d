@@ -152,8 +152,6 @@ struct spSlot
 	float* attachmentVertices;
 }
 
-private:
-
 struct spSkeleton
 {
     const(spSkeletonData)* data;
@@ -181,6 +179,8 @@ struct spSkeleton
     int/*bool*/flipX, flipY;
     float x, y;
 }
+
+private:
 
 struct spSkeletonJson;
 
