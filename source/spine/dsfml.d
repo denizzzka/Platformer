@@ -204,6 +204,8 @@ unittest
     destroy(a);
 }
 
+private:
+
 Color colorize(in spSkeleton* skeleton,  in spSlot* slot)
 {
     import std.conv: to;
@@ -221,7 +223,7 @@ Color colorize(in spSkeleton* skeleton,  in spSlot* slot)
     return ret;
 }
 
-private extern(C):
+extern(C):
 
 void _spAtlasPage_createTexture(spAtlasPage* self, const(char)* path)
 {
