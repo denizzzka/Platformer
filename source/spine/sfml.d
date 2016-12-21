@@ -65,7 +65,7 @@ class SkeletonInstanceDrawable : Drawable
 
             Texture texture;
 
-            if(attachment.type == spAttachmentType.SP_ATTACHMENT_REGION)
+            if(attachment.type == spAttachmentType.REGION)
             {
                 spRegionAttachment* regionAttachment = cast(spRegionAttachment*) attachment;
                 texture = cast(Texture)(cast(spAtlasRegion*)regionAttachment.rendererObject).page.rendererObject;
@@ -130,7 +130,8 @@ class SkeletonInstanceDrawable : Drawable
                     append(vertices[3]);
                 }
             }
-                //~ else if(cast(MeshAttachment)attachment){
+            else if(attachment.type == spAttachmentType.MESH)
+            {
                 //~ MeshAttachment mesh = cast(MeshAttachment)attachment;
                 //~ texture = cast(Texture)(cast(AtlasRegion)mesh.rendererObject).page.rendererObject;
                 //~ mesh.computeWorldVertices(slot, worldVertices);
@@ -150,7 +151,8 @@ class SkeletonInstanceDrawable : Drawable
                     //~ vertexArray.append(vertex);
                 //~ }
 
-            //~ } else if(cast(SkinnedMeshAttachment)attachment) {
+            }
+                //~ else if(cast(SkinnedMeshAttachment)attachment) {
                 //~ SkinnedMeshAttachment mesh = cast(SkinnedMeshAttachment)attachment;
                 //~ texture = cast(Texture)(cast(AtlasRegion)mesh.rendererObject).page.rendererObject;
                 //~ mesh.computeWorldVertices(slot, worldVertices);
