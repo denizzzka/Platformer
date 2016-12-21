@@ -184,7 +184,7 @@ class SkeletonInstanceDrawable : Drawable
         skeleton.update(deltaTime);
         state.update(deltaTime);
         state.apply(skeleton);
-        spSkeleton_updateWorldTransform(skeleton);
+        skeleton.updateWorldTransform();
     }
 }
 

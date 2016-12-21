@@ -46,6 +46,11 @@ class SkeletonInstance
     {
         spSkeleton_update(skeleton, deltaTime);
     }
+
+    void updateWorldTransform()
+    {
+        spSkeleton_updateWorldTransform(skeleton);
+    }
 }
 
 package extern(C):
