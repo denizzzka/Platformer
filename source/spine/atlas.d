@@ -89,6 +89,24 @@ struct spAtlasRegion
     spAtlasRegion* next;
 };
 
+struct spRegionAttachment
+{
+    import spine.skeleton: spAttachment;
+
+	spAttachment _super;
+	const char* path;
+	float x, y, scaleX, scaleY, rotation, width, height;
+	float r, g, b, a;
+
+	void* rendererObject;
+	int regionOffsetX, regionOffsetY; /* Pixels stripped from the bottom left, unrotated. */
+	int regionWidth, regionHeight; /* Unrotated, stripped pixel size. */
+	int regionOriginalWidth, regionOriginalHeight; /* Unrotated, unstripped pixel size. */
+
+	float[8] offset;
+	float[8] uvs;
+};
+
 private:
 
 spAtlas* spAtlas_createFromFile (const(char)* path, void* rendererObject);

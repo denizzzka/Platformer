@@ -62,8 +62,8 @@ class SkeletonInstanceDrawable : Drawable
 
             Texture texture;
 
-            //~ if(attachment)
-            //~ {
+            if(attachment.type == spAttachmentType.SP_ATTACHMENT_REGION)
+            {
                 //~ texture = attachment.rendererObject.page.rendererObject;
                 //~ regionAttachment.computeWorldVertices(slot.bone, worldVertices);
 
@@ -122,7 +122,7 @@ class SkeletonInstanceDrawable : Drawable
                     //~ append(vertices[2]);
                     //~ append(vertices[3]);
                 //~ }
-            //~ }
+            }
                 //~ else if(cast(MeshAttachment)attachment){
                 //~ MeshAttachment mesh = cast(MeshAttachment)attachment;
                 //~ texture = cast(Texture)(cast(AtlasRegion)mesh.rendererObject).page.rendererObject;
