@@ -4,7 +4,8 @@ import spine.skeleton;
 
 class AnimationStateData
 {
-    private spAnimationStateData* stateData;
+    package spAnimationStateData* stateData;
+    alias stateData this;
 
     package this(spSkeletonData* skeletonData)
     {
@@ -24,7 +25,8 @@ class AnimationStateData
 
 class AnimationStateInstance
 {
-    private spAnimationState* state;
+    package spAnimationState* state;
+    alias state this;
 
     package this(spAnimationStateData* stateData)
     {

@@ -2,6 +2,7 @@ module spine.sfml;
 
 import spine.atlas;
 import spine.skeleton;
+import spine.animation;
 import dsfml.graphics;
 import dsfml.graphics.drawable;
 
@@ -10,11 +11,14 @@ class SkeletonInstanceDrawable : Drawable
     SkeletonInstance skeleton;
     alias skeleton this;
 
+    AnimationStateInstance animation;
+
     VertexArray vertexArray;
 
-    this(SkeletonInstance si)
+    this(SkeletonInstance si, AnimationStateInstance asi)
     {
         skeleton = si;
+        animation = asi;
         vertexArray = new VertexArray(PrimitiveType.Triangles, skeleton.skeleton.bonesCount * 4);
     }
 
@@ -171,7 +175,10 @@ class SkeletonInstanceDrawable : Drawable
 
 SkeletonInstanceDrawable createDrawableInstance(SkeletonData sd) @property
 {
-    return new SkeletonInstanceDrawable(sd.createInstance);
+    auto stateData = new AnimationStateData(sd.skeletonData);
+	auto stateInst = new AnimationStateInstance(stateData.stateData);
+
+    return new SkeletonInstanceDrawable(sd.createInstance, stateInst);
 }
 
 unittest

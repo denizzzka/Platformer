@@ -12,7 +12,7 @@ void main(string[] args)
 
     auto a = new Atlas("resources/textures/GAME.atlas");
     auto sd = new SkeletonData("resources/animations/actor_pretty.json", a, 1);
-    auto skelet = sd.createDrawableInstance;
+    auto skelet = createDrawableInstance(sd);
 
     initDSFMLApp();
 

@@ -7,6 +7,7 @@ import std.string: toStringz;
 class SkeletonData
 {
     package spSkeletonData* skeletonData;
+    alias skeletonData this;
 
     this(string filename, Atlas atlas, float scale)
     {
@@ -30,6 +31,7 @@ class SkeletonData
 class SkeletonInstance
 {
     spSkeleton* skeleton;
+    alias skeleton this;
 
     private this(spSkeletonData* skeletonData)
     {
