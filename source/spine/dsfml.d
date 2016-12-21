@@ -19,15 +19,20 @@ enum SPINE_MESH_VERTEX_COUNT_MAX = 1000;
 
 class SkeletonInstanceDrawable : Drawable
 {
+    SkeletonData skeletonData; //FIXME temporary, remove it
     SkeletonInstance skeleton;
     alias skeleton this;
 
+    AnimationStateData stateData; //FIXME temporary, remove it
     AnimationStateInstance state;
     VertexArray vertexArray;
     float[SPINE_MESH_VERTEX_COUNT_MAX] worldVertices;
 
     this(SkeletonData sd, AnimationStateData asd)
     {
+        skeletonData = sd;
+        stateData = asd;
+
         debug(spine_dsfml)
         {
             writeln("Loaded bones:");
@@ -225,6 +230,11 @@ class SkeletonInstanceDrawable : Drawable
         state.update(deltaTime);
         state.apply(skeleton);
         skeleton.updateWorldTransform();
+    }
+
+    void apply()
+    {
+        state.apply(skeleton);
     }
 }
 

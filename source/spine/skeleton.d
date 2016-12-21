@@ -1,7 +1,6 @@
 module spine.skeleton;
 
 import spine.atlas;
-import spine.animation;
 import std.string: toStringz;
 
 class SkeletonData
