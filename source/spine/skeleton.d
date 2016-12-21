@@ -46,6 +46,11 @@ class SkeletonInstance
     {
         spSkeleton_updateWorldTransform(skeleton);
     }
+
+    void setToSetupPose()
+    {
+        spSkeleton_setToSetupPose(skeleton);
+    }
 }
 
 package extern(C):
@@ -84,6 +89,21 @@ struct spBone
 	float c=0, d=0, worldY=0;
 
 	int/*bool*/ sorted;
+
+    string toString() const
+    {
+        import std.conv: to;
+
+        return
+            "rotation="~rotation.to!string~"\n"~
+            "arotation="~arotation.to!string~"\n"~
+            "a="~a.to!string~"\n"~
+            "b="~b.to!string~"\n"~
+            "c="~c.to!string~"\n"~
+            "d="~d.to!string~"\n"~
+            "worldX="~worldX.to!string~"\n"~
+            "worldY="~worldY.to!string~"\n";
+    }
 }
 
 struct spSkin;
