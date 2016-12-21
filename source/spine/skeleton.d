@@ -24,7 +24,7 @@ class SkeletonData
 
     SkeletonInstance createInstance()
     {
-        return new SkeletonInstance(skeletonData);
+        return new SkeletonInstance(this);
     }
 }
 
@@ -33,9 +33,9 @@ class SkeletonInstance
     spSkeleton* skeleton;
     alias skeleton this;
 
-    private this(spSkeletonData* skeletonData)
+    private this(SkeletonData sd)
     {
-        skeleton = spSkeleton_create(skeletonData);
+        skeleton = spSkeleton_create(sd);
     }
 
     ~this()
