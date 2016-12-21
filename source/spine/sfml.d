@@ -64,7 +64,8 @@ class SkeletonInstanceDrawable : Drawable
 
             if(attachment.type == spAttachmentType.SP_ATTACHMENT_REGION)
             {
-                //~ texture = attachment.rendererObject.page.rendererObject;
+                spRegionAttachment* regionAttachment = cast(spRegionAttachment*) attachment;
+                texture = cast(Texture)(cast(spAtlasRegion*)regionAttachment.rendererObject).page.rendererObject;
                 //~ regionAttachment.computeWorldVertices(slot.bone, worldVertices);
 
                 //~ auto r = to!ubyte(skeleton.r * slot.r * 255f);
