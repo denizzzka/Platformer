@@ -13,7 +13,7 @@ void main(string[] args)
     auto a = new Atlas("resources/textures/GAME.atlas");
     auto sd = new SkeletonData("resources/animations/actor_pretty.json", a, 1);
     auto skelet = sd.createDrawableInstance;
-    skelet.state.setAnimationByName(0, "run-forward", 1);
+    skelet.setToSetupPose;
 
     initDSFMLApp();
 
@@ -103,6 +103,9 @@ void main(string[] args)
 
 		//testMap.draw(w.wnd, currViewPosition);
 
+        skelet.update(0.5);
+        skelet.updateWorldTransform();
+        skelet.state.setAnimationByName(0, "run-forward", 1);
         skelet.update(0.5);
         skelet.updateWorldTransform();
 

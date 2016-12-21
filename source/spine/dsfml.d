@@ -28,6 +28,14 @@ class SkeletonInstanceDrawable : Drawable
 
     this(SkeletonData sd, AnimationStateData asd)
     {
+        debug(spine_dsfml)
+        {
+            writeln("Loaded bones:");
+
+            foreach(j; 0 .. sd.skeletonData.bonesCount)
+                writeln("bones[0]=", *sd.skeletonData.bones[j]);
+        }
+
         skeleton = new SkeletonInstance(sd);
         state = new AnimationStateInstance(asd);
         vertexArray = new VertexArray(PrimitiveType.Triangles, skeleton.skeleton.bonesCount * 4);

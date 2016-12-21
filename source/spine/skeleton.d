@@ -72,6 +72,21 @@ struct spBoneData
 	float length=0;
 	float x=0, y=0, rotation=0, scaleX=0, scaleY=0, shearX=0, shearY=0;
 	spTransformMode transformMode = spTransformMode.NORMAL;
+
+    string toString() const
+    {
+        import std.conv: to;
+
+        return
+            "length="~length.to!string~"\n"~
+            "rotation="~rotation.to!string~"\n"~
+            "scaleX="~scaleX.to!string~"\n"~
+            "scaleY="~scaleY.to!string~"\n"~
+            "shearX="~shearX.to!string~"\n"~
+            "shearY="~shearY.to!string~"\n"~
+            "x="~x.to!string~"\n"~
+            "y="~y.to!string;
+    }
 }
 
 struct spBone
@@ -102,7 +117,7 @@ struct spBone
             "c="~c.to!string~"\n"~
             "d="~d.to!string~"\n"~
             "worldX="~worldX.to!string~"\n"~
-            "worldY="~worldY.to!string~"\n";
+            "worldY="~worldY.to!string;
     }
 }
 
