@@ -41,6 +41,11 @@ class SkeletonInstance
     {
         spSkeleton_dispose (skeleton);
     }
+
+    void update(float deltaTime)
+    {
+        spSkeleton_update(skeleton, deltaTime);
+    }
 }
 
 package extern(C):
