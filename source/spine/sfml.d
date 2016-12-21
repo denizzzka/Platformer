@@ -37,7 +37,7 @@ class SkeletonInstanceDrawable : Drawable
         {
             debug(dsfml) writeln("slot num=", i);
 
-            spSlot* slot = skeleton.skeleton.drawOrder[i];
+            const spSlot* slot = skeleton.skeleton.drawOrder[i];
             const spAttachment* attachment = slot.attachment;
 
             if(attachment is null) continue;
@@ -74,6 +74,7 @@ class SkeletonInstanceDrawable : Drawable
 
                 spRegionAttachment* regionAttachment = cast(spRegionAttachment*) attachment;
                 texture = cast(Texture)(cast(spAtlasRegion*)regionAttachment.rendererObject).page.rendererObject;
+                assert(texture);
 
                 debug(dsfml) writeln("call computeWorldVertices");
                 spRegionAttachment_computeWorldVertices(regionAttachment, slot.bone, worldVertices.ptr);
@@ -194,7 +195,7 @@ unittest
     destroy(si2);
 }
 
-Color colorize(spSkeleton* skeleton,  spSlot* slot)
+Color colorize(in spSkeleton* skeleton,  in spSlot* slot)
 {
     import std.conv: to;
 
@@ -234,4 +235,4 @@ void _spAtlasPage_disposeTexture(spAtlasPage* self)
 
 void spRegionAttachment_computeWorldVertices (spRegionAttachment* self, const(spBone)* bone, float* vertices);
 
-void spMeshAttachment_computeWorldVertices (spMeshAttachment* self, spSlot* slot, float* worldVertices);
+void spMeshAttachment_computeWorldVertices (spMeshAttachment* self, const(spSlot)* slot, float* worldVertices);
