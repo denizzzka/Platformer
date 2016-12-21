@@ -14,11 +14,12 @@ void main(string[] args)
     auto sd = new SkeletonData("resources/animations/actor_pretty.json", a, 1);
     auto skelet = sd.createDrawableInstance;
     skelet.setToSetupPose;
+    skelet.updateWorldTransform();
 
     initDSFMLApp();
 
     auto window = new RenderWindow(VideoMode(800, 600, 32), "Hello DSFML!", Window.Style.Titlebar | Window.Style.Close | Window.Style.Resize);
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(24);
 
     DSFMLWindow w = dsfmlPlatform.registerWindow(window);
     // create some widget to show in window
@@ -103,10 +104,12 @@ void main(string[] args)
 
 		//testMap.draw(w.wnd, currViewPosition);
 
-        skelet.update(0.5);
         skelet.updateWorldTransform();
+        skelet.apply();
         skelet.state.setAnimationByName(0, "run-forward", 1);
-        skelet.update(0.5);
+        skelet.state.update(0.5);
+        skelet.updateWorldTransform();
+        skelet.apply();
         skelet.updateWorldTransform();
 
         RenderStates rs;
