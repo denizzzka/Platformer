@@ -142,30 +142,12 @@ class SkeletonInstanceDrawable : Drawable
                     vertexArray.append(vertex);
                 }
             }
-                //~ else if(cast(SkinnedMeshAttachment)attachment) {
-                //~ SkinnedMeshAttachment mesh = cast(SkinnedMeshAttachment)attachment;
-                //~ texture = cast(Texture)(cast(AtlasRegion)mesh.rendererObject).page.rendererObject;
-                //~ mesh.computeWorldVertices(slot, worldVertices);
 
-                //~ vertex.color.r = to!ubyte(skeleton.r * slot.r * 255f);
-                //~ vertex.color.g = to!ubyte(skeleton.g * slot.g * 255f);
-                //~ vertex.color.b = to!ubyte(skeleton.b * slot.b * 255f);
-                //~ vertex.color.a = to!ubyte(skeleton.a * slot.a * 255f);
-
-                //~ Vector2u size = texture.getSize();
-                //~ for(int j = 0; j < mesh.triangles.length; j++) {
-                    //~ int index = mesh.triangles[j] << 1;
-                    //~ vertex.position.x = worldVertices[index];
-                    //~ vertex.position.y = worldVertices[index + 1];
-                    //~ vertex.texCoords.x = mesh.uvs[index] * size.x;
-                    //~ vertex.texCoords.y = mesh.uvs[index + 1] * size.y;
-                    //~ vertexArray.append(vertex);
-                //~ }
-            //~ }
-
-            //~ if(texture !is null) {
-                //~ states.texture = texture;
-            //~ }
+            if(texture !is null)
+            {
+                // SMFL doesn't handle batching for us, so we'll just force a single texture per skeleton.
+                states.texture = texture;
+            }
         }
 
         //target.draw(vertexArray, states);
