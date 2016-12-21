@@ -137,7 +137,7 @@ enum spAttachmentType
 struct spAttachment
 {
 	const(char*) name;
-	const spAttachmentType type;
+	const spAttachmentType type = spAttachmentType.REGION;
 	const(void*) vtable;
 	void* attachmentLoader;
 }
@@ -164,7 +164,7 @@ struct spSlot
 {
 	const(spSlotData)* data;
 	const(spBone)* bone;
-	float r, g, b, a;
+	float r=0, g=0, b=0, a=0;
 	const(spAttachment)* attachment;
 
 	int attachmentVerticesCapacity;
@@ -185,19 +185,19 @@ struct spSkeleton
     spSlot** drawOrder;
 
     int ikConstraintsCount;
-    void** ikConstraints; //spIkConstraint
+    spIkConstraint** ikConstraints;
 
     int transformConstraintsCount;
-    void** transformConstraints; //spTransformConstraint
+    spTransformConstraint** transformConstraints;
 
     int pathConstraintsCount;
-    void** pathConstraints; //spPathConstraint
+    spPathConstraint** pathConstraints;
 
-    const(void)* skin; //spSkin
-    float r, g, b, a;
-    float time;
-    int/*bool*/flipX, flipY;
-    float x, y;
+    const(spSkin)* skin;
+    float r=0, g=0, b=0, a=0;
+    float time=0;
+    int/*bool*/flipX=0, flipY=0;
+    float x=0, y=0;
 }
 
 void spSkeleton_update (spSkeleton* self, float deltaTime);
