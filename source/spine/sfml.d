@@ -43,15 +43,15 @@ class SkeletonInstanceDrawable : Drawable
 
             switch(slot.data.blendMode)
             {
-                case spBlendMode.SP_BLEND_MODE_ADDITIVE:
+                case spBlendMode.ADDITIVE:
                     blend = BlendMode.Add;
                     break;
 
-                case spBlendMode.SP_BLEND_MODE_MULTIPLY:
+                case spBlendMode.MULTIPLY:
                     blend = BlendMode.Multiply;
                     break;
 
-                case spBlendMode.SP_BLEND_MODE_SCREEN: // Unsupported, fall through.
+                case spBlendMode.SCREEN: // Unsupported, fall through.
                 default:
                     blend = BlendMode.Alpha;
             }

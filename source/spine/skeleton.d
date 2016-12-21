@@ -124,10 +124,10 @@ struct spAttachment
 
 enum spBlendMode
 {
-	SP_BLEND_MODE_NORMAL,
-    SP_BLEND_MODE_ADDITIVE,
-    SP_BLEND_MODE_MULTIPLY,
-    SP_BLEND_MODE_SCREEN
+	NORMAL,
+    ADDITIVE,
+    MULTIPLY,
+    SCREEN
 }
 
 struct spSlotData
