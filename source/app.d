@@ -95,17 +95,22 @@ void main(string[] args)
         
         window.clear();
         
-        window.draw(head);
-        window.draw(leftEye);
-        window.draw(rightEye);
-        window.draw(smile);
-        window.draw(smileCover);
+        //~ window.draw(head);
+        //~ window.draw(leftEye);
+        //~ window.draw(rightEye);
+        //~ window.draw(smile);
+        //~ window.draw(smileCover);
 
-		testMap.draw(w.wnd, currViewPosition);
+		//testMap.draw(w.wnd, currViewPosition);
 
-        skelet.draw(w.wnd);
+        skelet.update(0.5);
+        skelet.updateWorldTransform();
 
-        w.draw();
+        RenderStates rs;
+        rs.transform.translate(100, 100);
+        skelet.draw(w.wnd, rs);
+
+        //w.draw();
 
         window.display();
     }

@@ -25,10 +25,10 @@ class SkeletonInstanceDrawable : Drawable
     VertexArray vertexArray;
     float[SPINE_MESH_VERTEX_COUNT_MAX] worldVertices;
 
-    this(SkeletonInstance si, AnimationStateInstance asi)
+    this(SkeletonData sd, AnimationStateData asd)
     {
-        skeleton = si;
-        state = asi;
+        skeleton = new SkeletonInstance(sd);
+        state = new AnimationStateInstance(asd);
         vertexArray = new VertexArray(PrimitiveType.Triangles, skeleton.skeleton.bonesCount * 4);
     }
 
@@ -45,6 +45,9 @@ class SkeletonInstanceDrawable : Drawable
             debug(spine_dsfml) writeln("slot num=", i);
 
             const spSlot* slot = skeleton.skeleton.drawOrder[i];
+            debug(spine_dsfml) writeln("slot=", *slot);
+            debug(spine_dsfml) writeln("slot.bone=", *slot.bone);
+
             const spAttachment* attachment = slot.attachment;
 
             if(attachment is null) continue;
@@ -80,10 +83,13 @@ class SkeletonInstanceDrawable : Drawable
                 debug(spine_dsfml) writeln("draw region");
 
                 spRegionAttachment* regionAttachment = cast(spRegionAttachment*) attachment;
+
                 texture = cast(Texture)(cast(spAtlasRegion*)regionAttachment.rendererObject).page.rendererObject;
                 assert(texture);
 
-                debug(spine_dsfml) writeln("call computeWorldVertices");
+                debug(spine_dsfml) writeln("call computeWorldVertices, args:");
+                debug(spine_dsfml) writeln("regionAttachment=", *regionAttachment);
+                debug(spine_dsfml) writeln("and slot.bone=", *slot.bone);
                 spRegionAttachment_computeWorldVertices(regionAttachment, slot.bone, worldVertices.ptr);
 
                 debug(spine_dsfml) writeln("call colorize");
@@ -101,9 +107,12 @@ class SkeletonInstanceDrawable : Drawable
                     {
                         color = _c;
                         position.x = worldVertices[X1];
+                        debug(spine_dsfml) writeln("worldVertices[X1]=", worldVertices[X1]);
                         position.y = worldVertices[Y1];
                         texCoords.x = regionAttachment.uvs[X1] * size.x;
                         texCoords.y = regionAttachment.uvs[Y1] * size.y;
+                        assert(worldVertices[X1] != float.nan);
+                        assert(position.x != float.nan);
                     }
 
                     with(vertices[1])
@@ -167,15 +176,28 @@ class SkeletonInstanceDrawable : Drawable
                 }
             }
 
-            if(texture !is null)
-            {
-                // SMFL doesn't handle batching for us, so we'll just force a single texture per skeleton.
-                states.texture = texture;
-                debug(spine_dsfml) writeln("Used texture at ", &texture);
-            }
+            debug(spine_dsfml) writeln("vertexArray.getVertexCount=", vertexArray.getVertexCount);
+
+            //~ if(texture !is null)
+            //~ {
+                //~ // SMFL doesn't handle batching for us, so we'll just force a single texture per skeleton.
+                //~ states.texture = texture;
+                //~ debug(spine_dsfml) writeln("Used texture at ", &texture);
+            //~ }
         }
 
-        debug(spine_dsfml) writeln("call SFML draw");
+        debug(spine_dsfml)
+        {
+            writeln("vertexArray:");
+
+            foreach(j; 0 .. vertexArray.getVertexCount)
+            {
+                writeln(vertexArray[j]);
+            }
+
+            writeln("call SFML draw");
+        }
+
         target.draw(vertexArray, states);
     }
 
@@ -191,9 +213,8 @@ class SkeletonInstanceDrawable : Drawable
 SkeletonInstanceDrawable createDrawableInstance(SkeletonData sd) @property
 {
     auto stateData = new AnimationStateData(sd);
-	auto stateInst = new AnimationStateInstance(stateData);
 
-    return new SkeletonInstanceDrawable(sd.createInstance, stateInst);
+    return new SkeletonInstanceDrawable(sd, stateData);
 }
 
 unittest
@@ -203,7 +224,7 @@ unittest
 
     auto a = new Atlas("resources/textures/GAME.atlas");
     auto sd = new SkeletonData("resources/animations/actor_pretty.json", a, 1);
-    auto si1 = sd.createInstance;
+    auto si1 = new SkeletonInstance(sd);
     auto si2 = sd.createDrawableInstance;
 
     //~ destroy(si2);
@@ -228,7 +249,7 @@ Color colorize(in spSkeleton* skeleton,  in spSlot* slot)
         a = (skeleton.a * slot.a * 255.0f).to!ubyte;
     }
 
-    return ret;
+    return ret = Color.Yellow;
 }
 
 extern(C):

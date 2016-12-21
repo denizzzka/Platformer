@@ -17,15 +17,11 @@ class AnimationStateData
     {
         spAnimationStateData_dispose(stateData);
     }
-
-    AnimationStateInstance createInstance()
-    {
-        return new AnimationStateInstance(this);
-    }
 }
 
 class AnimationStateInstance
 {
+    private AnimationStateData stateData;
     package spAnimationState* state;
     alias state this;
 
@@ -33,7 +29,8 @@ class AnimationStateInstance
 
     package this(AnimationStateData asd)
     {
-        state = spAnimationState_create(asd);
+        stateData = asd;
+        state = spAnimationState_create(stateData);
     }
 
     ~this()

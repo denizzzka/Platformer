@@ -20,11 +20,6 @@ class SkeletonData
     {
         spSkeletonData_dispose(skeletonData);
     }
-
-    SkeletonInstance createInstance() //FIXME: remove it
-    {
-        return new SkeletonInstance(this);
-    }
 }
 
 class SkeletonInstance
