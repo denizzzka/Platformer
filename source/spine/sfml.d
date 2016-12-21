@@ -5,6 +5,7 @@ import spine.skeleton;
 import spine.animation;
 import dsfml.graphics;
 import dsfml.graphics.drawable;
+debug(dsfml) import std.stdio;
 
 enum SPINE_MESH_VERTEX_COUNT_MAX = 1000;
 
@@ -26,6 +27,7 @@ class SkeletonInstanceDrawable : Drawable
 
     void draw(RenderTarget target, RenderStates states = RenderStates())
     {
+        debug(dsfml) writeln("spine.dsfml.SkeletonInstanceDrawable.draw()");
         vertexArray.clear();
 
         Vertex[4] vertices;
@@ -33,6 +35,8 @@ class SkeletonInstanceDrawable : Drawable
 
         foreach(i; 0 .. skeleton.skeleton.slotsCount)
         {
+            debug(dsfml) writeln("slot num=", i);
+
             spSlot* slot = skeleton.skeleton.drawOrder[i];
             const spAttachment* attachment = slot.attachment;
 
@@ -66,6 +70,8 @@ class SkeletonInstanceDrawable : Drawable
 
             if(attachment.type == spAttachmentType.REGION)
             {
+                debug(dsfml) writeln("draw region");
+
                 spRegionAttachment* regionAttachment = cast(spRegionAttachment*) attachment;
                 texture = cast(Texture)(cast(spAtlasRegion*)regionAttachment.rendererObject).page.rendererObject;
                 spRegionAttachment_computeWorldVertices(regionAttachment, slot.bone, worldVertices.ptr);
@@ -123,6 +129,8 @@ class SkeletonInstanceDrawable : Drawable
             }
             else if(attachment.type == spAttachmentType.MESH)
             {
+                debug(dsfml) writeln("draw mesh");
+
                 spMeshAttachment* mesh = cast(spMeshAttachment*) attachment;
 
                 if (mesh._super.worldVerticesLength > SPINE_MESH_VERTEX_COUNT_MAX) continue;
@@ -150,6 +158,7 @@ class SkeletonInstanceDrawable : Drawable
             }
         }
 
+        debug(dsfml) writeln("call SFML draw");
         target.draw(vertexArray, states);
     }
 }
