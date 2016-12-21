@@ -21,7 +21,7 @@ class SkeletonData
         spSkeletonData_dispose(skeletonData);
     }
 
-    SkeletonInstance createInstance()
+    SkeletonInstance createInstance() //FIXME: remove it
     {
         return new SkeletonInstance(this);
     }
@@ -32,7 +32,7 @@ class SkeletonInstance
     spSkeleton* skeleton;
     alias skeleton this;
 
-    private this(SkeletonData sd)
+    package this(SkeletonData sd)
     {
         skeleton = spSkeleton_create(sd.skeletonData);
     }
