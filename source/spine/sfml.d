@@ -71,65 +71,64 @@ class SkeletonInstanceDrawable : Drawable
                 texture = cast(Texture)(cast(spAtlasRegion*)regionAttachment.rendererObject).page.rendererObject;
                 spRegionAttachment_computeWorldVertices(regionAttachment, slot.bone, worldVertices.ptr);
 
-                ubyte r = (skeleton.r * slot.r * 255.0f).to!ubyte;
-                ubyte g = (skeleton.g * slot.g * 255.0f).to!ubyte;
-                ubyte b = (skeleton.b * slot.b * 255.0f).to!ubyte;
-                ubyte a = (skeleton.a * slot.a * 255.0f).to!ubyte;
+                Color _c;
+                with(_c)
+                {
+                    r = (skeleton.r * slot.r * 255.0f).to!ubyte;
+                    g = (skeleton.g * slot.g * 255.0f).to!ubyte;
+                    b = (skeleton.b * slot.b * 255.0f).to!ubyte;
+                    a = (skeleton.a * slot.a * 255.0f).to!ubyte;
+                }
 
                 Vector2u size = texture.getSize();
 
                 with(spVertexIndex)
-                with(vertices[0])
                 {
-                    color.r = r;
-                    color.g = g;
-                    color.b = b;
-                    color.a = a;
-                    position.x = worldVertices[SP_VERTEX_X1];
-                    position.y = worldVertices[SP_VERTEX_Y1];
-                    texCoords.x = regionAttachment.uvs[SP_VERTEX_X1] * size.x;
-                    texCoords.y = regionAttachment.uvs[SP_VERTEX_Y1] * size.y;
+                    with(vertices[0])
+                    {
+                        color = _c;
+                        position.x = worldVertices[X1];
+                        position.y = worldVertices[Y1];
+                        texCoords.x = regionAttachment.uvs[X1] * size.x;
+                        texCoords.y = regionAttachment.uvs[Y1] * size.y;
+                    }
+
+                    with(vertices[1])
+                    {
+                        color = _c;
+                        position.x = worldVertices[X2];
+                        position.y = worldVertices[Y2];
+                        texCoords.x = regionAttachment.uvs[X2] * size.x;
+                        texCoords.y = regionAttachment.uvs[Y2] * size.y;
+                    }
+
+                    with(vertices[2])
+                    {
+                        color = _c;
+                        position.x = worldVertices[X3];
+                        position.y = worldVertices[Y3];
+                        texCoords.x = regionAttachment.uvs[X3] * size.x;
+                        texCoords.y = regionAttachment.uvs[Y3] * size.y;
+                    }
+
+                    with(vertices[3]) {
+                        color = _c;
+                        position.x = worldVertices[X4];
+                        position.y = worldVertices[Y4];
+                        texCoords.x = regionAttachment.uvs[X4] * size.x;
+                        texCoords.y = regionAttachment.uvs[Y4] * size.y;
+                    }
                 }
 
-                //~ with(vertices[1]) {
-                    //~ color.r = r;
-                    //~ color.g = g;
-                    //~ color.b = b;
-                    //~ color.a = a;
-                    //~ position.x = worldVertices[X2];
-                    //~ position.y = worldVertices[Y2];
-                    //~ texCoords.x = regionAttachment.uvs[X2] * size.x;
-                    //~ texCoords.y = regionAttachment.uvs[Y2] * size.y;
-                //~ }
-                //~ with(vertices[2]){
-                    //~ color.r = r;
-                    //~ color.g = g;
-                    //~ color.b = b;
-                    //~ color.a = a;
-                    //~ position.x = worldVertices[X3];
-                    //~ position.y = worldVertices[Y3];
-                    //~ texCoords.x = regionAttachment.uvs[X3] * size.x;
-                    //~ texCoords.y = regionAttachment.uvs[Y3] * size.y;
-                //~ }
-                //~ with(vertices[3]) {
-                    //~ color.r = r;
-                    //~ color.g = g;
-                    //~ color.b = b;
-                    //~ color.a = a;
-                    //~ position.x = worldVertices[X4];
-                    //~ position.y = worldVertices[Y4];
-                    //~ texCoords.x = regionAttachment.uvs[X4] * size.x;
-                    //~ texCoords.y = regionAttachment.uvs[Y4] * size.y;
-                //~ }
-
-                //~ with(vertexArray) {
-                    //~ append(vertices[0]);
-                    //~ append(vertices[1]);
-                    //~ append(vertices[2]);
-                    //~ append(vertices[0]);
-                    //~ append(vertices[2]);
-                    //~ append(vertices[3]);
-                //~ }
+                with(vertexArray)
+                {
+                    append(vertices[0]);
+                    append(vertices[1]);
+                    append(vertices[2]);
+                    append(vertices[0]);
+                    append(vertices[2]);
+                    append(vertices[3]);
+                }
             }
                 //~ else if(cast(MeshAttachment)attachment){
                 //~ MeshAttachment mesh = cast(MeshAttachment)attachment;

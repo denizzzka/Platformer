@@ -109,14 +109,14 @@ struct spRegionAttachment
 
 enum spVertexIndex
 {
-	SP_VERTEX_X1 = 0,
-    SP_VERTEX_Y1,
-    SP_VERTEX_X2,
-    SP_VERTEX_Y2,
-    SP_VERTEX_X3,
-    SP_VERTEX_Y3,
-    SP_VERTEX_X4,
-    SP_VERTEX_Y4
+	X1 = 0,
+    Y1,
+    X2,
+    Y2,
+    X3,
+    Y3,
+    X4,
+    Y4
 }
 
 private:
