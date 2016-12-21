@@ -5,6 +5,7 @@ import spine.skeleton;
 import spine.animation;
 import dsfml.graphics;
 import dsfml.graphics.drawable;
+debug import std.math: isNaN;
 debug(spine_dsfml) import std.stdio;
 
 static this()
@@ -47,6 +48,12 @@ class SkeletonInstanceDrawable : Drawable
             const spSlot* slot = skeleton.skeleton.drawOrder[i];
             debug(spine_dsfml) writeln("slot=", *slot);
             debug(spine_dsfml) writeln("slot.bone=", *slot.bone);
+            assert(!slot.bone.a.isNaN);
+            assert(!slot.bone.b.isNaN);
+            assert(!slot.bone.c.isNaN);
+            assert(!slot.bone.d.isNaN);
+            assert(!slot.bone.worldX.isNaN);
+            assert(!slot.bone.worldY.isNaN);
 
             const spAttachment* attachment = slot.attachment;
 
@@ -107,8 +114,9 @@ class SkeletonInstanceDrawable : Drawable
                     {
                         color = _c;
                         position.x = worldVertices[X1];
-                        debug(spine_dsfml) writeln("worldVertices[X1]=", worldVertices[X1]);
                         position.y = worldVertices[Y1];
+                        debug(spine_dsfml) writeln("worldVertices[X1]=", worldVertices[X1]);
+                        assert(!worldVertices[X1].isNaN);
                         texCoords.x = regionAttachment.uvs[X1] * size.x;
                         texCoords.y = regionAttachment.uvs[Y1] * size.y;
                         assert(worldVertices[X1] != float.nan);
@@ -193,6 +201,8 @@ class SkeletonInstanceDrawable : Drawable
             foreach(j; 0 .. vertexArray.getVertexCount)
             {
                 writeln(vertexArray[j]);
+                assert(!vertexArray[j].position.x.isNaN);
+                assert(!vertexArray[j].position.y.isNaN);
             }
 
             writeln("call SFML draw");
