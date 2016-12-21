@@ -6,14 +6,16 @@ import spine.animation;
 import dsfml.graphics;
 import dsfml.graphics.drawable;
 
+enum SPINE_MESH_VERTEX_COUNT_MAX = 1000;
+
 class SkeletonInstanceDrawable : Drawable
 {
     SkeletonInstance skeleton;
     alias skeleton this;
 
     AnimationStateInstance animation;
-
     VertexArray vertexArray;
+    float[SPINE_MESH_VERTEX_COUNT_MAX] worldVertices;
 
     this(SkeletonInstance si, AnimationStateInstance asi)
     {
@@ -66,7 +68,7 @@ class SkeletonInstanceDrawable : Drawable
             {
                 spRegionAttachment* regionAttachment = cast(spRegionAttachment*) attachment;
                 texture = cast(Texture)(cast(spAtlasRegion*)regionAttachment.rendererObject).page.rendererObject;
-                //~ regionAttachment.computeWorldVertices(slot.bone, worldVertices);
+                spRegionAttachment_computeWorldVertices(regionAttachment, slot.bone, worldVertices.ptr);
 
                 //~ auto r = to!ubyte(skeleton.r * slot.r * 255f);
                 //~ auto g = to!ubyte(skeleton.g * slot.g * 255f);
@@ -218,3 +220,5 @@ void _spAtlasPage_disposeTexture(spAtlasPage* self)
     Texture t = cast(Texture) self.rendererObject;
     destroy(t);
 }
+
+void spRegionAttachment_computeWorldVertices (spRegionAttachment* self, const(spBone)* bone, float* vertices);
