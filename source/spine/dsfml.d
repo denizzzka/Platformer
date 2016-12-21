@@ -5,7 +5,7 @@ import spine.skeleton;
 import spine.animation;
 import dsfml.graphics;
 import dsfml.graphics.drawable;
-debug(dsfml) import std.stdio;
+debug(spine_dsfml) import std.stdio;
 
 static this()
 {
@@ -34,7 +34,7 @@ class SkeletonInstanceDrawable : Drawable
 
     void draw(RenderTarget target, RenderStates states = RenderStates())
     {
-        debug(dsfml) writeln("spine.dsfml.SkeletonInstanceDrawable.draw()");
+        debug(spine_dsfml) writeln("spine.dsfml.SkeletonInstanceDrawable.draw()");
         vertexArray.clear();
 
         Vertex[4] vertices;
@@ -42,7 +42,7 @@ class SkeletonInstanceDrawable : Drawable
 
         foreach(i; 0 .. skeleton.skeleton.slotsCount)
         {
-            debug(dsfml) writeln("slot num=", i);
+            debug(spine_dsfml) writeln("slot num=", i);
 
             const spSlot* slot = skeleton.skeleton.drawOrder[i];
             const spAttachment* attachment = slot.attachment;
@@ -77,23 +77,23 @@ class SkeletonInstanceDrawable : Drawable
 
             if(attachment.type == spAttachmentType.REGION)
             {
-                debug(dsfml) writeln("draw region");
+                debug(spine_dsfml) writeln("draw region");
 
                 spRegionAttachment* regionAttachment = cast(spRegionAttachment*) attachment;
                 texture = cast(Texture)(cast(spAtlasRegion*)regionAttachment.rendererObject).page.rendererObject;
                 assert(texture);
 
-                debug(dsfml) writeln("call computeWorldVertices");
+                debug(spine_dsfml) writeln("call computeWorldVertices");
                 spRegionAttachment_computeWorldVertices(regionAttachment, slot.bone, worldVertices.ptr);
 
-                debug(dsfml) writeln("call colorize");
+                debug(spine_dsfml) writeln("call colorize");
                 Color _c = colorize(skeleton, slot);
 
-                debug(dsfml) writeln("call texture.getSize()");
+                debug(spine_dsfml) writeln("call texture.getSize()");
                 Vector2u size = texture.getSize();
-                debug(dsfml) writeln("size=", size);
+                debug(spine_dsfml) writeln("size=", size);
 
-                debug(dsfml) writeln("fill vertices");
+                debug(spine_dsfml) writeln("fill vertices");
 
                 with(spVertexIndex)
                 {
@@ -145,7 +145,7 @@ class SkeletonInstanceDrawable : Drawable
             }
             else if(attachment.type == spAttachmentType.MESH)
             {
-                debug(dsfml) writeln("draw mesh");
+                debug(spine_dsfml) writeln("draw mesh");
 
                 spMeshAttachment* mesh = cast(spMeshAttachment*) attachment;
 
@@ -171,11 +171,11 @@ class SkeletonInstanceDrawable : Drawable
             {
                 // SMFL doesn't handle batching for us, so we'll just force a single texture per skeleton.
                 states.texture = texture;
-                debug(dsfml) writeln("Used texture at ", &texture);
+                debug(spine_dsfml) writeln("Used texture at ", &texture);
             }
         }
 
-        debug(dsfml) writeln("call SFML draw");
+        debug(spine_dsfml) writeln("call SFML draw");
         target.draw(vertexArray, states);
     }
 
@@ -240,20 +240,20 @@ void _spAtlasPage_createTexture(spAtlasPage* self, const(char)* path)
     import std.conv: to;
 
     Texture t = loadTexture(path.fromStringz.to!string);
-    debug(dsfml) writeln("Texture t =", cast(void*) t);
+    debug(spine_dsfml) writeln("Texture t =", cast(void*) t);
 
 	self.width = t.getSize.x;
 	self.height = t.getSize.y;
 	self.rendererObject = cast(void*) t;
 
-    debug(dsfml) writeln("Texture loaded at ", self.rendererObject);
+    debug(spine_dsfml) writeln("Texture loaded at ", self.rendererObject);
 }
 
 void _spAtlasPage_disposeTexture(spAtlasPage* self)
 {
     Texture t = cast(Texture) self.rendererObject;
 
-    debug(dsfml) writeln("Texture will be destroyed at ", t);
+    debug(spine_dsfml) writeln("Texture will be destroyed at ", t);
 
     destroy(t);
 }
