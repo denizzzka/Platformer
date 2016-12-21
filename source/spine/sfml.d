@@ -74,10 +74,17 @@ class SkeletonInstanceDrawable : Drawable
 
                 spRegionAttachment* regionAttachment = cast(spRegionAttachment*) attachment;
                 texture = cast(Texture)(cast(spAtlasRegion*)regionAttachment.rendererObject).page.rendererObject;
+
+                debug(dsfml) writeln("call computeWorldVertices");
                 spRegionAttachment_computeWorldVertices(regionAttachment, slot.bone, worldVertices.ptr);
 
+                debug(dsfml) writeln("call colorize");
                 Color _c = colorize(skeleton, slot);
+
+                debug(dsfml) writeln("call texture.getSize()");
                 Vector2u size = texture.getSize();
+
+                debug(dsfml) writeln("fill vertices");
 
                 with(spVertexIndex)
                 {
