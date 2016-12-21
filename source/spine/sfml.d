@@ -15,7 +15,7 @@ class SkeletonInstanceDrawable : Drawable
     this(SkeletonInstance si)
     {
         skeleton = si;
-        vertexArray = new VertexArray(PrimitiveType.Triangles, skeleton.skeleton.data.bonesCount * 4);
+        vertexArray = new VertexArray(PrimitiveType.Triangles, skeleton.skeleton.bonesCount * 4);
     }
 
     void draw(RenderTarget target, RenderStates states = RenderStates())
