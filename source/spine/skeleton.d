@@ -160,7 +160,7 @@ struct spSlotData
 	const(spBoneData*) boneData;
 	const(char*) attachmentName;
 	float r=0, g=0, b=0, a=0;
-	spBlendMode blendMode;
+	spBlendMode blendMode = spBlendMode.NORMAL;
 }
 
 struct spSlot
