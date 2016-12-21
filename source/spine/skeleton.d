@@ -74,7 +74,23 @@ struct spBoneData
 	spTransformMode transformMode;
 }
 
-struct spBone;
+struct spBone
+{
+	const(spBoneData)* data;
+	const(spSkeleton)* skeleton;
+	const(spBone)* parent;
+	int childrenCount;
+	const(spBone)** children;
+	float x, y, rotation, scaleX, scaleY, shearX, shearY;
+	float ax, ay, arotation, ascaleX, ascaleY, ashearX, ashearY;
+	int /*bool*/ appliedValid;
+
+	const float a, b, worldX;
+	const float c, d, worldY;
+
+	int/*bool*/ sorted;
+}
+
 struct spSkin;
 struct spEventData;
 struct spAnimation;
