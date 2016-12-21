@@ -21,14 +21,14 @@ class SkeletonInstanceDrawable : Drawable
     SkeletonInstance skeleton;
     alias skeleton this;
 
-    AnimationStateInstance animation;
+    AnimationStateInstance state;
     VertexArray vertexArray;
     float[SPINE_MESH_VERTEX_COUNT_MAX] worldVertices;
 
     this(SkeletonInstance si, AnimationStateInstance asi)
     {
         skeleton = si;
-        animation = asi;
+        state = asi;
         vertexArray = new VertexArray(PrimitiveType.Triangles, skeleton.skeleton.bonesCount * 4);
     }
 
@@ -177,6 +177,14 @@ class SkeletonInstanceDrawable : Drawable
 
         debug(dsfml) writeln("call SFML draw");
         target.draw(vertexArray, states);
+    }
+
+    void update (float deltaTime)
+    {
+        spSkeleton_update(skeleton, deltaTime);
+        state.update(deltaTime);
+        state.apply(skeleton);
+        spSkeleton_updateWorldTransform(skeleton);
     }
 }
 

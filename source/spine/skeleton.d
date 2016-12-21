@@ -179,6 +179,10 @@ struct spSkeleton
     float x, y;
 }
 
+void spSkeleton_update (spSkeleton* self, float deltaTime);
+
+void spSkeleton_updateWorldTransform (const(spSkeleton)* self);
+
 private:
 
 struct spSkeletonJson;

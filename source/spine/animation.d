@@ -28,6 +28,8 @@ class AnimationStateInstance
     package spAnimationState* state;
     alias state this;
 
+    float timeScale;
+
     package this(AnimationStateData asd)
     {
         state = spAnimationState_create(asd);
@@ -36,6 +38,16 @@ class AnimationStateInstance
     ~this()
     {
         spAnimationState_dispose(state);
+    }
+
+    void update(float deltaTime)
+    {
+        spAnimationState_update(state, deltaTime * timeScale);
+    }
+
+    void apply(SkeletonInstance skeleton)
+    {
+        spAnimationState_apply(state, skeleton);
     }
 }
 
@@ -56,3 +68,7 @@ struct spTrackEntry;
 
 /** Set the current animation. Any queued animations are cleared. */
 spTrackEntry* spAnimationState_setAnimationByName (spAnimationState* self, int trackIndex, const char* animationName, int/*bool*/loop);
+
+void spAnimationState_update (spAnimationState* self, float delta);
+
+void spAnimationState_apply (spAnimationState* self, spSkeleton* skeleton);
