@@ -58,8 +58,8 @@ package:
 
 struct spAtlasPage
 {
-	const spAtlas* atlas;
-	const char* name;
+	const(spAtlas)* atlas;
+	const(char)* name;
 	spAtlasFormat format;
 	spAtlasFilter minFilter, magFilter;
 	spAtlasWrap uWrap, vWrap;

@@ -57,11 +57,11 @@ package extern(C):
 
 enum spTransformMode
 {
-	SP_TRANSFORMMODE_NORMAL,
-	SP_TRANSFORMMODE_ONLYTRANSLATION,
-	SP_TRANSFORMMODE_NOROTATIONORREFLECTION,
-	SP_TRANSFORMMODE_NOSCALE,
-	SP_TRANSFORMMODE_NOSCALEORREFLECTION
+	NORMAL,
+	ONLYTRANSLATION,
+	NOROTATIONORREFLECTION,
+	NOSCALE,
+	NOSCALEORREFLECTION
 };
 
 struct spBoneData
@@ -69,9 +69,9 @@ struct spBoneData
 	const int index;
 	const (char*) name;
 	const (spBoneData*) parent;
-	float length;
-	float x, y, rotation, scaleX, scaleY, shearX, shearY;
-	spTransformMode transformMode;
+	float length=0;
+	float x=0, y=0, rotation=0, scaleX=0, scaleY=0, shearX=0, shearY=0;
+	spTransformMode transformMode = spTransformMode.NORMAL;
 }
 
 struct spBone
@@ -81,12 +81,12 @@ struct spBone
 	const(spBone)* parent;
 	int childrenCount;
 	const(spBone)** children;
-	float x, y, rotation, scaleX, scaleY, shearX, shearY;
-	float ax, ay, arotation, ascaleX, ascaleY, ashearX, ashearY;
+	float x=0, y=0, rotation=0, scaleX=0, scaleY=0, shearX=0, shearY=0;
+	float ax=0, ay=0, arotation=0, ascaleX=0, ascaleY=0, ashearX=0, ashearY=0;
 	int /*bool*/ appliedValid;
 
-	const float a, b, worldX;
-	const float c, d, worldY;
+	float a=0, b=0, worldX=0;
+	float c=0, d=0, worldY=0;
 
 	int/*bool*/ sorted;
 }
