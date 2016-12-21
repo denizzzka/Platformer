@@ -150,7 +150,7 @@ class SkeletonInstanceDrawable : Drawable
             }
         }
 
-        //target.draw(vertexArray, states);
+        target.draw(vertexArray, states);
     }
 }
 
