@@ -4,13 +4,6 @@ import std.string: toStringz;
 import std.exception;
 import spine.skeleton: spAttachment;
 
-static this()
-{
-    import core.memory;
-
-    GC.disable(); //FIXME: because Texture is garbage collected object
-}
-
 class Atlas
 {
     package spAtlas* atlas;

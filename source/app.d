@@ -4,7 +4,7 @@ import myui;
 import map;
 import spine.atlas;
 import spine.skeleton;
-import spine.sfml;
+import spine.dsfml;
 
 void main(string[] args)
 {

@@ -1,4 +1,4 @@
-module spine.sfml;
+module spine.dsfml;
 
 import spine.atlas;
 import spine.skeleton;
@@ -6,6 +6,13 @@ import spine.animation;
 import dsfml.graphics;
 import dsfml.graphics.drawable;
 debug(dsfml) import std.stdio;
+
+static this()
+{
+    import core.memory;
+
+    GC.disable(); //FIXME: because Texture is garbage collected object
+}
 
 enum SPINE_MESH_VERTEX_COUNT_MAX = 1000;
 
@@ -84,6 +91,7 @@ class SkeletonInstanceDrawable : Drawable
 
                 debug(dsfml) writeln("call texture.getSize()");
                 Vector2u size = texture.getSize();
+                debug(dsfml) writeln("size=", size);
 
                 debug(dsfml) writeln("fill vertices");
 
@@ -163,6 +171,7 @@ class SkeletonInstanceDrawable : Drawable
             {
                 // SMFL doesn't handle batching for us, so we'll just force a single texture per skeleton.
                 states.texture = texture;
+                debug(dsfml) writeln("Used texture at ", &texture);
             }
         }
 
@@ -189,10 +198,10 @@ unittest
     auto si1 = sd.createInstance;
     auto si2 = sd.createDrawableInstance;
 
-    destroy(a);
+    //~ destroy(si2);
+    //~ destroy(si1);
     destroy(sd);
-    destroy(si1);
-    destroy(si2);
+    destroy(a);
 }
 
 Color colorize(in spSkeleton* skeleton,  in spSlot* slot)
@@ -221,15 +230,21 @@ void _spAtlasPage_createTexture(spAtlasPage* self, const(char)* path)
     import std.conv: to;
 
     Texture t = loadTexture(path.fromStringz.to!string);
+    debug(dsfml) writeln("Texture t =", cast(void*) t);
 
 	self.width = t.getSize.x;
 	self.height = t.getSize.y;
 	self.rendererObject = cast(void*) t;
+
+    debug(dsfml) writeln("Texture loaded at ", self.rendererObject);
 }
 
 void _spAtlasPage_disposeTexture(spAtlasPage* self)
 {
     Texture t = cast(Texture) self.rendererObject;
+
+    debug(dsfml) writeln("Texture will be destroyed at ", t);
+
     destroy(t);
 }
 

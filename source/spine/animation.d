@@ -9,7 +9,7 @@ class AnimationStateData
 
     package this(SkeletonData sd)
     {
-        stateData = spAnimationStateData_create(sd);
+        stateData = spAnimationStateData_create(sd.skeletonData);
     }
 
     ~this()
