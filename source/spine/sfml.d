@@ -5,6 +5,7 @@ import spine.skeleton;
 import spine.animation;
 import dsfml.graphics;
 import dsfml.graphics.drawable;
+import std.conv: to;
 
 enum SPINE_MESH_VERTEX_COUNT_MAX = 1000;
 
@@ -70,22 +71,26 @@ class SkeletonInstanceDrawable : Drawable
                 texture = cast(Texture)(cast(spAtlasRegion*)regionAttachment.rendererObject).page.rendererObject;
                 spRegionAttachment_computeWorldVertices(regionAttachment, slot.bone, worldVertices.ptr);
 
-                //~ auto r = to!ubyte(skeleton.r * slot.r * 255f);
-                //~ auto g = to!ubyte(skeleton.g * slot.g * 255f);
-                //~ auto b = to!ubyte(skeleton.b * slot.b * 255f);
-                //~ auto a = to!ubyte(skeleton.a * slot.a * 255f);
+                ubyte r = (skeleton.r * slot.r * 255.0f).to!ubyte;
+                ubyte g = (skeleton.g * slot.g * 255.0f).to!ubyte;
+                ubyte b = (skeleton.b * slot.b * 255.0f).to!ubyte;
+                ubyte a = (skeleton.a * slot.a * 255.0f).to!ubyte;
 
-                //~ Vector2u size = texture.getSize();
-                //~ with(vertices[0]){
-                    //~ color.r = r;
-                    //~ color.g = g;
-                    //~ color.b = b;
-                    //~ color.a = a;
-                    //~ position.x = worldVertices[X1];
-                    //~ position.y = worldVertices[Y1];
-                    //~ texCoords.x = regionAttachment.uvs[X1] * size.x;
-                    //~ texCoords.y = regionAttachment.uvs[Y1] * size.y;
-                //~ }
+                Vector2u size = texture.getSize();
+
+                with(spVertexIndex)
+                with(vertices[0])
+                {
+                    color.r = r;
+                    color.g = g;
+                    color.b = b;
+                    color.a = a;
+                    position.x = worldVertices[SP_VERTEX_X1];
+                    position.y = worldVertices[SP_VERTEX_Y1];
+                    texCoords.x = regionAttachment.uvs[SP_VERTEX_X1] * size.x;
+                    texCoords.y = regionAttachment.uvs[SP_VERTEX_Y1] * size.y;
+                }
+
                 //~ with(vertices[1]) {
                     //~ color.r = r;
                     //~ color.g = g;

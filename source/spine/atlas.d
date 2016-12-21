@@ -107,6 +107,18 @@ struct spRegionAttachment
 	float[8] uvs;
 };
 
+enum spVertexIndex
+{
+	SP_VERTEX_X1 = 0,
+    SP_VERTEX_Y1,
+    SP_VERTEX_X2,
+    SP_VERTEX_Y2,
+    SP_VERTEX_X3,
+    SP_VERTEX_Y3,
+    SP_VERTEX_X4,
+    SP_VERTEX_Y4
+}
+
 private:
 
 spAtlas* spAtlas_createFromFile (const(char)* path, void* rendererObject);
