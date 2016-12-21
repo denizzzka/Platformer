@@ -1,6 +1,7 @@
 module spine.animation;
 
 import spine.skeleton;
+import std.string: toStringz;
 
 class AnimationStateData
 {
@@ -49,6 +50,11 @@ class AnimationStateInstance
     {
         spAnimationState_apply(state, skeleton);
     }
+
+    void setAnimationByName(int trackIndex, string animationName, int loop)
+    {
+        spAnimationState_setAnimationByName(state, trackIndex, animationName.toStringz, loop);
+    }
 }
 
 private extern(C):
@@ -67,7 +73,7 @@ void spAnimationStateData_dispose (spAnimationStateData* self);
 struct spTrackEntry;
 
 /** Set the current animation. Any queued animations are cleared. */
-spTrackEntry* spAnimationState_setAnimationByName (spAnimationState* self, int trackIndex, const char* animationName, int/*bool*/loop);
+spTrackEntry* spAnimationState_setAnimationByName (spAnimationState* self, int trackIndex, const(char)* animationName, int/*bool*/loop);
 
 void spAnimationState_update (spAnimationState* self, float delta);
 
