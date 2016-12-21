@@ -34,10 +34,10 @@ class SkeletonInstanceDrawable : Drawable
             spSlot* slot = skeleton.skeleton.drawOrder[i];
             const spAttachment* attachment = slot.attachment;
 
-            if(attachment is null)
-                continue;
+            if(attachment is null) continue;
 
             BlendMode blend;
+
             switch(slot.data.blendMode)
             {
                 case spBlendMode.SP_BLEND_MODE_ADDITIVE:
@@ -48,7 +48,7 @@ class SkeletonInstanceDrawable : Drawable
                     blend = BlendMode.Multiply;
                     break;
 
-                case spBlendMode.SP_BLEND_MODE_SCREEN:
+                case spBlendMode.SP_BLEND_MODE_SCREEN: // Unsupported, fall through.
                 default:
                     blend = BlendMode.Alpha;
             }
