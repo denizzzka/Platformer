@@ -19,7 +19,7 @@ class AnimationStateData
 
     AnimationStateInstance createInstance()
     {
-        return new AnimationStateInstance(stateData);
+        return new AnimationStateInstance(this);
     }
 }
 
@@ -28,9 +28,9 @@ class AnimationStateInstance
     package spAnimationState* state;
     alias state this;
 
-    package this(spAnimationStateData* stateData)
+    package this(AnimationStateData asd)
     {
-        state = spAnimationState_create(stateData);
+        state = spAnimationState_create(asd);
     }
 
     ~this()

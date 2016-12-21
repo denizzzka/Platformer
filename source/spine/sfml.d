@@ -176,7 +176,7 @@ class SkeletonInstanceDrawable : Drawable
 SkeletonInstanceDrawable createDrawableInstance(SkeletonData sd) @property
 {
     auto stateData = new AnimationStateData(sd.skeletonData);
-	auto stateInst = new AnimationStateInstance(stateData.stateData);
+	auto stateInst = new AnimationStateInstance(stateData);
 
     return new SkeletonInstanceDrawable(sd.createInstance, stateInst);
 }
