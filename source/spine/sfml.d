@@ -132,25 +132,31 @@ class SkeletonInstanceDrawable : Drawable
             }
             else if(attachment.type == spAttachmentType.MESH)
             {
-                spRegionAttachment* regionAttachment = cast(spRegionAttachment*) attachment;
                 spMeshAttachment* mesh = cast(spMeshAttachment*) attachment;
-                //~ texture = cast(Texture)(cast(AtlasRegion)mesh.rendererObject).page.rendererObject;
-                //~ mesh.computeWorldVertices(slot, worldVertices);
 
-                //~ vertex.color.r = to!ubyte(skeleton.r * slot.r * 255f);
-                //~ vertex.color.g = to!ubyte(skeleton.g * slot.g * 255f);
-                //~ vertex.color.b = to!ubyte(skeleton.b * slot.b * 255f);
-                //~ vertex.color.a = to!ubyte(skeleton.a * slot.a * 255f);
+                if (mesh._super.worldVerticesLength > SPINE_MESH_VERTEX_COUNT_MAX) continue;
+                texture = cast(Texture)(cast(spAtlasRegion*)mesh.rendererObject).page.rendererObject;
+                spMeshAttachment_computeWorldVertices(mesh, slot, worldVertices.ptr);
 
-                //~ Vector2u size = texture.getSize();
-                //~ for(int j = 0; j < mesh.triangles.length; j++) {
-                    //~ int index = mesh.triangles[j] << 1;
-                    //~ vertex.position.x = worldVertices[index];
-                    //~ vertex.position.y = worldVertices[index + 1];
-                    //~ vertex.texCoords.x = mesh.uvs[index] * size.x;
-                    //~ vertex.texCoords.y = mesh.uvs[index + 1] * size.y;
-                    //~ vertexArray.append(vertex);
-                //~ }
+                with(vertex.color)
+                {
+                    r = (skeleton.r * slot.r * 255.0f).to!ubyte;
+                    g = (skeleton.g * slot.g * 255.0f).to!ubyte;
+                    b = (skeleton.b * slot.b * 255.0f).to!ubyte;
+                    a = (skeleton.a * slot.a * 255.0f).to!ubyte;
+                }
+
+                Vector2u size = texture.getSize();
+
+                foreach(_i; 0 .. mesh.trianglesCount)
+                {
+                    int index = mesh.triangles[_i] << 1;
+                    vertex.position.x = worldVertices[index];
+                    vertex.position.y = worldVertices[index + 1];
+                    vertex.texCoords.x = mesh.uvs[index] * size.x;
+                    vertex.texCoords.y = mesh.uvs[index + 1] * size.y;
+                    vertexArray.append(vertex);
+                }
             }
                 //~ else if(cast(SkinnedMeshAttachment)attachment) {
                 //~ SkinnedMeshAttachment mesh = cast(SkinnedMeshAttachment)attachment;
@@ -228,3 +234,5 @@ void _spAtlasPage_disposeTexture(spAtlasPage* self)
 }
 
 void spRegionAttachment_computeWorldVertices (spRegionAttachment* self, const(spBone)* bone, float* vertices);
+
+void spMeshAttachment_computeWorldVertices (spMeshAttachment* self, spSlot* slot, float* worldVertices);
