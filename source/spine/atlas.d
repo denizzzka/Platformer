@@ -2,6 +2,7 @@ module spine.atlas;
 
 import std.string: toStringz;
 import std.exception;
+import spine.skeleton: spAttachment;
 
 class Atlas
 {
@@ -91,8 +92,6 @@ struct spAtlasRegion
 
 struct spRegionAttachment
 {
-    import spine.skeleton: spAttachment;
-
 	spAttachment _super;
 	const char* path;
 	float x, y, scaleX, scaleY, rotation, width, height;
@@ -117,6 +116,51 @@ enum spVertexIndex
     Y3,
     X4,
     Y4
+}
+
+struct spVertexAttachment
+{
+	spAttachment _super;
+
+	int bonesCount;
+	int* bones;
+
+	int verticesCount;
+	float* vertices;
+
+	int worldVerticesLength;
+};
+
+struct spMeshAttachment
+{
+	spVertexAttachment _super;
+
+	void* rendererObject;
+	int regionOffsetX, regionOffsetY; /* Pixels stripped from the bottom left, unrotated. */
+	int regionWidth, regionHeight; /* Unrotated, stripped pixel size. */
+	int regionOriginalWidth, regionOriginalHeight; /* Unrotated, unstripped pixel size. */
+	float regionU, regionV, regionU2, regionV2;
+	int/*bool*/regionRotate;
+
+	const(char)* path;
+
+	float* regionUVs;
+	float* uvs;
+
+	int trianglesCount;
+	ushort* triangles;
+
+	float r, g, b, a;
+
+	int hullLength;
+
+	const(spMeshAttachment)* parentMesh;
+	int/*bool*/inheritDeform;
+
+	/* Nonessential. */
+	int edgesCount;
+	int* edges;
+	float width, height;
 }
 
 private:
