@@ -7,6 +7,7 @@ import dsfml.graphics;
 import dsfml.graphics.drawable;
 debug import std.math: isNaN;
 debug(spine_dsfml) import std.stdio;
+debug(spine_dsfml) import std.conv: to;
 
 static this()
 {
@@ -31,7 +32,7 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
             writeln("Loaded bones:");
 
             foreach(j; 0 .. sd.sp_skeletonData.bonesCount)
-                writeln("bones[0]=", *sd.sp_skeletonData.bones[j]);
+                writeln("bones["~j.to!string~"]=", *sd.sp_skeletonData.bones[j]);
         }
 
         vertexArray = new VertexArray(PrimitiveType.Triangles, sp_skeleton.bonesCount * 4);
