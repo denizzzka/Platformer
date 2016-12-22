@@ -8,9 +8,12 @@ class AnimationStateData
     package spAnimationStateData* stateData;
     alias stateData this;
 
+    SkeletonData skeletonData;
+
     this(SkeletonData sd)
     {
-        stateData = spAnimationStateData_create(sd.sp_skeletonData);
+        skeletonData = sd;
+        stateData = spAnimationStateData_create(skeletonData.sp_skeletonData);
 
         assert(stateData);
     }
@@ -23,10 +26,10 @@ class AnimationStateData
 
 class AnimationStateInstance
 {
-    private AnimationStateData stateData;
     package spAnimationState* state;
     alias state this;
 
+    private AnimationStateData stateData;
     float timeScale;
 
     package this(AnimationStateData asd)
