@@ -106,13 +106,16 @@ void main(string[] args)
 
 		testMap.draw(w.wnd, currViewPosition);
 
-        skeleton.update(0.1);
-        state.update(0.1);
+        static float time = 0;
+        skeleton.update(time);
+        state.update(time);
+        time += 1.0 / 24;
+
         state.apply(skeleton);
         skeleton.updateWorldTransform();
 
         RenderStates rs;
-        rs.transform.translate(100, 100);
+        rs.transform.translate(currViewPosition.x + 100, currViewPosition.y + 100);
         skeleton.draw(w.wnd, rs);
 
         //~ w.draw();

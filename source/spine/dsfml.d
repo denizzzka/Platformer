@@ -193,8 +193,8 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
             if(texture !is null)
             {
                 // SMFL doesn't handle batching for us, so we'll just force a single texture per skeleton.
-                states.texture = texture;
-                debug(spine_dsfml) writeln("Used texture at ", &texture);
+                //states.texture = texture;
+                //debug(spine_dsfml) writeln("Used texture at ", &texture);
             }
         }
 
