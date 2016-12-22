@@ -3,28 +3,6 @@ module spine.animation;
 import spine.skeleton;
 import std.string: toStringz;
 
-class Animation
-{
-    private spAnimation* sp_animation;
-
-    this(spAnimation* a)
-    {
-        sp_animation = a;
-    }
-
-    ~this()
-    {
-        spAnimation_dispose(sp_animation);
-    }
-
-    void apply(SkeletonInstance skeleton, float time, bool loop)
-    {
-        assert(0, "unimplemented");
-
-        //spAnimation_apply();
-    }
-}
-
 class AnimationStateData
 {
     package spAnimationStateData* stateData;
