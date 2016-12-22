@@ -32,7 +32,7 @@ class AnimationStateInstance
     private AnimationStateData stateData;
     float timeScale;
 
-    package this(AnimationStateData asd)
+    this(AnimationStateData asd)
     {
         stateData = asd;
         state = spAnimationState_create(stateData);

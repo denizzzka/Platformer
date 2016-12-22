@@ -28,7 +28,7 @@ class SkeletonInstance
 
     private SkeletonData skeletonData;
 
-    package this(SkeletonData sd)
+    this(SkeletonData sd)
     {
         skeletonData = sd;
         sp_skeleton = spSkeleton_create(skeletonData.sp_skeletonData);

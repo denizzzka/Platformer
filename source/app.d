@@ -13,7 +13,9 @@ void main(string[] args)
 
     auto atlas = new Atlas("resources/textures/GAME.atlas");
     auto skeletonData = new SkeletonData("resources/animations/actor_pretty.json", atlas, 1);
+    auto skeleton = new SkeletonInstance(skeletonData);
     auto stateData = new AnimationStateData(skeletonData);
+    auto state = new AnimationStateInstance(stateData);
 
     initDSFMLApp();
 
@@ -103,11 +105,14 @@ void main(string[] args)
 
 		testMap.draw(w.wnd, currViewPosition);
 
-        //~ RenderStates rs;
-        //~ rs.transform.translate(100, 100);
-        //~ skelet.draw(w.wnd, rs);
+        state.update(0.1);
+        state.apply(skeleton);
 
-        //w.draw();
+        RenderStates rs;
+        rs.transform.translate(100, 100);
+        //skeleton.draw(w.wnd, rs);
+
+        //~ w.draw();
 
         window.display();
     }
