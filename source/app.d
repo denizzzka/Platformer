@@ -8,8 +8,6 @@ void main(string[] args)
 {
 	auto testMap = new Map("test_map/map_1");
 
-    auto soldier = new Soldier();
-
     initDSFMLApp();
 
     auto window = new RenderWindow(VideoMode(800, 600, 32), "Hello DSFML!", Window.Style.Titlebar | Window.Style.Close | Window.Style.Resize);
@@ -41,6 +39,9 @@ void main(string[] args)
     smileCover.position = Vector2f(368,200);
 
 	Vector2f currViewPosition = Vector2f(0, 0);
+
+    auto soldier = new Soldier();
+    soldier.position = currViewPosition + Vector2f(150, 300);
 
     while (window.isOpen())
     {
@@ -98,9 +99,18 @@ void main(string[] args)
 
 		testMap.draw(w.wnd, currViewPosition);
 
-        soldier.position = currViewPosition + Vector2f(150, 200);
         soldier.update;
         soldier.draw(w.wnd);
+
+        static moveRight = false;
+
+        if(moveRight)
+            soldier.position.x += 15;
+        else
+            soldier.position.x -= 3.15;
+
+        if(soldier.position.x > 400) moveRight = false;
+        if(soldier.position.x < 100) moveRight = true;
 
         //~ w.draw();
 
