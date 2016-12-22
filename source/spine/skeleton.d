@@ -30,7 +30,7 @@ class SkeletonData
 
 class SkeletonInstance
 {
-    spSkeleton* sp_skeleton;
+    package spSkeleton* sp_skeleton;
     alias sp_skeleton this;
 
     private SkeletonData skeletonData;
