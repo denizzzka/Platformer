@@ -25,35 +25,35 @@ class AnimationStateData
 class AnimationStateInstance
 {
     private AnimationStateData stateData;
-    package spAnimationState* state;
+    package spAnimationState* sp_animationState;
     float timeScale;
 
     this(AnimationStateData asd)
     {
         stateData = asd;
-        state = spAnimationState_create(stateData.sp_animationStateData);
+        sp_animationState = spAnimationState_create(stateData.sp_animationStateData);
 
-        assert(state);
+        assert(sp_animationState);
     }
 
     ~this()
     {
-        spAnimationState_dispose(state);
+        spAnimationState_dispose(sp_animationState);
     }
 
     void update(float deltaTime)
     {
-        spAnimationState_update(state, deltaTime * timeScale);
+        spAnimationState_update(sp_animationState, deltaTime * timeScale);
     }
 
     void apply(SkeletonInstance skeleton)
     {
-        spAnimationState_apply(state, skeleton.sp_skeleton);
+        spAnimationState_apply(sp_animationState, skeleton.sp_skeleton);
     }
 
     void setAnimationByName(int trackIndex, string animationName, int loop)
     {
-        spAnimationState_setAnimationByName(state, trackIndex, animationName.toStringz, loop);
+        spAnimationState_setAnimationByName(sp_animationState, trackIndex, animationName.toStringz, loop);
     }
 }
 
