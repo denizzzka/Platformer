@@ -30,8 +30,8 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
         {
             writeln("Loaded bones:");
 
-            foreach(j; 0 .. sp_skeletonData.bonesCount)
-                writeln("bones[0]=", *sp_skeletonData.bones[j]);
+            foreach(j; 0 .. sd.sp_skeletonData.bonesCount)
+                writeln("bones[0]=", *sd.sp_skeletonData.bones[j]);
         }
 
         vertexArray = new VertexArray(PrimitiveType.Triangles, sp_skeleton.bonesCount * 4);
