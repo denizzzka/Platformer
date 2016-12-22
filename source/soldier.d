@@ -15,6 +15,8 @@ class Soldier
     private SkeletonInstanceDrawable skeleton;
     private AnimationStateInstance state;
 
+    Vector2f position = Vector2f(0, 0);
+
     static this()
     {
         atlas = new Atlas("resources/textures/GAME.atlas");
@@ -45,8 +47,10 @@ class Soldier
         skeleton.updateWorldTransform();
     }
 
-    void draw(RenderTarget renderTarget, RenderStates renderStates = RenderStates())
+    void draw(RenderTarget renderTarget)
     {
+        RenderStates renderStates = RenderStates();
+        renderStates.transform.translate(position.x, position.y);
         skeleton.draw(renderTarget, renderStates);
     }
 }

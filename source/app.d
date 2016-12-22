@@ -98,11 +98,9 @@ void main(string[] args)
 
 		testMap.draw(w.wnd, currViewPosition);
 
+        soldier.position = currViewPosition + Vector2f(150, 200);
         soldier.update;
-
-        RenderStates rs;
-        rs.transform.translate(currViewPosition.x + 150, currViewPosition.y + 200);
-        soldier.draw(w.wnd, rs);
+        soldier.draw(w.wnd);
 
         //~ w.draw();
 
