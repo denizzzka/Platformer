@@ -92,109 +92,109 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
 
             switch(attachment.type)
             {
-            case spAttachmentType.REGION:
-                debug(spine_dsfml) writeln("draw region");
+                case spAttachmentType.REGION:
+                    debug(spine_dsfml) writeln("draw region");
 
-                spRegionAttachment* regionAttachment = cast(spRegionAttachment*) attachment;
+                    spRegionAttachment* regionAttachment = cast(spRegionAttachment*) attachment;
 
-                texture = cast(Texture)(cast(spAtlasRegion*)regionAttachment.rendererObject).page.rendererObject;
-                assert(texture);
+                    texture = cast(Texture)(cast(spAtlasRegion*)regionAttachment.rendererObject).page.rendererObject;
+                    assert(texture);
 
-                debug(spine_dsfml) writeln("call computeWorldVertices, args:");
-                debug(spine_dsfml) writeln("regionAttachment=", *regionAttachment);
-                debug(spine_dsfml) writeln("and slot.bone=", *slot.bone);
-                spRegionAttachment_computeWorldVertices(regionAttachment, slot.bone, worldVertices.ptr);
+                    debug(spine_dsfml) writeln("call computeWorldVertices, args:");
+                    debug(spine_dsfml) writeln("regionAttachment=", *regionAttachment);
+                    debug(spine_dsfml) writeln("and slot.bone=", *slot.bone);
+                    spRegionAttachment_computeWorldVertices(regionAttachment, slot.bone, worldVertices.ptr);
 
-                debug(spine_dsfml) writeln("call colorize");
-                Color _c = colorize(sp_skeleton, slot);
+                    debug(spine_dsfml) writeln("call colorize");
+                    Color _c = colorize(sp_skeleton, slot);
 
-                debug(spine_dsfml) writeln("call texture.getSize()");
-                Vector2u size = texture.getSize();
-                debug(spine_dsfml) writeln("size=", size);
+                    debug(spine_dsfml) writeln("call texture.getSize()");
+                    Vector2u size = texture.getSize();
+                    debug(spine_dsfml) writeln("size=", size);
 
-                debug(spine_dsfml) writeln("fill vertices");
+                    debug(spine_dsfml) writeln("fill vertices");
 
-                with(spVertexIndex)
-                {
-                    with(vertices[0])
+                    with(spVertexIndex)
                     {
-                        color = _c;
-                        position.x = worldVertices[X1];
-                        position.y = worldVertices[Y1];
-                        debug(spine_dsfml) writeln("worldVertices[X1]=", worldVertices[X1]);
-                        assert(!worldVertices[X1].isNaN);
-                        texCoords.x = regionAttachment.uvs[X1] * size.x;
-                        texCoords.y = regionAttachment.uvs[Y1] * size.y;
-                        assert(worldVertices[X1] != float.nan);
-                        assert(position.x != float.nan);
+                        with(vertices[0])
+                        {
+                            color = _c;
+                            position.x = worldVertices[X1];
+                            position.y = worldVertices[Y1];
+                            debug(spine_dsfml) writeln("worldVertices[X1]=", worldVertices[X1]);
+                            assert(!worldVertices[X1].isNaN);
+                            texCoords.x = regionAttachment.uvs[X1] * size.x;
+                            texCoords.y = regionAttachment.uvs[Y1] * size.y;
+                            assert(worldVertices[X1] != float.nan);
+                            assert(position.x != float.nan);
+                        }
+
+                        with(vertices[1])
+                        {
+                            color = _c;
+                            position.x = worldVertices[X2];
+                            position.y = worldVertices[Y2];
+                            texCoords.x = regionAttachment.uvs[X2] * size.x;
+                            texCoords.y = regionAttachment.uvs[Y2] * size.y;
+                        }
+
+                        with(vertices[2])
+                        {
+                            color = _c;
+                            position.x = worldVertices[X3];
+                            position.y = worldVertices[Y3];
+                            texCoords.x = regionAttachment.uvs[X3] * size.x;
+                            texCoords.y = regionAttachment.uvs[Y3] * size.y;
+                        }
+
+                        with(vertices[3]) {
+                            color = _c;
+                            position.x = worldVertices[X4];
+                            position.y = worldVertices[Y4];
+                            texCoords.x = regionAttachment.uvs[X4] * size.x;
+                            texCoords.y = regionAttachment.uvs[Y4] * size.y;
+                        }
                     }
 
-                    with(vertices[1])
+                    with(vertexArray)
                     {
-                        color = _c;
-                        position.x = worldVertices[X2];
-                        position.y = worldVertices[Y2];
-                        texCoords.x = regionAttachment.uvs[X2] * size.x;
-                        texCoords.y = regionAttachment.uvs[Y2] * size.y;
+                        append(vertices[0]);
+                        append(vertices[1]);
+                        append(vertices[2]);
+                        append(vertices[0]);
+                        append(vertices[2]);
+                        append(vertices[3]);
                     }
+                    break;
 
-                    with(vertices[2])
+                case spAttachmentType.MESH:
+                    debug(spine_dsfml) writeln("draw mesh");
+
+                    spMeshAttachment* mesh = cast(spMeshAttachment*) attachment;
+
+                    if (mesh._super.worldVerticesLength > SPINE_MESH_VERTEX_COUNT_MAX) continue;
+                    texture = cast(Texture)(cast(spAtlasRegion*)mesh.rendererObject).page.rendererObject;
+                    spMeshAttachment_computeWorldVertices(mesh, slot, worldVertices.ptr);
+
+                    vertex.color = colorize(sp_skeleton, slot);
+                    Vector2u size = texture.getSize();
+
+                    foreach(_i; 0 .. mesh.trianglesCount)
                     {
-                        color = _c;
-                        position.x = worldVertices[X3];
-                        position.y = worldVertices[Y3];
-                        texCoords.x = regionAttachment.uvs[X3] * size.x;
-                        texCoords.y = regionAttachment.uvs[Y3] * size.y;
+                        int index = mesh.triangles[_i] << 1;
+                        vertex.position.x = worldVertices[index];
+                        vertex.position.y = worldVertices[index + 1];
+                        vertex.texCoords.x = mesh.uvs[index] * size.x;
+                        vertex.texCoords.y = mesh.uvs[index + 1] * size.y;
+                        vertexArray.append(vertex);
                     }
+                    break;
 
-                    with(vertices[3]) {
-                        color = _c;
-                        position.x = worldVertices[X4];
-                        position.y = worldVertices[Y4];
-                        texCoords.x = regionAttachment.uvs[X4] * size.x;
-                        texCoords.y = regionAttachment.uvs[Y4] * size.y;
-                    }
-                }
+                case spAttachmentType.BOUNDING_BOX:
+                    break;
 
-                with(vertexArray)
-                {
-                    append(vertices[0]);
-                    append(vertices[1]);
-                    append(vertices[2]);
-                    append(vertices[0]);
-                    append(vertices[2]);
-                    append(vertices[3]);
-                }
-                break;
-
-            case spAttachmentType.MESH:
-                debug(spine_dsfml) writeln("draw mesh");
-
-                spMeshAttachment* mesh = cast(spMeshAttachment*) attachment;
-
-                if (mesh._super.worldVerticesLength > SPINE_MESH_VERTEX_COUNT_MAX) continue;
-                texture = cast(Texture)(cast(spAtlasRegion*)mesh.rendererObject).page.rendererObject;
-                spMeshAttachment_computeWorldVertices(mesh, slot, worldVertices.ptr);
-
-                vertex.color = colorize(sp_skeleton, slot);
-                Vector2u size = texture.getSize();
-
-                foreach(_i; 0 .. mesh.trianglesCount)
-                {
-                    int index = mesh.triangles[_i] << 1;
-                    vertex.position.x = worldVertices[index];
-                    vertex.position.y = worldVertices[index + 1];
-                    vertex.texCoords.x = mesh.uvs[index] * size.x;
-                    vertex.texCoords.y = mesh.uvs[index + 1] * size.y;
-                    vertexArray.append(vertex);
-                }
-                break;
-
-            case spAttachmentType.BOUNDING_BOX:
-                break;
-
-            default:
-                    assert(0, "Attachment type "~attachment.type.to!string~" isn't implementded");
+                default:
+                        assert(0, "Attachment type "~attachment.type.to!string~" isn't implementded");
             }
 
             debug(spine_dsfml) writeln("vertexArray.getVertexCount=", vertexArray.getVertexCount);
