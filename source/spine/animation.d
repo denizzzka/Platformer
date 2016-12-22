@@ -52,7 +52,7 @@ class AnimationStateInstance
 
     void apply(SkeletonInstance skeleton)
     {
-        spAnimationState_apply(state, skeleton);
+        spAnimationState_apply(state, skeleton.sp_skeleton);
     }
 
     void setAnimationByName(int trackIndex, string animationName, int loop)

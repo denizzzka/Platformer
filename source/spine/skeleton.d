@@ -24,7 +24,6 @@ class SkeletonData
 class SkeletonInstance
 {
     package spSkeleton* sp_skeleton;
-    alias sp_skeleton this;
 
     private SkeletonData skeletonData;
 
