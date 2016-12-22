@@ -90,7 +90,8 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
 
                     spRegionAttachment* regionAttachment = cast(spRegionAttachment*) attachment;
 
-                    texture = cast(Texture)(cast(spAtlasRegion*)regionAttachment.rendererObject).page.rendererObject;
+                    size_t textureNum = cast(size_t)(cast(spAtlasRegion*)regionAttachment.rendererObject).page.rendererObject;
+                    texture = loadedTextures[textureNum];
                     assert(texture);
 
                     debug(spine_dsfml) writeln("call computeWorldVertices, args:");
@@ -166,7 +167,7 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
                     //~ spMeshAttachment* mesh = cast(spMeshAttachment*) attachment;
 
                     //~ if (mesh._super.worldVerticesLength > SPINE_MESH_VERTEX_COUNT_MAX) continue;
-                    //~ texture = cast(Texture)(cast(spAtlasRegion*)mesh.rendererObject).page.rendererObject;
+                    //~ texture = cast(size_t)(cast(spAtlasRegion*)mesh.rendererObject).page.rendererObject;
                     //~ spMeshAttachment_computeWorldVertices(mesh, slot, worldVertices.ptr);
 
                     //~ vertex.color = colorize(sp_skeleton, slot);
@@ -253,6 +254,8 @@ Color colorize(in spSkeleton* skeleton,  in spSlot* slot)
     return ret;
 }
 
+private static Texture[size_t] loadedTextures;
+
 extern(C):
 
 void _spAtlasPage_createTexture(spAtlasPage* self, const(char)* path)
@@ -261,23 +264,22 @@ void _spAtlasPage_createTexture(spAtlasPage* self, const(char)* path)
     import std.string: fromStringz;
     import std.conv: to;
 
+    size_t textureNum = loadedTextures.length;
+
     Texture t = loadTexture(path.fromStringz.to!string);
-    debug(spine_dsfml) writeln("Texture t =", cast(void*) t);
 
 	self.width = t.getSize.x;
 	self.height = t.getSize.y;
-	self.rendererObject = cast(void*) t;
+	self.rendererObject = cast(void*) textureNum;
 
-    debug(spine_dsfml) writeln("Texture loaded at ", self.rendererObject);
+    loadedTextures[textureNum] = t;
 }
 
 void _spAtlasPage_disposeTexture(spAtlasPage* self)
 {
-    Texture t = cast(Texture) self.rendererObject;
+    size_t textureNum = cast(size_t) self.rendererObject;
 
-    debug(spine_dsfml) writeln("Texture will be destroyed at ", t);
-
-    destroy(t);
+    loadedTextures.remove(textureNum);
 }
 
 void spRegionAttachment_computeWorldVertices (spRegionAttachment* self, const(spBone)* bone, float* vertices);
