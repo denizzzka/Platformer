@@ -11,6 +11,8 @@ class AnimationStateData
     this(SkeletonData sd)
     {
         stateData = spAnimationStateData_create(sd.sp_skeletonData);
+
+        assert(stateData);
     }
 
     ~this()
@@ -31,6 +33,8 @@ class AnimationStateInstance
     {
         stateData = asd;
         state = spAnimationState_create(stateData);
+
+        assert(state);
     }
 
     ~this()

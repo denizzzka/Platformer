@@ -32,6 +32,8 @@ class SkeletonInstance
     {
         skeletonData = sd;
         sp_skeleton = spSkeleton_create(skeletonData.sp_skeletonData);
+
+        assert(sp_skeleton);
     }
 
     ~this()
