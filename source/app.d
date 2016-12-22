@@ -110,7 +110,7 @@ void main(string[] args)
 
         RenderStates rs;
         rs.transform.translate(100, 100);
-        //skeleton.draw(w.wnd, rs);
+        skeleton.draw(w.wnd, rs);
 
         //~ w.draw();
 

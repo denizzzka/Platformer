@@ -17,33 +17,24 @@ static this()
 
 enum SPINE_MESH_VERTEX_COUNT_MAX = 1000;
 
-class SkeletonInstanceDrawable : Drawable
+class SkeletonInstanceDrawable : SkeletonInstance, Drawable
 {
-    SkeletonData skeletonData; //FIXME temporary, remove it
-    SkeletonInstance skeleton;
-    alias skeleton this;
-
-    AnimationStateData stateData; //FIXME temporary, remove it
-    AnimationStateInstance state;
     VertexArray vertexArray;
     float[SPINE_MESH_VERTEX_COUNT_MAX] worldVertices;
 
-    this(SkeletonData sd, AnimationStateData asd)
+    this(SkeletonData sd)
     {
-        skeletonData = sd;
-        stateData = asd;
+        super(sd);
 
         debug(spine_dsfml)
         {
             writeln("Loaded bones:");
 
-            foreach(j; 0 .. sd.sp_skeletonData.bonesCount)
-                writeln("bones[0]=", *sd.sp_skeletonData.bones[j]);
+            foreach(j; 0 .. sp_skeletonData.bonesCount)
+                writeln("bones[0]=", *sp_skeletonData.bones[j]);
         }
 
-        skeleton = new SkeletonInstance(sd);
-        state = new AnimationStateInstance(asd);
-        vertexArray = new VertexArray(PrimitiveType.Triangles, skeleton.sp_skeleton.bonesCount * 4);
+        vertexArray = new VertexArray(PrimitiveType.Triangles, sp_skeleton.bonesCount * 4);
     }
 
     void draw(RenderTarget target, RenderStates states = RenderStates())
@@ -54,11 +45,11 @@ class SkeletonInstanceDrawable : Drawable
         Vertex[4] vertices;
         Vertex vertex;
 
-        foreach(i; 0 .. skeleton.sp_skeleton.slotsCount)
+        foreach(i; 0 .. sp_skeleton.slotsCount)
         {
             debug(spine_dsfml) writeln("slot num=", i);
 
-            const spSlot* slot = skeleton.sp_skeleton.drawOrder[i];
+            const spSlot* slot = sp_skeleton.drawOrder[i];
             debug(spine_dsfml) writeln("slot=", *slot);
             debug(spine_dsfml) writeln("slot.bone=", *slot.bone);
             assert(!slot.bone.a.isNaN);
@@ -113,7 +104,7 @@ class SkeletonInstanceDrawable : Drawable
                 spRegionAttachment_computeWorldVertices(regionAttachment, slot.bone, worldVertices.ptr);
 
                 debug(spine_dsfml) writeln("call colorize");
-                Color _c = colorize(skeleton, slot);
+                Color _c = colorize(sp_skeleton, slot);
 
                 debug(spine_dsfml) writeln("call texture.getSize()");
                 Vector2u size = texture.getSize();
@@ -183,7 +174,7 @@ class SkeletonInstanceDrawable : Drawable
                 texture = cast(Texture)(cast(spAtlasRegion*)mesh.rendererObject).page.rendererObject;
                 spMeshAttachment_computeWorldVertices(mesh, slot, worldVertices.ptr);
 
-                vertex.color = colorize(skeleton, slot);
+                vertex.color = colorize(sp_skeleton, slot);
                 Vector2u size = texture.getSize();
 
                 foreach(_i; 0 .. mesh.trianglesCount)
@@ -223,26 +214,6 @@ class SkeletonInstanceDrawable : Drawable
 
         target.draw(vertexArray, states);
     }
-
-    void update (float deltaTime)
-    {
-        skeleton.update(deltaTime);
-        state.update(deltaTime);
-        state.apply(skeleton);
-        skeleton.updateWorldTransform();
-    }
-
-    void apply()
-    {
-        state.apply(skeleton);
-    }
-}
-
-SkeletonInstanceDrawable createDrawableInstance(SkeletonData sd) @property
-{
-    auto stateData = new AnimationStateData(sd);
-
-    return new SkeletonInstanceDrawable(sd, stateData);
 }
 
 unittest
@@ -253,7 +224,7 @@ unittest
     auto a = new Atlas("resources/textures/GAME.atlas");
     auto sd = new SkeletonData("resources/animations/actor_pretty.json", a, 1);
     auto si1 = new SkeletonInstance(sd);
-    auto si2 = sd.createDrawableInstance;
+    auto si2 = new SkeletonInstanceDrawable(sd);
 
     //~ destroy(si2);
     //~ destroy(si1);
