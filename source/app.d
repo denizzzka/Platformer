@@ -16,6 +16,7 @@ void main(string[] args)
     auto skeleton = new SkeletonInstanceDrawable(skeletonData);
     auto stateData = new AnimationStateData(skeletonData);
     auto state = new AnimationStateInstance(stateData);
+    state.setAnimationByName(0, "run-forward", 0);
 
     initDSFMLApp();
 
