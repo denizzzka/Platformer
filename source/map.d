@@ -225,6 +225,7 @@ class Map
         {
             if(l.name == layerName)
             {
+                enforce(l.postDrawCallback is null);
                 l.postDrawCallback = callback;
                 break;
             }
