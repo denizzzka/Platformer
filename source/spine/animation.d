@@ -6,19 +6,19 @@ import std.string: toStringz;
 class AnimationStateData
 {
     private SkeletonData skeletonData;
-    package spAnimationStateData* stateData;
+    package spAnimationStateData* sp_animationStateData;
 
     this(SkeletonData sd)
     {
         skeletonData = sd;
-        stateData = spAnimationStateData_create(skeletonData.sp_skeletonData);
+        sp_animationStateData = spAnimationStateData_create(skeletonData.sp_skeletonData);
 
-        assert(stateData);
+        assert(sp_animationStateData);
     }
 
     ~this()
     {
-        spAnimationStateData_dispose(stateData);
+        spAnimationStateData_dispose(sp_animationStateData);
     }
 }
 
@@ -33,7 +33,7 @@ class AnimationStateInstance
     this(AnimationStateData asd)
     {
         stateData = asd;
-        state = spAnimationState_create(stateData.stateData);
+        state = spAnimationState_create(stateData.sp_animationStateData);
 
         assert(state);
     }
