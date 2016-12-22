@@ -51,6 +51,7 @@ class Soldier
     {
         RenderStates renderStates = RenderStates();
         renderStates.transform.translate(position.x, position.y);
+        renderStates.transform.rotate(180);
         skeleton.draw(renderTarget, renderStates);
     }
 }
