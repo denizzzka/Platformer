@@ -167,28 +167,28 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
                     }
                     break;
 
-                case spAttachmentType.MESH:
-                    debug(spine_dsfml) writeln("draw mesh");
+                //~ case spAttachmentType.MESH:
+                    //~ debug(spine_dsfml) writeln("draw mesh");
 
-                    spMeshAttachment* mesh = cast(spMeshAttachment*) attachment;
+                    //~ spMeshAttachment* mesh = cast(spMeshAttachment*) attachment;
 
-                    if (mesh._super.worldVerticesLength > SPINE_MESH_VERTEX_COUNT_MAX) continue;
-                    texture = cast(Texture)(cast(spAtlasRegion*)mesh.rendererObject).page.rendererObject;
-                    spMeshAttachment_computeWorldVertices(mesh, slot, worldVertices.ptr);
+                    //~ if (mesh._super.worldVerticesLength > SPINE_MESH_VERTEX_COUNT_MAX) continue;
+                    //~ texture = cast(Texture)(cast(spAtlasRegion*)mesh.rendererObject).page.rendererObject;
+                    //~ spMeshAttachment_computeWorldVertices(mesh, slot, worldVertices.ptr);
 
-                    vertex.color = colorize(sp_skeleton, slot);
-                    Vector2u size = texture.getSize();
+                    //~ vertex.color = colorize(sp_skeleton, slot);
+                    //~ Vector2u size = texture.getSize();
 
-                    foreach(_i; 0 .. mesh.trianglesCount)
-                    {
-                        int index = mesh.triangles[_i] << 1;
-                        vertex.position.x = worldVertices[index];
-                        vertex.position.y = worldVertices[index + 1];
-                        vertex.texCoords.x = mesh.uvs[index] * size.x;
-                        vertex.texCoords.y = mesh.uvs[index + 1] * size.y;
-                        vertexArray.append(vertex);
-                    }
-                    break;
+                    //~ foreach(_i; 0 .. mesh.trianglesCount)
+                    //~ {
+                        //~ int index = mesh.triangles[_i] << 1;
+                        //~ vertex.position.x = worldVertices[index];
+                        //~ vertex.position.y = worldVertices[index + 1];
+                        //~ vertex.texCoords.x = mesh.uvs[index] * size.x;
+                        //~ vertex.texCoords.y = mesh.uvs[index + 1] * size.y;
+                        //~ vertexArray.append(vertex);
+                    //~ }
+                    //~ break;
 
                 case spAttachmentType.BOUNDING_BOX:
                     break;
