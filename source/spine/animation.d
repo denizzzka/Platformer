@@ -5,10 +5,8 @@ import std.string: toStringz;
 
 class AnimationStateData
 {
-    package spAnimationStateData* stateData;
-    alias stateData this;
-
     private SkeletonData skeletonData;
+    package spAnimationStateData* stateData;
 
     this(SkeletonData sd)
     {
@@ -35,7 +33,7 @@ class AnimationStateInstance
     this(AnimationStateData asd)
     {
         stateData = asd;
-        state = spAnimationState_create(stateData);
+        state = spAnimationState_create(stateData.stateData);
 
         assert(state);
     }

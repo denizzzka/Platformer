@@ -23,9 +23,8 @@ class SkeletonData
 
 class SkeletonInstance
 {
-    package spSkeleton* sp_skeleton;
-
     private SkeletonData skeletonData;
+    package spSkeleton* sp_skeleton;
 
     this(SkeletonData sd)
     {
