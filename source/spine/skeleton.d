@@ -19,6 +19,25 @@ class SkeletonData
     {
         spSkeletonData_dispose(sp_skeletonData);
     }
+
+    Skin findSkin(string name)
+    {
+        Skin ret;
+
+        ret.skin = spSkeletonData_findSkin(sp_skeletonData, name.toStringz);
+
+        return ret;
+    }
+
+    void defaultSkin(Skin s)
+    {
+        sp_skeletonData.defaultSkin = s.skin;
+    }
+}
+
+struct Skin
+{
+    spSkin* skin;
 }
 
 class SkeletonInstance
@@ -248,11 +267,12 @@ private:
 
 struct spSkeletonJson;
 
-spSkeletonData* spSkeletonJson_readSkeletonDataFile(spSkeletonJson*, const(char)* path);
-void spSkeletonData_dispose (spSkeletonData* self);
-
 spSkeletonJson* spSkeletonJson_create(spAtlas* atlas);
 void spSkeletonJson_dispose(spSkeletonJson* json);
+
+spSkeletonData* spSkeletonJson_readSkeletonDataFile(spSkeletonJson*, const(char)* path);
+void spSkeletonData_dispose (spSkeletonData* self);
+spSkin* spSkeletonData_findSkin (const(spSkeletonData)* self, const(char)* skinName);
 
 spSkeleton* spSkeleton_create (spSkeletonData* data);
 
