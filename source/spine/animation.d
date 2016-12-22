@@ -26,7 +26,6 @@ class AnimationStateInstance
 {
     private AnimationStateData stateData;
     package spAnimationState* sp_animationState;
-    float timeScale;
 
     this(AnimationStateData asd)
     {
@@ -43,7 +42,7 @@ class AnimationStateInstance
 
     void update(float deltaTime)
     {
-        spAnimationState_update(sp_animationState, deltaTime * timeScale);
+        spAnimationState_update(sp_animationState, deltaTime);
     }
 
     void apply(SkeletonInstance skeleton)
