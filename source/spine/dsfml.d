@@ -43,7 +43,7 @@ class SkeletonInstanceDrawable : Drawable
 
         skeleton = new SkeletonInstance(sd);
         state = new AnimationStateInstance(asd);
-        vertexArray = new VertexArray(PrimitiveType.Triangles, skeleton.skeleton.bonesCount * 4);
+        vertexArray = new VertexArray(PrimitiveType.Triangles, skeleton.sp_skeleton.bonesCount * 4);
     }
 
     void draw(RenderTarget target, RenderStates states = RenderStates())
@@ -54,11 +54,11 @@ class SkeletonInstanceDrawable : Drawable
         Vertex[4] vertices;
         Vertex vertex;
 
-        foreach(i; 0 .. skeleton.skeleton.slotsCount)
+        foreach(i; 0 .. skeleton.sp_skeleton.slotsCount)
         {
             debug(spine_dsfml) writeln("slot num=", i);
 
-            const spSlot* slot = skeleton.skeleton.drawOrder[i];
+            const spSlot* slot = skeleton.sp_skeleton.drawOrder[i];
             debug(spine_dsfml) writeln("slot=", *slot);
             debug(spine_dsfml) writeln("slot.bone=", *slot.bone);
             assert(!slot.bone.a.isNaN);

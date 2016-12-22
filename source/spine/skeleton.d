@@ -30,32 +30,32 @@ class SkeletonData
 
 class SkeletonInstance
 {
-    spSkeleton* skeleton;
-    alias skeleton this;
+    spSkeleton* sp_skeleton;
+    alias sp_skeleton this;
 
     package this(SkeletonData sd)
     {
-        skeleton = spSkeleton_create(sd.sp_skeletonData);
+        sp_skeleton = spSkeleton_create(sd.sp_skeletonData);
     }
 
     ~this()
     {
-        spSkeleton_dispose (skeleton);
+        spSkeleton_dispose (sp_skeleton);
     }
 
     void update(float deltaTime)
     {
-        spSkeleton_update(skeleton, deltaTime);
+        spSkeleton_update(sp_skeleton, deltaTime);
     }
 
     void updateWorldTransform()
     {
-        spSkeleton_updateWorldTransform(skeleton);
+        spSkeleton_updateWorldTransform(sp_skeleton);
     }
 
     void setToSetupPose()
     {
-        spSkeleton_setToSetupPose(skeleton);
+        spSkeleton_setToSetupPose(sp_skeleton);
     }
 }
 
