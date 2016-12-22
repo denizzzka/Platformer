@@ -17,7 +17,7 @@ void main(string[] args)
     auto skeleton = new SkeletonInstanceDrawable(skeletonData);
     auto stateData = new AnimationStateData(skeletonData);
     auto state = new AnimationStateInstance(stateData);
-    state.setAnimationByName(0, "run-forward", 0);
+    state.setAnimationByName(0, "run-forward", 1);
 
     initDSFMLApp();
 
@@ -107,16 +107,14 @@ void main(string[] args)
 
 		testMap.draw(w.wnd, currViewPosition);
 
-        static float time = 0;
-        skeleton.update(time);
-        state.update(time);
-        time += 1.0 / 24;
-
+        float deltaTime = 1.0 / 24;
+        skeleton.update(deltaTime);
+        state.update(deltaTime);
         state.apply(skeleton);
         skeleton.updateWorldTransform();
 
         RenderStates rs;
-        rs.transform.translate(currViewPosition.x + 100, currViewPosition.y + 100);
+        rs.transform.translate(currViewPosition.x + 150, currViewPosition.y + 200);
         skeleton.draw(w.wnd, rs);
 
         //~ w.draw();
