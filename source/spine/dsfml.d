@@ -9,13 +9,6 @@ debug import std.math: isNaN;
 debug import std.conv: to;
 debug(spine_dsfml) import std.stdio;
 
-static this()
-{
-    import core.memory;
-
-    GC.disable(); //FIXME: because Texture is garbage collected object
-}
-
 enum SPINE_MESH_VERTEX_COUNT_MAX = 1000;
 
 class SkeletonInstanceDrawable : SkeletonInstance, Drawable
@@ -231,14 +224,14 @@ unittest
     import spine.skeleton;
 
     auto a = new Atlas("resources/textures/GAME.atlas");
-    auto sd = new SkeletonData("resources/animations/actor_pretty.json", a, 1);
+    auto sd = new SkeletonData("resources/animations/actor_pretty.json", a);
     auto si1 = new SkeletonInstance(sd);
     auto si2 = new SkeletonInstanceDrawable(sd);
 
-    //~ destroy(si2);
-    //~ destroy(si1);
-    destroy(sd);
     destroy(a);
+    destroy(sd);
+    destroy(si1);
+    destroy(si2);
 }
 
 private:
