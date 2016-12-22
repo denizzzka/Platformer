@@ -6,24 +6,24 @@ import std.string: toStringz;
 
 class SkeletonData
 {
-    package spSkeletonData* skeletonData;
+    package spSkeletonData* sp_skeletonData;
 
     this(string filename, Atlas atlas, float scale)
     {
         spSkeletonJson* json = spSkeletonJson_create(atlas.atlas);
-        skeletonData = spSkeletonJson_readSkeletonDataFile(json, filename.toStringz);
-        assert(skeletonData);
+        sp_skeletonData = spSkeletonJson_readSkeletonDataFile(json, filename.toStringz);
+        assert(sp_skeletonData);
         spSkeletonJson_dispose(json);
     }
 
     ~this()
     {
-        spSkeletonData_dispose(skeletonData);
+        spSkeletonData_dispose(sp_skeletonData);
     }
 
     Animation findAnimation(string name)
     {
-        spAnimation* a = spSkeletonData_findAnimation(skeletonData, name.toStringz);
+        spAnimation* a = spSkeletonData_findAnimation(sp_skeletonData, name.toStringz);
         return new Animation(a);
     }
 }
@@ -35,7 +35,7 @@ class SkeletonInstance
 
     package this(SkeletonData sd)
     {
-        skeleton = spSkeleton_create(sd.skeletonData);
+        skeleton = spSkeleton_create(sd.sp_skeletonData);
     }
 
     ~this()

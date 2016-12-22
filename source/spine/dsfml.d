@@ -37,8 +37,8 @@ class SkeletonInstanceDrawable : Drawable
         {
             writeln("Loaded bones:");
 
-            foreach(j; 0 .. sd.skeletonData.bonesCount)
-                writeln("bones[0]=", *sd.skeletonData.bones[j]);
+            foreach(j; 0 .. sd.sp_skeletonData.bonesCount)
+                writeln("bones[0]=", *sd.sp_skeletonData.bones[j]);
         }
 
         skeleton = new SkeletonInstance(sd);
