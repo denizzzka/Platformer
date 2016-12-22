@@ -33,9 +33,12 @@ class SkeletonInstance
     spSkeleton* sp_skeleton;
     alias sp_skeleton this;
 
+    private SkeletonData skeletonData;
+
     package this(SkeletonData sd)
     {
-        sp_skeleton = spSkeleton_create(sd.sp_skeletonData);
+        skeletonData = sd;
+        sp_skeleton = spSkeleton_create(skeletonData.sp_skeletonData);
     }
 
     ~this()

@@ -21,7 +21,7 @@ class Animation
     {
         assert(0, "unimplemented");
 
-        spAnimation_apply();
+        //spAnimation_apply();
     }
 }
 
@@ -77,6 +77,8 @@ class AnimationStateInstance
 }
 
 private extern(C):
+
+struct spEvent;
 
 void spAnimation_apply (const(spAnimation)* self, spSkeleton* skeleton, float lastTime, float time, int loop,
 		spEvent** events, int* eventsCount, float alpha, int /*boolean*/ setupPose, int /*boolean*/ mixingOut);
