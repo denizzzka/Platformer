@@ -7,7 +7,7 @@ class SkeletonData
 {
     package spSkeletonData* sp_skeletonData;
 
-    this(string filename, Atlas atlas, float scale)
+    this(string filename, Atlas atlas)
     {
         spSkeletonJson* json = spSkeletonJson_create(atlas.atlas);
         sp_skeletonData = spSkeletonJson_readSkeletonDataFile(json, filename.toStringz);

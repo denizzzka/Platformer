@@ -12,7 +12,7 @@ void main(string[] args)
 	auto testMap = new Map("test_map/map_1");
 
     auto atlas = new Atlas("resources/textures/GAME.atlas");
-    auto skeletonData = new SkeletonData("resources/animations/actor_pretty.json", atlas, 1);
+    auto skeletonData = new SkeletonData("resources/animations/actor_pretty.json", atlas);
     auto skeleton = new SkeletonInstanceDrawable(skeletonData);
     auto stateData = new AnimationStateData(skeletonData);
     auto state = new AnimationStateInstance(stateData);
