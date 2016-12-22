@@ -6,8 +6,8 @@ import spine.animation;
 import dsfml.graphics;
 import dsfml.graphics.drawable;
 debug import std.math: isNaN;
+debug import std.conv: to;
 debug(spine_dsfml) import std.stdio;
-debug(spine_dsfml) import std.conv: to;
 
 static this()
 {
@@ -90,8 +90,9 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
 
             Texture texture;
 
-            if(attachment.type == spAttachmentType.REGION)
+            switch(attachment.type)
             {
+            case spAttachmentType.REGION:
                 debug(spine_dsfml) writeln("draw region");
 
                 spRegionAttachment* regionAttachment = cast(spRegionAttachment*) attachment;
@@ -164,9 +165,9 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
                     append(vertices[2]);
                     append(vertices[3]);
                 }
-            }
-            else if(attachment.type == spAttachmentType.MESH)
-            {
+                break;
+
+            case spAttachmentType.MESH:
                 debug(spine_dsfml) writeln("draw mesh");
 
                 spMeshAttachment* mesh = cast(spMeshAttachment*) attachment;
@@ -187,6 +188,13 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
                     vertex.texCoords.y = mesh.uvs[index + 1] * size.y;
                     vertexArray.append(vertex);
                 }
+                break;
+
+            case spAttachmentType.BOUNDING_BOX:
+                break;
+
+            default:
+                    assert(0, "Attachment type "~attachment.type.to!string~" isn't implementded");
             }
 
             debug(spine_dsfml) writeln("vertexArray.getVertexCount=", vertexArray.getVertexCount);
