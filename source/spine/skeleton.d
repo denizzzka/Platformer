@@ -1,6 +1,7 @@
 module spine.skeleton;
 
 import spine.atlas;
+import spine.animation: Animation;
 import std.string: toStringz;
 
 class SkeletonData
@@ -18,6 +19,12 @@ class SkeletonData
     ~this()
     {
         spSkeletonData_dispose(skeletonData);
+    }
+
+    Animation findAnimation(string name)
+    {
+        spAnimation* a = spSkeletonData_findAnimation(skeletonData, name.toStringz);
+        return new Animation(a);
     }
 }
 
@@ -240,6 +247,9 @@ struct spSkeleton
 void spSkeleton_update (spSkeleton* self, float deltaTime);
 
 void spSkeleton_updateWorldTransform (const(spSkeleton)* self);
+
+spAnimation* spSkeletonData_findAnimation (const(spSkeletonData)* self, const(char)* animationName);
+void spAnimation_dispose (spAnimation* self);
 
 private:
 
