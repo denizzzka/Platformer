@@ -8,7 +8,7 @@ class AnimationStateData
     package spAnimationStateData* stateData;
     alias stateData this;
 
-    SkeletonData skeletonData;
+    private SkeletonData skeletonData;
 
     this(SkeletonData sd)
     {
