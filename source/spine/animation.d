@@ -16,6 +16,13 @@ class Animation
     {
         spAnimation_dispose(sp_animation);
     }
+
+    void apply(SkeletonInstance skeleton, float time, bool loop)
+    {
+        assert(0, "unimplemented");
+
+        spAnimation_apply();
+    }
 }
 
 class AnimationStateData
@@ -70,6 +77,9 @@ class AnimationStateInstance
 }
 
 private extern(C):
+
+void spAnimation_apply (const(spAnimation)* self, spSkeleton* skeleton, float lastTime, float time, int loop,
+		spEvent** events, int* eventsCount, float alpha, int /*boolean*/ setupPose, int /*boolean*/ mixingOut);
 
 struct spAnimationState;
 
