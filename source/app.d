@@ -41,7 +41,15 @@ void main(string[] args)
 	Vector2f currViewPosition = Vector2f(0, 0);
 
     auto soldier = new Soldier();
-    soldier.position = currViewPosition + Vector2f(150, 300);
+    soldier.position = Vector2f(150, 300);
+
+    void soldierDrawCallback()
+    {
+        soldier.update;
+        soldier.draw(w.wnd);
+    }
+
+    testMap.registerDrawCallback("main", &soldierDrawCallback);
 
     while (window.isOpen())
     {
@@ -98,9 +106,6 @@ void main(string[] args)
         //~ window.draw(smileCover);
 
 		testMap.draw(w.wnd, currViewPosition);
-
-        soldier.update;
-        soldier.draw(w.wnd);
 
         static moveRight = false;
 

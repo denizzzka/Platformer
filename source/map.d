@@ -23,6 +23,7 @@ struct Layer
     ushort[] spriteNumbers; // for tile layers only
     Sprite image; // for image layers only
     float parallax = 1;
+    void delegate() postDrawCallback;
 
     private size_t coords2index(Vector2i coords)
     {
@@ -211,6 +212,22 @@ class Map
                 window.draw(lay.image);
             }
             else assert(0);
+
+            if(lay.postDrawCallback !is null)
+                lay.postDrawCallback();
+        }
+    }
+
+    /// Sets name of the layer. After render of that layer callback will be called.
+    void registerDrawCallback(string layerName, void delegate() callback)
+    {
+        foreach(ref l; layers)
+        {
+            if(l.name == layerName)
+            {
+                l.postDrawCallback = callback;
+                break;
+            }
         }
     }
 }
