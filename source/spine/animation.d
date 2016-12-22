@@ -24,10 +24,8 @@ class AnimationStateData
 
 class AnimationStateInstance
 {
-    package spAnimationState* state;
-    alias state this;
-
     private AnimationStateData stateData;
+    package spAnimationState* state;
     float timeScale;
 
     this(AnimationStateData asd)
