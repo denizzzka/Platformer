@@ -190,12 +190,12 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
 
             debug(spine_dsfml) writeln("vertexArray.getVertexCount=", vertexArray.getVertexCount);
 
-            //~ if(texture !is null)
-            //~ {
-                //~ // SMFL doesn't handle batching for us, so we'll just force a single texture per skeleton.
-                //~ states.texture = texture;
-                //~ debug(spine_dsfml) writeln("Used texture at ", &texture);
-            //~ }
+            if(texture !is null)
+            {
+                // SMFL doesn't handle batching for us, so we'll just force a single texture per skeleton.
+                states.texture = texture;
+                debug(spine_dsfml) writeln("Used texture at ", &texture);
+            }
         }
 
         debug(spine_dsfml)
@@ -248,7 +248,7 @@ Color colorize(in spSkeleton* skeleton,  in spSlot* slot)
         a = (skeleton.a * slot.a * 255.0f).to!ubyte;
     }
 
-    return ret = Color.Yellow;
+    return ret;
 }
 
 extern(C):
