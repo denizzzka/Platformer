@@ -30,7 +30,7 @@ class AnimationStateData
     package spAnimationStateData* stateData;
     alias stateData this;
 
-    package this(SkeletonData sd)
+    this(SkeletonData sd)
     {
         stateData = spAnimationStateData_create(sd.sp_skeletonData);
     }

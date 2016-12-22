@@ -4,17 +4,16 @@ import myui;
 import map;
 import spine.atlas;
 import spine.skeleton;
+import spine.animation;
 import spine.dsfml;
 
 void main(string[] args)
 {
 	auto testMap = new Map("test_map/map_1");
 
-    auto a = new Atlas("resources/textures/GAME.atlas");
-    auto sd = new SkeletonData("resources/animations/actor_pretty.json", a, 1);
-    auto skelet = sd.createDrawableInstance;
-    skelet.setToSetupPose;
-    skelet.updateWorldTransform();
+    auto atlas = new Atlas("resources/textures/GAME.atlas");
+    auto skeletonData = new SkeletonData("resources/animations/actor_pretty.json", atlas, 1);
+    auto stateData = new AnimationStateData(skeletonData);
 
     initDSFMLApp();
 
@@ -102,19 +101,11 @@ void main(string[] args)
         //~ window.draw(smile);
         //~ window.draw(smileCover);
 
-		//testMap.draw(w.wnd, currViewPosition);
+		testMap.draw(w.wnd, currViewPosition);
 
-        skelet.updateWorldTransform();
-        skelet.apply();
-        skelet.state.setAnimationByName(0, "run-forward", 1);
-        skelet.state.update(0.5);
-        skelet.updateWorldTransform();
-        skelet.apply();
-        skelet.updateWorldTransform();
-
-        RenderStates rs;
-        rs.transform.translate(100, 100);
-        skelet.draw(w.wnd, rs);
+        //~ RenderStates rs;
+        //~ rs.transform.translate(100, 100);
+        //~ skelet.draw(w.wnd, rs);
 
         //w.draw();
 
