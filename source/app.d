@@ -2,22 +2,13 @@ import dsfml.graphics;
 import dlangui.platforms.dsfml.dsfmlapp : DSFMLWindow, DSFMLPlatform, initDSFMLApp, dsfmlPlatform, uninitDSFMLApp;
 import myui;
 import map;
-import spine.atlas;
-import spine.skeleton;
-import spine.animation;
-import spine.dsfml;
+import soldier;
 
 void main(string[] args)
 {
 	auto testMap = new Map("test_map/map_1");
 
-    auto atlas = new Atlas("resources/textures/GAME.atlas");
-    auto skeletonData = new SkeletonData("resources/animations/actor_pretty.json", atlas);
-    skeletonData.defaultSkin = skeletonData.findSkin("green");
-    auto skeleton = new SkeletonInstanceDrawable(skeletonData);
-    auto stateData = new AnimationStateData(skeletonData);
-    auto state = new AnimationStateInstance(stateData);
-    state.setAnimationByName(0, "run-forward", 1);
+    auto soldier = new Soldier();
 
     initDSFMLApp();
 
@@ -107,15 +98,11 @@ void main(string[] args)
 
 		testMap.draw(w.wnd, currViewPosition);
 
-        float deltaTime = 1.0 / 24;
-        skeleton.update(deltaTime);
-        state.update(deltaTime);
-        state.apply(skeleton);
-        skeleton.updateWorldTransform();
+        soldier.update;
 
         RenderStates rs;
         rs.transform.translate(currViewPosition.x + 150, currViewPosition.y + 200);
-        skeleton.draw(w.wnd, rs);
+        soldier.draw(w.wnd, rs);
 
         //~ w.draw();
 
