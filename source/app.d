@@ -106,8 +106,10 @@ void main(string[] args)
 
 		testMap.draw(w.wnd, currViewPosition);
 
+        skeleton.update(0.1);
         state.update(0.1);
         state.apply(skeleton);
+        skeleton.updateWorldTransform();
 
         RenderStates rs;
         rs.transform.translate(100, 100);
