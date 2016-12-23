@@ -50,9 +50,9 @@ class AnimationStateInstance
         spAnimationState_apply(sp_animationState, skeleton.sp_skeleton);
     }
 
-    void setAnimationByName(int trackIndex, string animationName, int loop)
+    void setAnimationByName(int trackIndex, string animationName, bool loop)
     {
-        spAnimationState_setAnimationByName(sp_animationState, trackIndex, animationName.toStringz, loop);
+        spAnimationState_setAnimationByName(sp_animationState, trackIndex, animationName.toStringz, loop ? 1 : 0);
     }
 
     void addAnimationByName(int trackIndex, string animationName, bool loop, float delay)

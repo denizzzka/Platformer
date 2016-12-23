@@ -41,7 +41,7 @@ class Soldier
     {
         skeleton = new SkeletonInstanceDrawable(skeletonData);
         state = new AnimationStateInstance(stateData);
-        state.setAnimationByName(0, "stay", 1);
+        state.setAnimationByName(0, "stay", true);
     }
 
     void update()
