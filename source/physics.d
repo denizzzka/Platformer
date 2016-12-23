@@ -25,19 +25,15 @@ struct PhysicalObject
 
     bool updateAndStateTest()
     {
+        enum jumpForce = -5;
         enum g_force = 0.2;
         enum groundSpeed = 3.5;
+        movingState = PhysicalState.Stay;
 
         alias kp = Keyboard.isKeyPressed;
 
         with(Keyboard.Key)
         {
-            if(kp(W) && onGround)
-            {
-                onGround = false;
-                acceleration.y = -5;
-            }
-
             if(kp(A))
             {
                 rightDirection = false;
@@ -59,19 +55,30 @@ struct PhysicalObject
                     acceleration.x = groundSpeed;
                 }
             }
-        }
 
-        if(!onGround)
-            acceleration.y += g_force;
-        else
-            acceleration.y = 0;
+            if(kp(W) && onGround)
+            {
+                onGround = false;
+                acceleration.y = jumpForce;
+            }
+        }
 
         position += acceleration;
 
-        if(position.y > 300)
+        if(!onGround && position.y > 300)
         {
             position.y = 300;
             onGround = true;
+        }
+
+        if(onGround)
+        {
+            acceleration.x = 0;
+            acceleration.y = 0;
+        }
+        else
+        {
+            acceleration.y += g_force;
         }
 
         if(!onGround)

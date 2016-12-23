@@ -42,7 +42,7 @@ void main(string[] args)
 	Vector2f currViewPosition = Vector2f(0, 0);
 
     auto soldier = new Soldier();
-    soldier.position = Vector2f(150, 300);
+    soldier.position = Vector2f(300, 300);
 
     void soldierDrawCallback()
     {
