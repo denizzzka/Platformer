@@ -43,6 +43,7 @@ struct PhysLayer
         Empty,
         Block,
         OneWay,
+        Stair,
         SlopeLeft,
         SlopeRight
     }
@@ -57,6 +58,7 @@ class Map
     Layer[] layers;
     Texture[] tilesets;
     Sprite[] tileSprites;
+    PhysLayer physLayer;
 
     this(string mapName)
     {
@@ -163,7 +165,35 @@ class Map
             }
             else assert(0);
 
-            layers ~= layer;
+            if(layer.name == "__solid") // mapping special types tiles, used for physics
+            {
+                enforce(layer.layerSize.y >= 5, "Physical layer is too small");
+
+                physLayer.tiles.length = layer.spriteNumbers.length;
+                PhysLayer.TileType[ushort] physTilesMap;
+
+                void mapType(PhysLayer.TileType type, int lineNumber)
+                {
+                    foreach(x; 0 .. layer.layerSize.x) // read tiles mapping
+                    {
+                        size_t tileIdx = layer.coords2index(Vector2i(x, lineNumber));
+                        ushort spriteNum = layer.spriteNumbers[tileIdx];
+                        physTilesMap[spriteNum] = type;
+                    }
+                }
+
+                with(PhysLayer.TileType)
+                {
+                    mapType(OneWay, 0);
+                    mapType(Stair, 0);
+                    mapType(SlopeLeft, 0);
+                    mapType(SlopeRight, 0);
+                }
+            }
+            else
+            {
+                layers ~= layer;
+            }
         }
 
         destroy(j);
