@@ -33,6 +33,8 @@ class Soldier
         stateData.setMixByName("run-forward", "jump", duration);
         stateData.setMixByName("stay", "jump", duration);
         stateData.setMixByName("jump", "stay", duration);
+        stateData.setMixByName("stay", "sit", duration);
+        stateData.setMixByName("sit", "stay", duration);
     }
 
     this()
@@ -66,6 +68,14 @@ class Soldier
 
                 case Jump:
                     state.setAnimationByName(0, "fly", true);
+                    break;
+
+                case Sit:
+                    state.setAnimationByName(0, "sit", true);
+                    break;
+
+                case Crawl:
+                    state.setAnimationByName(0, "sit-forward", true);
                     break;
             }
         }

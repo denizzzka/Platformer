@@ -10,7 +10,9 @@ enum PhysicalState
     Run,
     MoveUp,
     MoveDown,
-    Jump
+    Jump,
+    Sit,
+    Crawl
 }
 
 struct PhysicalObject
@@ -60,6 +62,14 @@ struct PhysicalObject
             {
                 onGround = false;
                 acceleration.y = jumpForce;
+            }
+
+            if(kp(S) && onGround)
+            {
+                if(kp(A) || kp(D))
+                    movingState = PhysicalState.Crawl;
+                else
+                    movingState = PhysicalState.Sit;
             }
         }
 
