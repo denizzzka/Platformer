@@ -27,6 +27,7 @@ class Soldier
     Vector2f position = Vector2f(0, 0);
 
     SoldierState movingState;
+    private SoldierState _prevMovingState;
     bool rightDirection = false;
 
     static this()
@@ -51,22 +52,27 @@ class Soldier
         skeleton.flipX = !rightDirection;
         skeleton.flipY = true;
 
-        with(SoldierState)
-        final switch(movingState)
+        if(_prevMovingState != movingState)
         {
-            case Stay:
-                state.addAnimationByName(0, "stay", true, 0);
-                break;
+            _prevMovingState = movingState;
 
-            case Run:
-            case MoveUp:
-            case MoveDown:
-                state.addAnimationByName(0, "run-forward", true, 0);
-                break;
+            with(SoldierState)
+            final switch(movingState)
+            {
+                case Stay:
+                    state.setAnimationByName(0, "stay", true);
+                    break;
 
-            case Jump:
-                state.addAnimationByName(0, "fly", true, 0);
-                break;
+                case Run:
+                case MoveUp:
+                case MoveDown:
+                    state.setAnimationByName(0, "run-forward", true);
+                    break;
+
+                case Jump:
+                    state.setAnimationByName(0, "fly", true);
+                    break;
+            }
         }
 
         skeleton.update(deltaTime);
