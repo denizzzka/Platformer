@@ -153,12 +153,16 @@ class Map
                         "Layer "~layer.name~" offset is too big"
                     );
 
-                foreach(d; l["data"])
+                layer.spriteNumbers.length = l["data"].length;
+
+                foreach(size_t n, d; l["data"])
                 {
-                    layer.spriteNumbers ~= d.get!ushort;
+                    layer.spriteNumbers[n] = d.get!ushort;
 
                     if(isPhysLayer)
                     {
+                        physLayer.tiles.length = layer.spriteNumbers.length;
+
                         foreach(i, ref tile; physLayer.tiles)
                         {
                             auto spriteNum = layer.spriteNumbers[i];
@@ -187,7 +191,8 @@ class Map
             }
             else assert(0);
 
-            if(layer.name == "__solid") // mapping special types tiles, used for physics
+            // Search special types of tiles (slopes, stairs, etc). Used for physics.
+            if(layer.name == "__solid")
             {
                 enforce(layer.layerSize.y >= 5, "Physical layer is too small");
 
@@ -204,9 +209,10 @@ class Map
                 with(PhysLayer.TileType)
                 {
                     mapType(OneWay, 0);
-                    mapType(Stair, 0);
-                    mapType(SlopeLeft, 0);
-                    mapType(SlopeRight, 0);
+                    mapType(Stair, 1);
+                    mapType(SlopeLeft, 2);
+                    mapType(SlopeRight, 3);
+                    mapType(SlopeRight, 4);
                 }
             }
             else
