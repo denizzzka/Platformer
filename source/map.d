@@ -111,6 +111,8 @@ class Map
         foreach(l; j["layers"].array)
         {
             Layer layer;
+            PhysLayer.TileType[ushort] physTilesMapping;
+            bool physAvailable = false;
 
             layer.name = l["name"].str;
 
@@ -126,6 +128,10 @@ class Map
             {
                 layer.parallax = getFloat(*properties, "parallax", 1);
                 layer.scale = getFloat(*properties, "scale", 1);
+
+                auto solid = ("solid" in *properties);
+                //~ if(solid)
+                    //~ physAvailable = (*solid)["solid"].type == JSON_TYPE.TRUE;
             }
 
             if(l["type"].str == "tilelayer")
@@ -150,6 +156,22 @@ class Map
                 foreach(d; l["data"].array)
                 {
                     layer.spriteNumbers ~= d.integer.to!ushort;
+
+                    if(physAvailable)
+                    {
+                        foreach(i, ref tile; physLayer.tiles)
+                        {
+                            auto spriteNum = layer.spriteNumbers[i];
+
+                            if(spriteNum != 0)
+                            {
+                                PhysLayer.TileType* foundType = (spriteNum in physTilesMapping);
+
+                                if(foundType)
+                                    tile = *foundType;
+                            }
+                        }
+                    }
                 }
 
             }
@@ -170,7 +192,6 @@ class Map
                 enforce(layer.layerSize.y >= 5, "Physical layer is too small");
 
                 physLayer.tiles.length = layer.spriteNumbers.length;
-                PhysLayer.TileType[ushort] physTilesMap;
 
                 void mapType(PhysLayer.TileType type, int lineNumber)
                 {
@@ -178,7 +199,7 @@ class Map
                     {
                         size_t tileIdx = layer.coords2index(Vector2i(x, lineNumber));
                         ushort spriteNum = layer.spriteNumbers[tileIdx];
-                        physTilesMap[spriteNum] = type;
+                        physTilesMapping[spriteNum] = type;
                     }
                 }
 
@@ -188,19 +209,6 @@ class Map
                     mapType(Stair, 0);
                     mapType(SlopeLeft, 0);
                     mapType(SlopeRight, 0);
-                }
-
-                foreach(i, ref tile; physLayer.tiles)
-                {
-                    auto spriteNum = layer.spriteNumbers[i];
-
-                    if(spriteNum != 0)
-                    {
-                        PhysLayer.TileType* foundType = (spriteNum in physTilesMap);
-
-                        if(foundType)
-                            tile = *foundType;
-                    }
                 }
             }
             else
