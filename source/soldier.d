@@ -35,7 +35,15 @@ class Soldier
         atlas = new Atlas("resources/textures/GAME.atlas");
         skeletonData = new SkeletonData("resources/animations/actor_pretty.json", atlas);
         skeletonData.defaultSkin = skeletonData.findSkin("green");
+
         stateData = new AnimationStateData(skeletonData);
+        enum duration = 0.2;
+        stateData.setMixByName("stay", "run-forward", duration);
+        stateData.setMixByName("run-forward", "stay", duration);
+        stateData.setMixByName("jump", "run-forward", duration);
+        stateData.setMixByName("run-forward", "jump", duration);
+        stateData.setMixByName("stay", "jump", duration);
+        stateData.setMixByName("jump", "stay", duration);
     }
 
     this()

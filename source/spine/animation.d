@@ -20,6 +20,16 @@ class AnimationStateData
     {
         spAnimationStateData_dispose(sp_animationStateData);
     }
+
+    void setMixByName(string fromName, string toName, float duration)
+    {
+        spAnimationStateData_setMixByName(
+                sp_animationStateData,
+                fromName.toStringz,
+                toName.toStringz,
+                duration
+            );
+    }
 }
 
 class AnimationStateInstance
@@ -72,12 +82,14 @@ struct spAnimationState;
 
 struct spAnimationStateData;
 
+spAnimationStateData* spAnimationStateData_create (spSkeletonData* skeletonData);
+void spAnimationStateData_dispose (spAnimationStateData* self);
+
+void spAnimationStateData_setMixByName (spAnimationStateData* self, const(char)* fromName, const(char)* toName, float duration);
+
 /* @param data May be 0 for no mixing. */
 spAnimationState* spAnimationState_create (spAnimationStateData* data);
 void spAnimationState_dispose (spAnimationState* self);
-
-spAnimationStateData* spAnimationStateData_create (spSkeletonData* skeletonData);
-void spAnimationStateData_dispose (spAnimationStateData* self);
 
 struct spTrackEntry;
 
