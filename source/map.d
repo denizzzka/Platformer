@@ -236,49 +236,24 @@ class Map
 
             if(lay.type == Layer.Type.TILES)
             {
-                Vector2i cornerTile = Vector2i(
-                        corner.x.to!int / tileSize.x,
-                        corner.y.to!int / tileSize.y
-                    );
-
-                Vector2i tilesScreenSize = window.size;
-                {
-                    tilesScreenSize.x /= tileSize.x;
-                    tilesScreenSize.y /= tileSize.y;
-
-                    tilesScreenSize.x += 2;
-                    tilesScreenSize.y += 2;
-                }
-
-                Vector2i latestTile = cornerTile + tilesScreenSize;
-
-                foreach(y; cornerTile.y .. latestTile.y)
-                {
-                    foreach(x; cornerTile.x .. latestTile.x)
+                renderTilesLayer(lay, window, corner,
+                    (coords)
                     {
-                        if(
-                            x >= 0 && x < lay.layerSize.x &&
-                            y >= 0 && y < lay.layerSize.y
-                        )
+                        auto idx = lay.coords2index(coords);
+                        auto spriteNumber = lay.spriteNumbers[idx];
+
+                        if(spriteNumber != 0)
                         {
-                            auto coords = Vector2i(x, y);
+                            auto sprite = &tileSprites[spriteNumber - 1];
+                            auto pos = Vector2f(coords.x * tileSize.x + lay.offset.x, coords.y * tileSize.y + lay.offset.y);
 
-                            auto idx = lay.coords2index(coords);
-                            auto spriteNumber = lay.spriteNumbers[idx];
+                            sprite.position = pos;
+                            sprite.color = Color(255, 255, 255, (255 * lay.opacity).to!ubyte);
 
-                            if(spriteNumber != 0)
-                            {
-                                auto sprite = &tileSprites[spriteNumber - 1];
-                                auto pos = Vector2f(coords.x * tileSize.x + lay.offset.x, coords.y * tileSize.y + lay.offset.y);
-
-                                sprite.position = pos;
-                                sprite.color = Color(255, 255, 255, (255 * lay.opacity).to!ubyte);
-
-                                window.draw(*sprite);
-                            }
+                            window.draw(*sprite);
                         }
                     }
-                }
+                );
             }
             else if(lay.type == Layer.Type.IMAGE)
             {
@@ -289,6 +264,40 @@ class Map
             if(lay.drawUnits && unitsDrawCallback !is null)
                 unitsDrawCallback();
         }
+    }
+
+    /// corner - top left corner of scene
+    private void renderTilesLayer(Layer lay, RenderWindow window, Vector2f corner, void delegate(Vector2i coords) renderer)
+    {
+        assert(lay.type == Layer.Type.TILES);
+
+        window.view = new View(FloatRect(corner * lay.parallax, Vector2f(window.size)));
+
+        Vector2i cornerTile = Vector2i(
+                corner.x.to!int / tileSize.x,
+                corner.y.to!int / tileSize.y
+            );
+
+        Vector2i tilesScreenSize = window.size;
+        {
+            tilesScreenSize.x /= tileSize.x;
+            tilesScreenSize.y /= tileSize.y;
+
+            tilesScreenSize.x += 2;
+            tilesScreenSize.y += 2;
+        }
+
+        Vector2i latestTile = cornerTile + tilesScreenSize;
+
+        foreach(y; cornerTile.y .. latestTile.y)
+            foreach(x; cornerTile.x .. latestTile.x)
+                if(
+                    x >= 0 && x < lay.layerSize.x &&
+                    y >= 0 && y < lay.layerSize.y
+                )
+                {
+                    renderer(Vector2i(x, y));
+                }
     }
 
     /// After render layer with option units=true this callback will be called.
