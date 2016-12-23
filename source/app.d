@@ -4,6 +4,9 @@ import myui;
 import map;
 import soldier;
 import dsfml.window.keyboard;
+import dsfml.system.clock;
+import std.conv: to;
+import core.time: to;
 
 void main(string[] args)
 {
@@ -12,7 +15,7 @@ void main(string[] args)
     initDSFMLApp();
 
     auto window = new RenderWindow(VideoMode(800, 600, 32), "Hello DSFML!", Window.Style.Titlebar | Window.Style.Close | Window.Style.Resize);
-    window.setFramerateLimit(24);
+    window.setFramerateLimit(60);
 
     DSFMLWindow w = dsfmlPlatform.registerWindow(window);
     // create some widget to show in window
@@ -41,12 +44,15 @@ void main(string[] args)
 
 	Vector2f currViewPosition = Vector2f(0, 0);
 
+    Clock frameClock = new Clock();
+
     auto soldier = new Soldier();
     soldier.position = Vector2f(300, 300);
 
     void soldierDrawCallback()
     {
-        soldier.update;
+        TickDuration td = frameClock.restart.to!TickDuration;
+        soldier.update(td.to!("seconds", float));
         soldier.draw(w.wnd);
     }
 

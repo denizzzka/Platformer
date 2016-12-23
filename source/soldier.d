@@ -44,10 +44,8 @@ class Soldier
         state.setAnimationByName(0, "stay", true);
     }
 
-    void update()
+    void update(float deltaTime)
     {
-        immutable float deltaTime = 1.0 / 24;
-
         skeleton.flipX = !rightDirection;
         skeleton.flipY = true;
 
