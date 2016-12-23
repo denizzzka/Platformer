@@ -70,44 +70,15 @@ void main(string[] args)
         }
 
         enum increment = 15;
-        enum soldierIncrement = 3.5;
 
         with(Keyboard.Key)
         {
             alias kp = Keyboard.isKeyPressed;
 
-            soldier.movingState = SoldierState.Stay;
-
             if(kp(Left)) currViewPosition.x -= increment;
             if(kp(Right)) currViewPosition.x += increment;
             if(kp(Up)) currViewPosition.y -= increment;
             if(kp(Down)) currViewPosition.y += increment;
-
-            if(kp(A))
-            {
-                soldier.position.x -= soldierIncrement;
-                soldier.rightDirection = false;
-                soldier.movingState = SoldierState.Run;
-            }
-
-            if(kp(D))
-            {
-                soldier.position.x += soldierIncrement;
-                soldier.rightDirection = true;
-                soldier.movingState = SoldierState.Run;
-            }
-
-            if(kp(W))
-            {
-                soldier.position.y -= soldierIncrement;
-                soldier.movingState = SoldierState.Jump;
-            }
-
-            if(kp(S))
-            {
-                soldier.position.y += soldierIncrement;
-                soldier.movingState = SoldierState.Jump;
-            }
         }
 
         if (!window.isOpen())

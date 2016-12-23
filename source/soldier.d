@@ -5,15 +5,7 @@ import spine.skeleton;
 import spine.animation;
 import spine.dsfml;
 import dsfml.graphics;
-
-enum SoldierState
-{
-    Stay,
-    Run,
-    MoveUp,
-    MoveDown,
-    Jump
-}
+import physics;
 
 class Soldier
 {
@@ -24,11 +16,8 @@ class Soldier
     private SkeletonInstanceDrawable skeleton;
     private AnimationStateInstance state;
 
-    Vector2f position = Vector2f(0, 0);
-
-    SoldierState movingState;
-    private SoldierState _prevMovingState;
-    bool rightDirection = false;
+    PhysicalObject physicalObject;
+    alias physicalObject this;
 
     static this()
     {
@@ -60,12 +49,10 @@ class Soldier
         skeleton.flipX = !rightDirection;
         skeleton.flipY = true;
 
-        if(_prevMovingState != movingState)
+        if(physicalObject.updateAndStateTest())
         {
-            _prevMovingState = movingState;
-
-            with(SoldierState)
-            final switch(movingState)
+            with(PhysicalState)
+            final switch(physicalObject.movingState)
             {
                 case Stay:
                     state.setAnimationByName(0, "stay", true);
