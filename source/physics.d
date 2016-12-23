@@ -29,10 +29,11 @@ struct PhysicalObject
     {
         import std.math: sqrt;
 
-        const float g_force = 9.8f * deltaTime * deltaTime;
+        const float g_force = 400.0f * deltaTime * deltaTime;
         const float jumpHeight = 50.0;
         const float jumpForce = sqrt(2.0 * g_force * jumpHeight);
         const float groundSpeed = 80.0f * deltaTime;
+
         movingState = PhysicalState.Stay;
 
         alias kp = Keyboard.isKeyPressed;
