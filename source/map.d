@@ -18,7 +18,7 @@ struct Layer
     Type type;
     string name;
     Vector2f offset = Vector2f(0, 0);
-    Vector2i layerSize;
+    Vector2i layerSize; //TODO: it is equal for all tiles layers, need to move it to Map
     float opacity = 1;
     float scale = 1; /// scale factor
     ushort[] spriteNumbers; // for tile layers only
@@ -50,6 +50,8 @@ struct PhysLayer
     }
 
     TileType[] tiles;
+    alias spriteNumbers = tiles;
+    Vector2i layerSize;
 }
 
 class Map
@@ -162,6 +164,7 @@ class Map
                     if(isPhysLayer)
                     {
                         physLayer.tiles.length = layer.spriteNumbers.length;
+                        physLayer.layerSize = layer.layerSize;
 
                         foreach(i, ref tile; physLayer.tiles)
                         {
@@ -196,7 +199,7 @@ class Map
             // Search special types of tiles (slopes, stairs, etc). Used for physics.
             if(layer.name == "__solid")
             {
-                enforce(layer.layerSize.y >= 5, "Physical layer is too small");
+                enforce(layer.layerSize.y >= 5, "__solid layer is too small");
 
                 void mapType(PhysLayer.TileType type, int lineNumber)
                 {
@@ -295,11 +298,32 @@ class Map
 
         unitsDrawCallback = callback;
     }
+
+    private Vector2i worldCoordsToTileCoords(Vector2f w) @property
+    {
+        import std.math: floor;
+        import std.conv: to;
+
+        return Vector2i(w.x.floor.to!int / tileSize.x, w.y.floor.to!int / tileSize.y);
+    }
+
+    PhysLayer.TileType tileTypeByWorldCoords(Vector2f worldCoords)
+    {
+        Vector2i tileCoords = worldCoordsToTileCoords(worldCoords);
+        return physLayer.tiles[physLayer.coords2index(tileCoords)];
+    }
 }
 
 unittest
 {
-    auto map = new Map("test_map/map_1");
+    auto m = new Map("test_map/map_1");
+    assert(m.tileTypeByWorldCoords(Vector2f(0, 0)) == PhysLayer.TileType.Empty);
+    assert(m.tileTypeByWorldCoords(Vector2f(50, 50)) == PhysLayer.TileType.Empty);
+    assert(m.tileTypeByWorldCoords(Vector2f(20, 25 * 18)) == PhysLayer.TileType.Block);
+
+    //~ import std.stdio;
+    //~ writeln(m.tileTypeByWorldCoords(Vector2f(17 * 18, 21 * 18)));
+    //~ assert(m.tileTypeByWorldCoords(Vector2f(17 * 18, 21 * 18)) == PhysLayer.TileType.SlopeLeft);
 }
 
 private Json loadJsonDocument(string fileName)
