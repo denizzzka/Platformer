@@ -24,15 +24,30 @@ struct Layer
     Sprite image; // for image layers only
     float parallax = 1;
     void delegate() postDrawCallback;
+}
 
-    private size_t coords2index(Vector2i coords)
+private size_t coords2index(T)(T s, Vector2i coords)
+if(is(T == Layer) || is(T == PhysLayer))
+{
+    auto ret = s.layerSize.x * coords.y + coords.x;
+
+    assert(ret < s.spriteNumbers.length);
+
+    return ret;
+}
+
+struct PhysLayer
+{
+    enum TileType : ubyte
     {
-        auto ret = layerSize.x * coords.y + coords.x;
-
-        assert(ret < spriteNumbers.length);
-
-        return ret;
+        Empty,
+        Block,
+        OneWay,
+        SlopeLeft,
+        SlopeRight
     }
+
+    TileType[] tiles;
 }
 
 class Map
