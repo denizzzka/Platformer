@@ -27,8 +27,8 @@ struct PhysicalObject
 
     bool updateAndStateTest()
     {
-        enum jumpForce = -5;
-        enum g_force = 0.2;
+        enum jumpForce = -10;
+        enum g_force = 1.0;
         enum groundSpeed = 3.5;
         movingState = PhysicalState.Stay;
 
