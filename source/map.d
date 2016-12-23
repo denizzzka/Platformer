@@ -174,7 +174,7 @@ class Map
 
                 void mapType(PhysLayer.TileType type, int lineNumber)
                 {
-                    foreach(x; 0 .. layer.layerSize.x) // read tiles mapping
+                    foreach(x; 0 .. layer.layerSize.x)
                     {
                         size_t tileIdx = layer.coords2index(Vector2i(x, lineNumber));
                         ushort spriteNum = layer.spriteNumbers[tileIdx];
@@ -188,6 +188,19 @@ class Map
                     mapType(Stair, 0);
                     mapType(SlopeLeft, 0);
                     mapType(SlopeRight, 0);
+                }
+
+                foreach(i, ref tile; physLayer.tiles)
+                {
+                    auto spriteNum = layer.spriteNumbers[i];
+
+                    if(spriteNum != 0)
+                    {
+                        PhysLayer.TileType* foundType = (spriteNum in physTilesMap);
+
+                        if(foundType)
+                            tile = *foundType;
+                    }
                 }
             }
             else
