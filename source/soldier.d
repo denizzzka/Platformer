@@ -49,7 +49,7 @@ class Soldier
         skeleton.flipX = !rightDirection;
         skeleton.flipY = true;
 
-        if(physicalObject.updateAndStateTest())
+        if(physicalObject.updateAndStateTest(deltaTime))
         {
             with(PhysicalState)
             final switch(physicalObject.movingState)

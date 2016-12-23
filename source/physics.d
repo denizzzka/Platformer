@@ -25,11 +25,11 @@ struct PhysicalObject
     PhysicalState _prevMovingState = PhysicalState.Stay;
     bool rightDirection = false;
 
-    bool updateAndStateTest()
+    bool updateAndStateTest(float deltaTime)
     {
-        enum jumpForce = -10;
-        enum g_force = 1.0;
-        enum groundSpeed = 3.5;
+        const float jumpForce = -300.0f * deltaTime;
+        const float g_force = 9.8f * deltaTime;
+        const float groundSpeed = 100.0f * deltaTime;
         movingState = PhysicalState.Stay;
 
         alias kp = Keyboard.isKeyPressed;
@@ -67,7 +67,10 @@ struct PhysicalObject
             if(kp(S) && onGround)
             {
                 if(kp(A) || kp(D))
+                {
                     movingState = PhysicalState.Crawl;
+                    acceleration.x *= 0.5;
+                }
                 else
                     movingState = PhysicalState.Sit;
             }
