@@ -76,6 +76,8 @@ void main(string[] args)
         {
             alias kp = Keyboard.isKeyPressed;
 
+            soldier.movingState = SoldierState.Stay;
+
             if(kp(Left)) currViewPosition.x -= increment;
             if(kp(Right)) currViewPosition.x += increment;
             if(kp(Up)) currViewPosition.y -= increment;
@@ -85,16 +87,27 @@ void main(string[] args)
             {
                 soldier.position.x -= soldierIncrement;
                 soldier.rightDirection = false;
+                soldier.movingState = SoldierState.Run;
             }
 
             if(kp(D))
             {
                 soldier.position.x += soldierIncrement;
                 soldier.rightDirection = true;
+                soldier.movingState = SoldierState.Run;
             }
 
-            if(kp(W)) soldier.position.y -= soldierIncrement;
-            if(kp(S)) soldier.position.y += soldierIncrement;
+            if(kp(W))
+            {
+                soldier.position.y -= soldierIncrement;
+                soldier.movingState = SoldierState.Jump;
+            }
+
+            if(kp(S))
+            {
+                soldier.position.y += soldierIncrement;
+                soldier.movingState = SoldierState.Jump;
+            }
         }
 
         if (!window.isOpen())

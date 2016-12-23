@@ -41,12 +41,7 @@ class Soldier
     {
         skeleton = new SkeletonInstanceDrawable(skeletonData);
         state = new AnimationStateInstance(stateData);
-        state.setAnimationByName(0, "run-forward", 1);
-    }
-
-    void setAnimation(string animationName)
-    {
-        state.setAnimationByName(0, animationName, 1);
+        state.setAnimationByName(0, "stay", 1);
     }
 
     void update()
@@ -55,6 +50,24 @@ class Soldier
 
         skeleton.flipX = !rightDirection;
         skeleton.flipY = true;
+
+        with(SoldierState)
+        final switch(movingState)
+        {
+            case Stay:
+                state.addAnimationByName(0, "stay", true, 0);
+                break;
+
+            case Run:
+            case MoveUp:
+            case MoveDown:
+                state.addAnimationByName(0, "run-forward", true, 0);
+                break;
+
+            case Jump:
+                state.addAnimationByName(0, "fly", true, 0);
+                break;
+        }
 
         skeleton.update(deltaTime);
         state.update(deltaTime);
