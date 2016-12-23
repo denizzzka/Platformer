@@ -27,9 +27,12 @@ struct PhysicalObject
 
     bool updateAndStateTest(float deltaTime)
     {
-        const float jumpForce = -300.0f * deltaTime;
-        const float g_force = 9.8f * deltaTime;
-        const float groundSpeed = 100.0f * deltaTime;
+        import std.math: sqrt;
+
+        const float g_force = 9.8f * deltaTime * deltaTime;
+        const float jumpHeight = 50.0;
+        const float jumpForce = sqrt(2.0 * g_force * jumpHeight);
+        const float groundSpeed = 80.0f * deltaTime;
         movingState = PhysicalState.Stay;
 
         alias kp = Keyboard.isKeyPressed;
@@ -61,7 +64,7 @@ struct PhysicalObject
             if(kp(W) && onGround)
             {
                 onGround = false;
-                acceleration.y = jumpForce;
+                acceleration.y -= jumpForce;
             }
 
             if(kp(S) && onGround)
