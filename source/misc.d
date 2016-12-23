@@ -3,6 +3,7 @@ module misc;
 import dsfml.graphics;
 import std.exception: enforce;
 import std.json;
+import vibe.data.json;
 import std.conv: to;
 
 Texture loadTexture(string path)
@@ -16,7 +17,6 @@ Texture loadTexture(string path)
 /// Need because TME or JSON library isn't respects JSON float convention
 float getFloatFromJson(inout JSONValue j, string fieldName, float defaultValue)
 {
-
     auto json = (fieldName in j);
 
     if(json is null)
@@ -34,4 +34,15 @@ if(is(T == JSONValue) || is(T == JSONValue*))
     else if(json.type == JSON_TYPE.INTEGER)
         return json.integer.to!float;
     else assert(0);
+}
+
+/// ditto
+T getFromJson(T)(inout Json j, string fieldName, T defaultValue)
+{
+    auto json = j[fieldName];
+
+    if(json.type == Json.Type.undefined)
+        return defaultValue;
+    else
+        return json.to!T;
 }

@@ -5,6 +5,7 @@ import std.exception: enforce;
 import std.conv: to;
 import gfm.math: box2f;
 import misc: loadTexture;
+import vibe.data.json;
 
 struct Layer
 {
@@ -64,28 +65,28 @@ class Map
     {
         this.fileName = "resources/maps/"~mapName~".json";
 
-        auto j = loadJsonDocument(fileName);
+        Json j = loadJsonDocument(fileName);
 
-        enforce(j["version"].integer = 1, "Map file version mismatch");
+        enforce(j["version"].get!int == 1, "Map file version mismatch");
 
         tileSize = Vector2i(
-                j["tilewidth"].integer.to!int,
-                j["tileheight"].integer.to!int
+                j["tilewidth"].get!int,
+                j["tileheight"].get!int
             );
 
-        foreach(ts; j["tilesets"].array)
+        foreach(ts; j["tilesets"])
         {
             if("image" in ts)
             {
-                auto tileset = loadTexture("resources/maps/test_map/"~ts["image"].str);
+                auto tileset = loadTexture("resources/maps/test_map/"~ts["image"].get!string);
 
-                int tileWidth = ts["tilewidth"].integer.to!int;
-                int tileHeight = ts["tileheight"].integer.to!int;
+                int tileWidth = ts["tilewidth"].get!int;
+                int tileHeight = ts["tileheight"].get!int;
 
                 size_t columns = tileset.getSize.x / tileWidth;
                 size_t rows = tileset.getSize.y / tileHeight;
 
-                enforce(columns * rows == ts["tilecount"].integer);
+                enforce(columns * rows == ts["tilecount"].get!int);
 
                 for(int y; y < rows; y++)
                 {
@@ -108,38 +109,36 @@ class Map
             }
         }
 
-        foreach(l; j["layers"].array)
+        foreach(l; j["layers"])
         {
             Layer layer;
             PhysLayer.TileType[ushort] physTilesMapping;
-            bool physAvailable = false;
+            bool isPhysLayer = false;
 
-            layer.name = l["name"].str;
+            layer.name = l["name"].get!string;
 
             // Need because TME or JSON library isn't respects JSON float convention
-            import misc: getFloat = getFloatFromJson;
+            import misc: getF = getFromJson;
 
-            layer.opacity = getFloat(l, "opacity", 1);
-            layer.offset.x = getFloat(l, "offsetx", 0);
-            layer.offset.y = getFloat(l, "offsety", 0);
+            layer.opacity = getF(l, "opacity", 1);
+            layer.offset.x = getF(l, "offsetx", 0);
+            layer.offset.y = getF(l, "offsety", 0);
 
-            auto properties = ("properties" in l);
-            if(properties !is null)
+            Json properties = l["properties"];
+            if(properties.type != Json.Type.undefined)
             {
-                layer.parallax = getFloat(*properties, "parallax", 1);
-                layer.scale = getFloat(*properties, "scale", 1);
+                isPhysLayer = getF(properties, "solid", false);
 
-                auto solid = ("solid" in *properties);
-                //~ if(solid)
-                    //~ physAvailable = (*solid)["solid"].type == JSON_TYPE.TRUE;
+                layer.parallax = getF(properties, "parallax", 1.0f);
+                layer.scale = getF(properties, "scale", 1.0f);
             }
 
-            if(l["type"].str == "tilelayer")
+            if(l["type"].get!string == "tilelayer")
             {
                 layer.type = Layer.Type.TILES;
 
-                layer.layerSize.x = l["width"].integer.to!uint;
-                layer.layerSize.y = l["height"].integer.to!uint;
+                layer.layerSize.x = l["width"].get!uint;
+                layer.layerSize.y = l["height"].get!uint;
 
                 enforce(
                         layer.offset.x <= 0 &&
@@ -153,11 +152,11 @@ class Map
                         "Layer "~layer.name~" offset is too big"
                     );
 
-                foreach(d; l["data"].array)
+                foreach(d; l["data"])
                 {
-                    layer.spriteNumbers ~= d.integer.to!ushort;
+                    layer.spriteNumbers ~= d.get!ushort;
 
-                    if(physAvailable)
+                    if(isPhysLayer)
                     {
                         foreach(i, ref tile; physLayer.tiles)
                         {
@@ -175,11 +174,11 @@ class Map
                 }
 
             }
-            else if(l["type"].str == "imagelayer")
+            else if(l["type"].get!string == "imagelayer")
             {
                 layer.type = Layer.Type.IMAGE;
 
-                auto img = loadTexture("resources/maps/test_map/"~l["image"].str);
+                auto img = loadTexture("resources/maps/test_map/"~l["image"].get!string);
                 layer.image = new Sprite(img);
                 layer.image.position = layer.offset;
                 layer.image.scale = Vector2f(layer.scale, layer.scale);
@@ -190,8 +189,6 @@ class Map
             if(layer.name == "__solid") // mapping special types tiles, used for physics
             {
                 enforce(layer.layerSize.y >= 5, "Physical layer is too small");
-
-                physLayer.tiles.length = layer.spriteNumbers.length;
 
                 void mapType(PhysLayer.TileType type, int lineNumber)
                 {
@@ -216,8 +213,6 @@ class Map
                 layers ~= layer;
             }
         }
-
-        destroy(j);
     }
 
     /// corner - top left corner of scene
@@ -304,11 +299,9 @@ unittest
     auto map = new Map("test_map/map_1");
 }
 
-import std.json;
-
-private JSONValue loadJsonDocument(string fileName)
+private Json loadJsonDocument(string fileName)
 {
     import std.file: readText;
 
-    return fileName.readText.parseJSON;
+    return fileName.readText.parseJsonString;
 }
