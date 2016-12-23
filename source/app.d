@@ -70,15 +70,21 @@ void main(string[] args)
         }
 
         enum increment = 15;
+        enum soldierIncrement = 3.5;
 
         with(Keyboard.Key)
         {
             alias kp = Keyboard.isKeyPressed;
 
-            if(kp(A)) currViewPosition.x -= increment;
-            if(kp(D)) currViewPosition.x += increment;
-            if(kp(W)) currViewPosition.y -= increment;
-            if(kp(S)) currViewPosition.y += increment;
+            if(kp(Left)) currViewPosition.x -= increment;
+            if(kp(Right)) currViewPosition.x += increment;
+            if(kp(Up)) currViewPosition.y -= increment;
+            if(kp(Down)) currViewPosition.y += increment;
+
+            if(kp(A)) soldier.position.x -= soldierIncrement;
+            if(kp(D)) soldier.position.x += soldierIncrement;
+            if(kp(W)) soldier.position.y -= soldierIncrement;
+            if(kp(S)) soldier.position.y += soldierIncrement;
         }
 
         if (!window.isOpen())
@@ -93,16 +99,6 @@ void main(string[] args)
         //~ window.draw(smileCover);
 
 		testMap.draw(w.wnd, currViewPosition);
-
-        static moveRight = false;
-
-        if(moveRight)
-            soldier.position.x += 15;
-        else
-            soldier.position.x -= 3.15;
-
-        if(soldier.position.x > 400) moveRight = false;
-        if(soldier.position.x < 100) moveRight = true;
 
         //~ w.draw();
 
