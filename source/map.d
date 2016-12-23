@@ -173,6 +173,8 @@ class Map
 
                                 if(foundType)
                                     tile = *foundType;
+                                else
+                                    tile = PhysLayer.TileType.Block;
                             }
                         }
                     }
