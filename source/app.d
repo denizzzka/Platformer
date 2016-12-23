@@ -3,6 +3,7 @@ import dlangui.platforms.dsfml.dsfmlapp : DSFMLWindow, DSFMLPlatform, initDSFMLA
 import myui;
 import map;
 import soldier;
+import dsfml.window.keyboard;
 
 void main(string[] args)
 {
@@ -63,35 +64,21 @@ void main(string[] args)
 					window.close();
 					break;
 
-				case Event.EventType.KeyPressed:
-					enum increment = 15;
-
-					switch(event.key.code)
-					{
-						case Keyboard.Key.D:
-							currViewPosition.x += increment;
-							break;
-
-						case Keyboard.Key.A:
-							currViewPosition.x -= increment;
-							break;
-
-						case Keyboard.Key.W:
-							currViewPosition.y -= increment;
-							break;
-
-						case Keyboard.Key.S:
-							currViewPosition.y += increment;
-							break;
-
-						default:
-							break;
-					}
-					break;
-
 				default:
 					break;
             }
+        }
+
+        enum increment = 15;
+
+        with(Keyboard.Key)
+        {
+            alias kp = Keyboard.isKeyPressed;
+
+            if(kp(A)) currViewPosition.x -= increment;
+            if(kp(D)) currViewPosition.x += increment;
+            if(kp(W)) currViewPosition.y -= increment;
+            if(kp(S)) currViewPosition.y += increment;
         }
 
         if (!window.isOpen())
