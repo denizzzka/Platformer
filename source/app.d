@@ -50,7 +50,7 @@ void main(string[] args)
         soldier.draw(w.wnd);
     }
 
-    testMap.registerDrawCallback("main", &soldierDrawCallback);
+    testMap.registerUnitsDrawCallback(&soldierDrawCallback);
 
     while (window.isOpen())
     {

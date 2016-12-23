@@ -24,7 +24,7 @@ struct Layer
     ushort[] spriteNumbers; // for tile layers only
     Sprite image; // for image layers only
     float parallax = 1;
-    void delegate() postDrawCallback;
+    bool drawUnits;
 }
 
 private size_t coords2index(T)(T s, Vector2i coords)
@@ -60,6 +60,7 @@ class Map
     Texture[] tilesets;
     Sprite[] tileSprites;
     PhysLayer physLayer;
+    void delegate() unitsDrawCallback;
 
     this(string mapName)
     {
@@ -128,7 +129,7 @@ class Map
             if(properties.type != Json.Type.undefined)
             {
                 isPhysLayer = getF(properties, "solid", false);
-
+                layer.drawUnits = getF(properties, "units", false);
                 layer.parallax = getF(properties, "parallax", 1.0f);
                 layer.scale = getF(properties, "scale", 1.0f);
             }
@@ -274,23 +275,17 @@ class Map
             }
             else assert(0);
 
-            if(lay.postDrawCallback !is null)
-                lay.postDrawCallback();
+            if(lay.drawUnits && unitsDrawCallback !is null)
+                unitsDrawCallback();
         }
     }
 
-    /// Sets name of the layer. After render of that layer callback will be called.
-    void registerDrawCallback(string layerName, void delegate() callback)
+    /// After render layer with option units=true this callback will be called.
+    void registerUnitsDrawCallback(void delegate() callback)
     {
-        foreach(ref l; layers)
-        {
-            if(l.name == layerName)
-            {
-                enforce(l.postDrawCallback is null);
-                l.postDrawCallback = callback;
-                break;
-            }
-        }
+        enforce(unitsDrawCallback is null);
+
+        unitsDrawCallback = callback;
     }
 }
 
