@@ -6,6 +6,15 @@ import spine.animation;
 import spine.dsfml;
 import dsfml.graphics;
 
+enum SoldierState
+{
+    Stay,
+    Run,
+    MoveUp,
+    MoveDown,
+    Jump
+}
+
 class Soldier
 {
     static private Atlas atlas;
@@ -16,6 +25,9 @@ class Soldier
     private AnimationStateInstance state;
 
     Vector2f position = Vector2f(0, 0);
+
+    SoldierState movingState;
+    bool rightDirection = false;
 
     static this()
     {
@@ -41,6 +53,9 @@ class Soldier
     {
         immutable float deltaTime = 1.0 / 24;
 
+        skeleton.flipX = !rightDirection;
+        skeleton.flipY = true;
+
         skeleton.update(deltaTime);
         state.update(deltaTime);
         state.apply(skeleton);
@@ -51,7 +66,6 @@ class Soldier
     {
         RenderStates renderStates = RenderStates();
         renderStates.transform.translate(position.x, position.y);
-        renderStates.transform.rotate(180);
         skeleton.draw(renderTarget, renderStates);
     }
 }

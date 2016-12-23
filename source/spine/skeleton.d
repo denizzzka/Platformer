@@ -72,6 +72,20 @@ class SkeletonInstance
     {
         spSkeleton_setToSetupPose(sp_skeleton);
     }
+
+    bool flipX(bool b)
+    {
+        sp_skeleton.flipX = (b ? 1 : 0);
+
+        return b;
+    }
+
+    bool flipY(bool b)
+    {
+        sp_skeleton.flipY = (b ? 1 : 0);
+
+        return b;
+    }
 }
 
 package extern(C):

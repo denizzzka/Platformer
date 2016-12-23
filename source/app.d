@@ -81,8 +81,18 @@ void main(string[] args)
             if(kp(Up)) currViewPosition.y -= increment;
             if(kp(Down)) currViewPosition.y += increment;
 
-            if(kp(A)) soldier.position.x -= soldierIncrement;
-            if(kp(D)) soldier.position.x += soldierIncrement;
+            if(kp(A))
+            {
+                soldier.position.x -= soldierIncrement;
+                soldier.rightDirection = false;
+            }
+
+            if(kp(D))
+            {
+                soldier.position.x += soldierIncrement;
+                soldier.rightDirection = true;
+            }
+
             if(kp(W)) soldier.position.y -= soldierIncrement;
             if(kp(S)) soldier.position.y += soldierIncrement;
         }
