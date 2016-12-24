@@ -46,7 +46,8 @@ struct PhysLayer
         OneWay,
         Ladder,
         SlopeLeft,
-        SlopeRight
+        SlopeRight,
+        WithSound
     }
 
     TileType[] tiles;
@@ -112,10 +113,11 @@ class Map
             }
         }
 
+        PhysLayer.TileType[ushort] physTilesMapping;
+
         foreach(l; j["layers"])
         {
             Layer layer;
-            PhysLayer.TileType[ushort] physTilesMapping;
             bool isPhysLayer = false;
 
             layer.name = l["name"].get!string;
@@ -157,28 +159,28 @@ class Map
 
                 layer.spriteNumbers.length = l["data"].length;
 
+                if(isPhysLayer)
+                {
+                    physLayer.tiles.length = layer.spriteNumbers.length;
+                    physLayer.layerSize = layer.layerSize;
+                }
+
                 foreach(size_t n, d; l["data"])
                 {
-                    layer.spriteNumbers[n] = d.get!ushort;
+                    auto spriteNum = d.get!ushort;
 
-                    if(isPhysLayer)
+                    if(spriteNum != 0)
                     {
-                        physLayer.tiles.length = layer.spriteNumbers.length;
-                        physLayer.layerSize = layer.layerSize;
+                        layer.spriteNumbers[n] = spriteNum;
 
-                        foreach(i, ref tile; physLayer.tiles)
+                        if(isPhysLayer)
                         {
-                            auto spriteNum = layer.spriteNumbers[i];
+                            PhysLayer.TileType* foundType = (spriteNum in physTilesMapping);
 
-                            if(spriteNum != 0)
-                            {
-                                PhysLayer.TileType* foundType = (spriteNum in physTilesMapping);
-
-                                if(foundType)
-                                    tile = *foundType;
-                                else
-                                    tile = PhysLayer.TileType.Block;
-                            }
+                            if(foundType)
+                                physLayer.tiles[n] = *foundType;
+                            else
+                                physLayer.tiles[n] = PhysLayer.TileType.Block;
                         }
                     }
                 }
@@ -196,7 +198,7 @@ class Map
             }
             else assert(0);
 
-            // Search special types of tiles (slopes, stairs, etc). Used for physics.
+            // Parse special layer type with slopes, ladders, etc tile elements. Used for physics.
             if(layer.name == "__solid")
             {
                 enforce(layer.layerSize.y >= 5, "__solid layer is too small");
@@ -207,7 +209,9 @@ class Map
                     {
                         size_t tileIdx = layer.coords2index(Vector2i(x, lineNumber));
                         ushort spriteNum = layer.spriteNumbers[tileIdx];
-                        physTilesMapping[spriteNum] = type;
+
+                        if(spriteNum != 0)
+                            physTilesMapping[spriteNum] = type;
                     }
                 }
 
@@ -217,7 +221,7 @@ class Map
                     mapType(Ladder, 1);
                     mapType(SlopeLeft, 2);
                     mapType(SlopeRight, 3);
-                    mapType(SlopeRight, 4);
+                    mapType(WithSound, 4);
                 }
             }
             else

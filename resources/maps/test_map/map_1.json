@@ -106,10 +106,12 @@
          "opacity":1,
          "properties":
             {
+             "solid":true,
              "units":true
             },
          "propertytypes":
             {
+             "solid":"bool",
              "units":"bool"
             },
          "type":"tilelayer",
