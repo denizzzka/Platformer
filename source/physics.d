@@ -4,7 +4,7 @@ import map;
 import dsfml.system;
 import dsfml.window.keyboard;
 
-enum PhysicalState
+enum PhysicalState // TODO: move it to Soldier?
 {
     Stay,
     Run,
@@ -15,6 +15,20 @@ enum PhysicalState
     Crawl
 }
 
+enum TilesState // TODO: rename to PhysicalState?
+{
+    Default,
+    PushesWall
+}
+
+struct PhysicalProperties
+{
+    TilesState tilesState;
+    bool onGround;
+    bool rightDirection = false;
+    PhysicalState movingState = PhysicalState.Stay;
+}
+
 class PhysicalObject
 {
     const Map _map;
@@ -22,10 +36,11 @@ class PhysicalObject
     Vector2f position;
     Vector2f acceleration = Vector2f(0, 0);
 
-    bool onGround = false;
-    PhysicalState movingState = PhysicalState.Stay;
-    PhysicalState _prevMovingState = PhysicalState.Stay;
-    bool rightDirection = false;
+    PhysicalProperties physProps;
+    alias physProps this;
+
+    PhysicalProperties _prevPhysProps;
+    //PhysicalState _prevMovingState = PhysicalState.Stay;
 
     this(Map m)
     {
@@ -124,13 +139,13 @@ class PhysicalObject
         if(!onGround)
             movingState = PhysicalState.Jump;
 
-        if(movingState == _prevMovingState)
+        if(movingState == _prevPhysProps.movingState)
         {
             return false;
         }
         else
         {
-            _prevMovingState = movingState;
+            _prevPhysProps.movingState = movingState;
 
             return true;
         }
