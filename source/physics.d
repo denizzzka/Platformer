@@ -17,6 +17,7 @@ class PhysicalObject
     Vector2f position;
     Vector2f acceleration = Vector2f(0, 0);
 
+    PhysLayer.TileType tileType;
     TilesState tilesState;
     bool onGround;
     bool rightDirection = false;
@@ -45,15 +46,15 @@ class PhysicalObject
         position += acceleration;
 
         const Vector2i tileCoords = _map.worldCoordsToTileCoords(position);
-        const PhysLayer.TileType type = _map.tileTypeByTileCoords(tileCoords);
+        tileType = _map.tileTypeByTileCoords(tileCoords);
 
-        if(type == PhysLayer.TileType.Empty)
+        if(tileType == PhysLayer.TileType.Empty)
             onGround = false;
 
         if(!onGround)
         {
             // collide with ground
-            if(acceleration.y > 0 && type != PhysLayer.TileType.Empty)
+            if(acceleration.y > 0 && tileType != PhysLayer.TileType.Empty)
             {
                 position.y = _map.tileSize.y * tileCoords.y; // fell to upper side of this block
                 onGround = true;
