@@ -44,7 +44,7 @@ struct PhysLayer
         Empty,
         Block,
         OneWay,
-        Stair,
+        Ladder,
         SlopeLeft,
         SlopeRight
     }
@@ -214,7 +214,7 @@ class Map
                 with(PhysLayer.TileType)
                 {
                     mapType(OneWay, 0);
-                    mapType(Stair, 1);
+                    mapType(Ladder, 1);
                     mapType(SlopeLeft, 2);
                     mapType(SlopeRight, 3);
                     mapType(SlopeRight, 4);
