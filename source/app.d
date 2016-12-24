@@ -46,7 +46,7 @@ void main(string[] args)
 
     Clock frameClock = new Clock();
 
-    auto soldier = new Soldier();
+    auto soldier = new Soldier(testMap);
     soldier.position = Vector2f(300, 300);
 
     void soldierDrawCallback()

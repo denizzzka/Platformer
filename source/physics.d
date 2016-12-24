@@ -15,8 +15,10 @@ enum PhysicalState
     Crawl
 }
 
-struct PhysicalObject
+class PhysicalObject
 {
+    Map map;
+
     Vector2f position;
     Vector2f acceleration = Vector2f(0, 0);
 
@@ -24,6 +26,11 @@ struct PhysicalObject
     PhysicalState movingState = PhysicalState.Stay;
     PhysicalState _prevMovingState = PhysicalState.Stay;
     bool rightDirection = false;
+
+    this(Map m)
+    {
+        map = m;
+    }
 
     bool updateAndStateTest(float deltaTime)
     {

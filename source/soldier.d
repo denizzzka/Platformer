@@ -5,6 +5,7 @@ import spine.skeleton;
 import spine.animation;
 import spine.dsfml;
 import dsfml.graphics;
+import map;
 import physics;
 
 class Soldier
@@ -37,11 +38,12 @@ class Soldier
         stateData.setMixByName("sit", "stay", duration);
     }
 
-    this()
+    this(Map map)
     {
         skeleton = new SkeletonInstanceDrawable(skeletonData);
         state = new AnimationStateInstance(stateData);
         state.setAnimationByName(0, "stay", true);
+        physicalObject = new PhysicalObject(map);
     }
 
     void update(float deltaTime)
@@ -94,5 +96,6 @@ class Soldier
 
 unittest
 {
-    auto s = new Soldier();
+    auto m = new Map("test_map/map_1");
+    auto s = new Soldier(m);
 }
