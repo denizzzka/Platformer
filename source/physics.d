@@ -94,7 +94,7 @@ class PhysicalObject
             Vector2i tileCoords = _map.worldCoordsToTileCoords(position);
             PhysLayer.TileType type = _map.tileTypeByTileCoords(tileCoords);
 
-            if(!onGround)
+            if(!onGround && acceleration.y > 0)
             {
                 if(type != PhysLayer.TileType.Empty)
                 {
