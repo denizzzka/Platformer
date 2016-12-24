@@ -111,6 +111,68 @@ class Soldier
         renderStates.transform.translate(tr.x, tr.y);
         skeleton.draw(renderTarget, renderStates);
     }
+
+    void doAction(float deltaTime)
+    {
+        const float g_force = 400.0f * deltaTime * deltaTime;
+        const float jumpHeight = 50.0;
+        const float jumpForce = sqrt(2.0 * g_force * jumpHeight);
+        const float groundSpeed = 80.0f * deltaTime;
+
+        movingState = PhysicalState.Stay;
+        Vector2f acceleration = Vector2f(0, 0);
+
+        alias kp = Keyboard.isKeyPressed;
+
+        with(Keyboard.Key)
+        {
+            if(kp(A))
+            {
+                rightDirection = false;
+                acceleration.x -= groundSpeed;
+                movingState = PhysicalState.Run;
+            }
+
+            if(kp(D))
+            {
+                rightDirection = true;
+                acceleration.x += groundSpeed;
+                movingState = PhysicalState.Run;
+            }
+
+            if(kp(W))
+            {
+                acceleration.y -= jumpForce;
+                movingState = PhysicalState.Jump;
+            }
+
+            if(kp(S) && onGround)
+            {
+                if(kp(A) || kp(D))
+                {
+                    movingState = PhysicalState.Crawl;
+                    acceleration.x *= 0.5;
+                }
+                else
+                {
+                    movingState = PhysicalState.Sit;
+                }
+            }
+        }
+
+        doMotion(acceleration, deltaTime);
+
+        //~ if(movingState == _prevPhysProps.movingState)
+        //~ {
+            //~ return false;
+        //~ }
+        //~ else
+        //~ {
+            //~ _prevPhysProps.movingState = movingState;
+
+            //~ return true;
+        //~ }
+    }
 }
 
 unittest
