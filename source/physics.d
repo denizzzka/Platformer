@@ -34,14 +34,23 @@ class PhysicalObject
 
         if(onGround)
         {
+            // only on the ground unit can change its speed and direction
             acceleration = doAcceleration;
-            acceleration.y = 0; // prevent moving down on the ground
+
+            if(acceleration.y > 0) // prevent settling through the ground
+                acceleration.y = 0;
+
+            if(acceleration.y < 0) // beginning jump
+                onGround = false;
         }
 
         position += acceleration;
 
         const Vector2i tileCoords = _map.worldCoordsToTileCoords(position);
         const PhysLayer.TileType type = _map.tileTypeByTileCoords(tileCoords);
+
+        if(type == PhysLayer.TileType.Empty)
+            onGround = false;
 
         if(!onGround)
         {
@@ -55,8 +64,7 @@ class PhysicalObject
 
         if(onGround)
         {
-            acceleration.x = 0;
-            acceleration.y = 0;
+            acceleration.x = 0; // unit automatically stops on the ground
         }
         else
         {

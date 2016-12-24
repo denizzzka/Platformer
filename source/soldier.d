@@ -168,16 +168,23 @@ class Soldier
                 movingState = PhysicalState.Jump;
             }
 
-            if(kp(S) && onGround)
+            if(kp(S))
             {
-                if(kp(A) || kp(D))
+                if(onGround)
                 {
-                    movingState = PhysicalState.Crawl;
-                    acceleration.x *= 0.5;
+                    if(kp(A) || kp(D))
+                    {
+                        movingState = PhysicalState.Crawl;
+                        acceleration.x *= 0.5;
+                    }
+                    else
+                    {
+                        movingState = PhysicalState.Sit;
+                    }
                 }
                 else
                 {
-                    movingState = PhysicalState.Sit;
+                    acceleration.y += groundSpeed;
                 }
             }
         }
