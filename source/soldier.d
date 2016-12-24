@@ -45,10 +45,13 @@ class Soldier
         // надо отметить низкие и высокие позы флагом и между собой внутри этих групп анимации перемиксовать
         stateData.setMixByName("stay", "run-forward", duration);
         stateData.setMixByName("run-forward", "stay", duration);
+
         stateData.setMixByName("jump", "run-forward", duration);
         stateData.setMixByName("run-forward", "jump", duration);
+
         stateData.setMixByName("stay", "jump", duration);
         stateData.setMixByName("jump", "stay", duration);
+
         stateData.setMixByName("sit", "sit-forward", duration);
         stateData.setMixByName("sit-forward", "sit", duration);
     }
@@ -143,25 +146,37 @@ class Soldier
         const float groundSpeed = 80.0f * deltaTime;
 
         PhysicalState oldPhysicalState = movingState;
-        movingState = PhysicalState.Stay;
+
+        if(physicalObject.onGround)
+            movingState = PhysicalState.Stay;
+        else
+            movingState = PhysicalState.Jump;
+
         Vector2f acceleration = Vector2f(0, 0);
 
         alias kp = Keyboard.isKeyPressed;
 
         with(Keyboard.Key)
         {
+            void horisontalMove(bool toRight)
+            {
+                physicalObject.rightDirection = toRight;
+                acceleration.x += groundSpeed * (physicalObject.rightDirection ? 1 : -1);
+
+                if(physicalObject.onGround)
+                    movingState = PhysicalState.Run;
+                else
+                    movingState = PhysicalState.Jump;
+            }
+
             if(kp(A))
             {
-                rightDirection = false;
-                acceleration.x -= groundSpeed;
-                movingState = PhysicalState.Run;
+                horisontalMove(false);
             }
 
             if(kp(D))
             {
-                rightDirection = true;
-                acceleration.x += groundSpeed;
-                movingState = PhysicalState.Run;
+                horisontalMove(true);
             }
 
             if(kp(W))
