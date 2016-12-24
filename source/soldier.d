@@ -41,6 +41,8 @@ class Soldier
 
         stateData = new AnimationStateData(skeletonData);
         enum duration = 0.2;
+
+        // надо отметить низкие и высокие позы флагом и между собой внутри этих групп анимации перемиксовать
         stateData.setMixByName("stay", "run-forward", duration);
         stateData.setMixByName("run-forward", "stay", duration);
         stateData.setMixByName("jump", "run-forward", duration);
