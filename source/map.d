@@ -27,7 +27,7 @@ struct Layer
     bool drawUnits;
 }
 
-private size_t coords2index(T)(T s, Vector2i coords)
+private size_t coords2index(T)(inout T s, Vector2i coords)
 if(is(T == Layer) || is(T == PhysLayer))
 {
     auto ret = s.layerSize.x * coords.y + coords.x;
@@ -308,7 +308,7 @@ class Map
         unitsDrawCallback = callback;
     }
 
-    private Vector2i worldCoordsToTileCoords(Vector2f w) @property
+    Vector2i worldCoordsToTileCoords(Vector2f w) const
     {
         import std.math: floor;
         import std.conv: to;
@@ -316,10 +316,14 @@ class Map
         return Vector2i(w.x.floor.to!int / tileSize.x, w.y.floor.to!int / tileSize.y);
     }
 
-    PhysLayer.TileType tileTypeByWorldCoords(Vector2f worldCoords)
+    PhysLayer.TileType tileTypeByTileCoords(Vector2i tileCoords) const
     {
-        Vector2i tileCoords = worldCoordsToTileCoords(worldCoords);
         return physLayer.tiles[physLayer.coords2index(tileCoords)];
+    }
+
+    PhysLayer.TileType tileTypeByWorldCoords(Vector2f worldCoords) const
+    {
+        return tileTypeByTileCoords(worldCoordsToTileCoords(worldCoords));
     }
 }
 

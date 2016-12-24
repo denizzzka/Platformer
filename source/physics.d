@@ -17,7 +17,7 @@ enum PhysicalState
 
 class PhysicalObject
 {
-    Map map;
+    const Map _map;
 
     Vector2f position;
     Vector2f acceleration = Vector2f(0, 0);
@@ -29,7 +29,7 @@ class PhysicalObject
 
     this(Map m)
     {
-        map = m;
+        _map = m;
     }
 
     bool updateAndStateTest(float deltaTime)
@@ -89,10 +89,26 @@ class PhysicalObject
 
         position += acceleration;
 
-        if(!onGround && position.y > 300)
+        // ground collide
         {
-            position.y = 300;
-            onGround = true;
+            Vector2i tileCoords = _map.worldCoordsToTileCoords(position);
+            PhysLayer.TileType type = _map.tileTypeByTileCoords(tileCoords);
+
+            if(!onGround)
+            {
+                if(type != PhysLayer.TileType.Empty)
+                {
+                    position.y = _map.tileSize.y * tileCoords.y;
+                    onGround = true;
+                }
+            }
+            else
+            {
+                if(type == PhysLayer.TileType.Empty)
+                {
+                    onGround = false;
+                }
+            }
         }
 
         if(onGround)
