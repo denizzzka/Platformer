@@ -68,8 +68,9 @@ class Soldier
 
         auto oldPhysicalState = movingState;
 
-        auto acceleration = readKeys(deltaTime);
-        doMotion(acceleration, deltaTime);
+        const float g_force_dt = 400.0f * deltaTime * deltaTime;
+        auto acceleration = readKeys(deltaTime, g_force_dt);
+        doMotion(acceleration, g_force_dt);
 
         if(movingState != oldPhysicalState)
             updateAnimation();
@@ -135,11 +136,10 @@ class Soldier
         skeleton.draw(renderTarget, renderStates);
     }
 
-    private Vector2f readKeys(float deltaTime)
+    private Vector2f readKeys(float deltaTime, const float g_force_dt)
     {
-        const float g_force = 400.0f * deltaTime * deltaTime;
         const float jumpHeight = 50.0;
-        const float jumpForce = sqrt(2.0 * g_force * jumpHeight);
+        const float jumpForce = sqrt(2.0 * g_force_dt * jumpHeight);
         const float groundSpeed = 80.0f * deltaTime;
 
         PhysicalState oldPhysicalState = movingState;

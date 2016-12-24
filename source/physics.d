@@ -26,11 +26,9 @@ class PhysicalObject
         _map = m;
     }
 
-    void doMotion(Vector2f doAcceleration, float deltaTime)
+    void doMotion(Vector2f doAcceleration, float g_force_dt)
     {
         import std.math: sqrt;
-
-        const float g_force = 400.0f * deltaTime * deltaTime;
 
         if(onGround)
         {
@@ -68,7 +66,7 @@ class PhysicalObject
         }
         else
         {
-            acceleration.y += g_force;
+            acceleration.y += g_force_dt;
         }
     }
 }
