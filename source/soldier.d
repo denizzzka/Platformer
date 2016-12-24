@@ -86,10 +86,29 @@ class Soldier
         skeleton.updateWorldTransform();
     }
 
+    private Vector2f renderCenter() const
+    {
+        with(PhysicalState)
+        final switch(physicalObject.movingState)
+        {
+            case Stay:
+            case Run:
+            case MoveUp:
+            case MoveDown:
+            case Jump:
+                return Vector2f(0, 24);
+
+            case Sit:
+            case Crawl:
+                return Vector2f(0, 14);
+        }
+    }
+
     void draw(RenderTarget renderTarget)
     {
         RenderStates renderStates = RenderStates();
-        renderStates.transform.translate(position.x, position.y);
+        auto tr = position - renderCenter;
+        renderStates.transform.translate(tr.x, tr.y);
         skeleton.draw(renderTarget, renderStates);
     }
 }
