@@ -36,11 +36,9 @@ class PhysicalObject
     Vector2f position;
     Vector2f acceleration = Vector2f(0, 0);
 
+    PhysicalProperties _prevPhysProps;
     PhysicalProperties physProps;
     alias physProps this;
-
-    PhysicalProperties _prevPhysProps;
-    //PhysicalState _prevMovingState = PhysicalState.Stay;
 
     this(Map m)
     {
