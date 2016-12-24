@@ -45,6 +45,47 @@ class PhysicalObject
         _map = m;
     }
 
+    private void doMove(Vector2f doAcceleration, float deltaTime)
+    {
+        import std.math: sqrt;
+
+        const float g_force = 400.0f * deltaTime * deltaTime;
+        const float jumpHeight = 50.0;
+        const float jumpForce = sqrt(2.0 * g_force * jumpHeight);
+        const float groundSpeed = 80.0f * deltaTime;
+
+        if(onGround)
+        {
+            acceleration = doAcceleration;
+            acceleration.y = 0; // prevent moving down on the ground
+        }
+
+        position += acceleration;
+
+        const Vector2i tileCoords = _map.worldCoordsToTileCoords(position);
+        const PhysLayer.TileType type = _map.tileTypeByTileCoords(tileCoords);
+
+        if(!onGround)
+        {
+            // collide with ground
+            if(acceleration.y > 0 && type != PhysLayer.TileType.Empty)
+            {
+                position.y = _map.tileSize.y * tileCoords.y; // fell to upper side of this block
+                onGround = true;
+            }
+        }
+
+        if(onGround)
+        {
+            acceleration.x = 0;
+            acceleration.y = 0;
+        }
+        else
+        {
+            acceleration.y += g_force;
+        }
+    }
+
     bool updateAndStateTest(float deltaTime)
     {
         import std.math: sqrt;
