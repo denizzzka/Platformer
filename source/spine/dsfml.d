@@ -223,11 +223,14 @@ unittest
 {
     import spine.atlas;
     import spine.skeleton;
+    import spine.skeleton_bounds;
 
     auto a = new Atlas("resources/textures/GAME.atlas");
     auto sd = new SkeletonData("resources/animations/actor_pretty.json", a);
     auto si1 = new SkeletonInstance(sd);
     auto si2 = new SkeletonInstanceDrawable(sd);
+    auto bounds = new SkeletonBounds;
+    bounds.update(si2, true);
 
     destroy(a);
     destroy(sd);
