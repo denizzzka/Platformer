@@ -8,6 +8,17 @@ import dsfml.graphics;
 import map;
 import physics;
 
+enum PhysicalState // TODO: move it to Soldier?
+{
+    Stay,
+    Run,
+    MoveUp,
+    MoveDown,
+    Jump,
+    Sit,
+    Crawl
+}
+
 class Soldier
 {
     static private Atlas atlas;
@@ -19,6 +30,8 @@ class Soldier
 
     PhysicalObject physicalObject;
     alias physicalObject this;
+
+    PhysicalState movingState;
 
     static this()
     {
@@ -51,34 +64,13 @@ class Soldier
         skeleton.flipX = !rightDirection;
         skeleton.flipY = true;
 
-        if(physicalObject.updateAndStateTest(deltaTime))
-        {
-            with(PhysicalState)
-            final switch(physicalObject.movingState)
-            {
-                case Stay:
-                    state.setAnimationByName(0, "stay", true);
-                    break;
+        auto oldPhysicalState = movingState;
 
-                case Run:
-                case MoveUp:
-                case MoveDown:
-                    state.setAnimationByName(0, "run-forward", true);
-                    break;
+        auto acceleration = readKeys(deltaTime);
+        doMotion(acceleration, deltaTime);
 
-                case Jump:
-                    state.setAnimationByName(0, "fly", true);
-                    break;
-
-                case Sit:
-                    state.setAnimationByName(0, "sit", true);
-                    break;
-
-                case Crawl:
-                    state.setAnimationByName(0, "sit-forward", true);
-                    break;
-            }
-        }
+        if(movingState != oldPhysicalState)
+            updateAnimation();
 
         skeleton.update(deltaTime);
         state.update(deltaTime);
@@ -86,10 +78,39 @@ class Soldier
         skeleton.updateWorldTransform();
     }
 
+    private void updateAnimation()
+    {
+        with(PhysicalState)
+        final switch(movingState)
+        {
+            case Stay:
+                state.setAnimationByName(0, "stay", true);
+                break;
+
+            case Run:
+            case MoveUp:
+            case MoveDown:
+                state.setAnimationByName(0, "run-forward", true);
+                break;
+
+            case Jump:
+                state.setAnimationByName(0, "fly", true);
+                break;
+
+            case Sit:
+                state.setAnimationByName(0, "sit", true);
+                break;
+
+            case Crawl:
+                state.setAnimationByName(0, "sit-forward", true);
+                break;
+        }
+    }
+
     private Vector2f renderCenter() const
     {
         with(PhysicalState)
-        final switch(physicalObject.movingState)
+        final switch(movingState)
         {
             case Stay:
             case Run:
@@ -112,13 +133,14 @@ class Soldier
         skeleton.draw(renderTarget, renderStates);
     }
 
-    void doAction(float deltaTime)
+    private Vector2f readKeys(float deltaTime)
     {
         const float g_force = 400.0f * deltaTime * deltaTime;
         const float jumpHeight = 50.0;
         const float jumpForce = sqrt(2.0 * g_force * jumpHeight);
         const float groundSpeed = 80.0f * deltaTime;
 
+        PhysicalState oldPhysicalState = movingState;
         movingState = PhysicalState.Stay;
         Vector2f acceleration = Vector2f(0, 0);
 
@@ -160,18 +182,7 @@ class Soldier
             }
         }
 
-        doMotion(acceleration, deltaTime);
-
-        //~ if(movingState == _prevPhysProps.movingState)
-        //~ {
-            //~ return false;
-        //~ }
-        //~ else
-        //~ {
-            //~ _prevPhysProps.movingState = movingState;
-
-            //~ return true;
-        //~ }
+        return acceleration;
     }
 }
 
