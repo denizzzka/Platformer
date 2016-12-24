@@ -34,8 +34,8 @@ class Soldier
         stateData.setMixByName("run-forward", "jump", duration);
         stateData.setMixByName("stay", "jump", duration);
         stateData.setMixByName("jump", "stay", duration);
-        stateData.setMixByName("stay", "sit", duration);
-        stateData.setMixByName("sit", "stay", duration);
+        stateData.setMixByName("sit", "sit-forward", duration);
+        stateData.setMixByName("sit-forward", "sit", duration);
     }
 
     this(Map map)
