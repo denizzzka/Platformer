@@ -17,7 +17,7 @@ class PhysicalObject
     Vector2f position;
     Vector2f acceleration = Vector2f(0, 0);
 
-    PhysLayer.TileType tileType;
+    PhysLayer.TileType tileType = PhysLayer.TileType.Empty;
     TilesState tilesState;
     bool onGround;
     bool rightDirection = false;
@@ -36,11 +36,16 @@ class PhysicalObject
             // only on the ground unit can change its speed and direction
             acceleration = doAcceleration;
 
-            if(acceleration.y > 0) // prevent settling through the ground
-                acceleration.y = 0;
+            if(tileType != PhysLayer.TileType.Ladder)
+            {
+                // prevent settling through the ground
+                if(acceleration.y > 0)
+                    acceleration.y = 0;
 
-            if(acceleration.y < 0) // beginning jump
-                onGround = false;
+                // beginning jump
+                if(acceleration.y < 0)
+                    onGround = false;
+            }
         }
 
         position += acceleration;
