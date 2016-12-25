@@ -113,7 +113,7 @@ class Soldier
     {
         skeleton = new SkeletonInstanceDrawable(skeletonData);
         state = new AnimationStateInstance(stateData);
-        state.setAnimationByName(0, "stay", true);
+        setAnimation(AnimationType.Stay);
         physicalObject = new PhysicalObject(map);
 
         groundSpeedScale = 2.0;
