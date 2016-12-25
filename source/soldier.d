@@ -38,13 +38,19 @@ class Soldier
 
     const float groundSpeedScale = 1.0;
 
-    enum AnimationType : string
+    struct AnimationProperty
     {
-        Stay = "stay",
-        MoveForward = "move-forward",
-        Fly = "fly",
-        Sit = "sit",
-        SitForward = "sit-forward"
+        string spineName;
+        float mixDuration;
+    }
+
+    enum AnimationType : AnimationProperty
+    {
+        Stay = AnimationProperty("stay", 0.2),
+        MoveForward = AnimationProperty("move-forward", 0.2),
+        Fly = AnimationProperty("fly", 0.6),
+        Sit = AnimationProperty("sit", 0.2),
+        SitForward = AnimationProperty("sit-forward", 0.2)
     }
 
     private struct AvailableAnimation
@@ -84,7 +90,7 @@ class Soldier
             AvailableAnimation a;
 
             a.type = type;
-            a.animation = skeletonData.findAnimation(type);
+            a.animation = skeletonData.findAnimation(type.spineName);
 
             availableAnimations ~= a;
         }
@@ -101,12 +107,10 @@ class Soldier
 
     private static void mixAnimationsWithEachOther(AnimationType[] animations)
     {
-        enum duration = 0.2;
-
         foreach(ref a1; animations)
             foreach(ref a2; animations)
                 if(a1 != a2)
-                    stateData.setMix(findAnimationByType(a1), findAnimationByType(a2), duration);
+                    stateData.setMix(findAnimationByType(a1), findAnimationByType(a2), a2.mixDuration);
     }
 
     private void setAnimation(AnimationType animationType)
