@@ -75,22 +75,19 @@ class Soldier
         mixAnimationsWithEachOther(sitAnimations);
     }
 
-    private static AvailableAnimation readAnimation(AnimationType type)
-    {
-        AvailableAnimation ret;
-
-        ret.type = type;
-        ret.animation = skeletonData.findAnimation(type);
-
-        return ret;
-    }
-
     private static void readAnimations()
     {
         import std.traits: EnumMembers;
 
         foreach(type; EnumMembers!AnimationType)
-            availableAnimations ~= readAnimation(type);
+        {
+            AvailableAnimation a;
+
+            a.type = type;
+            a.animation = skeletonData.findAnimation(type);
+
+            availableAnimations ~= a;
+        }
     }
 
     private static ref Animation findAnimationByType(AnimationType type)
