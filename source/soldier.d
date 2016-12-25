@@ -7,7 +7,6 @@ import spine.dsfml;
 import dsfml.graphics;
 import map;
 import physics;
-import std.traits: EnumMembers;
 
 enum PhysicalState // TODO: move it to Soldier?
 {
@@ -88,8 +87,19 @@ class Soldier
 
     private static void readAnimations()
     {
+        import std.traits: EnumMembers;
+
         foreach(type; EnumMembers!AnimationType)
             availableAnimations ~= readAnimation(type);
+    }
+
+    private static ref Animation findAnimationByType(AnimationType type)
+    {
+        foreach(ref a; availableAnimations)
+            if(a.type == type)
+                return a.animation;
+
+        assert(0);
     }
 
     private static void mixAnimationsWithEachOther(AnimationType[] animations)
@@ -99,7 +109,7 @@ class Soldier
         foreach(ref a1; animations)
             foreach(ref a2; animations)
                 if(a1 != a2)
-                    stateData.setMixByName(a1, a2, duration);
+                    stateData.setMix(findAnimationByType(a1), findAnimationByType(a2), duration);
     }
 
     private void setAnimation(AnimationType animationType)
