@@ -38,6 +38,15 @@ class Soldier
 
     const float groundSpeedScale = 1.0;
 
+    enum AnimationsTypes : string
+    {
+        Stay = "stay",
+        MoveForward = "move-forward",
+        Jump = "jump",
+        Sit = "sit",
+        SitForward = "sit-forward"
+    }
+
     static this()
     {
         atlas = new Atlas("resources/textures/GAME.atlas");
@@ -46,19 +55,22 @@ class Soldier
 
         stateData = new AnimationStateData(skeletonData);
 
-        stayAnimations = readAnimations(["stay", "move-forward", "jump"]);
-        sitAnimations = readAnimations(["sit", "sit-forward"]);
+        with(AnimationsTypes)
+        {
+            stayAnimations = readAnimations([Stay, MoveForward, Jump]);
+            sitAnimations = readAnimations([Sit, SitForward]);
+        }
 
         mixAnimationsWithEachOther(stayAnimations);
         mixAnimationsWithEachOther(sitAnimations);
     }
 
-    private static Animation[] readAnimations(string[] names)
+    private static Animation[] readAnimations(AnimationsTypes[] animationTypes)
     {
         Animation[] ret;
 
-        foreach(ref name; names)
-            ret ~= skeletonData.findAnimation(name);
+        foreach (values; animationTypes)
+            ret ~= skeletonData.findAnimation(values);
 
         return ret;
     }
