@@ -25,6 +25,9 @@ class Soldier
     static private SkeletonData skeletonData;
     static private AnimationStateData stateData;
 
+    static private Animation[] stayAnimations;
+    static private Animation[] sitAnimations;
+
     private SkeletonInstanceDrawable skeleton;
     private AnimationStateInstance state;
 
@@ -44,6 +47,9 @@ class Soldier
         stateData = new AnimationStateData(skeletonData);
         enum duration = 0.2;
 
+        stayAnimations = readAnimations(["stay", "move-forward", "jump"]);
+        sitAnimations = readAnimations(["sit", "sit-forward"]);
+
         // надо отметить низкие и высокие позы флагом и между собой внутри этих групп анимации перемиксовать
         stateData.setMixByName("stay", "move-forward", duration);
         stateData.setMixByName("move-forward", "stay", duration);
@@ -56,6 +62,16 @@ class Soldier
 
         stateData.setMixByName("sit", "sit-forward", duration);
         stateData.setMixByName("sit-forward", "sit", duration);
+    }
+
+    static Animation[] readAnimations(string[] names)
+    {
+        Animation[] ret;
+
+        foreach(ref name; names)
+            ret ~= skeletonData.findAnimation(name);
+
+        return ret;
     }
 
     this(Map map)
