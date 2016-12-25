@@ -75,7 +75,7 @@ class Soldier
 
         auto oldPhysicalState = movingState;
 
-        const float g_force_dt = 400.0f * deltaTime * deltaTime;
+        const float g_force_dt = 1200.0f * deltaTime * deltaTime;
         auto acceleration = readKeys(deltaTime, g_force_dt);
         doMotion(acceleration, g_force_dt);
 
@@ -150,7 +150,7 @@ class Soldier
     {
         const float jumpHeight = 50.0;
         const float jumpForce = sqrt(2.0 * g_force_dt * jumpHeight);
-        const float groundSpeed = 80.0f * deltaTime * groundSpeedScale;
+        const float groundSpeed = 85.0f * deltaTime * groundSpeedScale;
 
         PhysicalState oldPhysicalState = movingState;
 
