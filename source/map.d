@@ -32,6 +32,7 @@ if(is(T == Layer) || is(T == PhysLayer))
 {
     auto ret = s.layerSize.x * coords.y + coords.x;
 
+    assert(ret >= 0);
     assert(ret < s.spriteNumbers.length);
 
     return ret;
@@ -322,7 +323,15 @@ class Map
 
     PhysLayer.TileType tileTypeByTileCoords(Vector2i tileCoords) const
     {
-        return physLayer.tiles[physLayer.coords2index(tileCoords)];
+        if(
+            tileCoords.x >= 0 &&
+            tileCoords.y >= 0 &&
+            tileCoords.x < physLayer.layerSize.x &&
+            tileCoords.y < physLayer.layerSize.y
+        )
+            return physLayer.tiles[physLayer.coords2index(tileCoords)];
+        else
+            return PhysLayer.TileType.Empty;
     }
 
     PhysLayer.TileType tileTypeByWorldCoords(Vector2f worldCoords) const
