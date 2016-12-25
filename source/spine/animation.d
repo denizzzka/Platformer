@@ -30,6 +30,16 @@ class AnimationStateData
                 duration
             );
     }
+
+    void setMix(Animation from, Animation to, float duration)
+    {
+        spAnimationStateData_setMix(
+                sp_animationStateData,
+                from.sp_animation,
+                to.sp_animation,
+                duration
+            );
+    }
 }
 
 class AnimationStateInstance
@@ -132,6 +142,8 @@ spAnimationStateData* spAnimationStateData_create (spSkeletonData* skeletonData)
 void spAnimationStateData_dispose (spAnimationStateData* self);
 
 void spAnimationStateData_setMixByName (spAnimationStateData* self, const(char)* fromName, const(char)* toName, float duration);
+
+void spAnimationStateData_setMix (spAnimationStateData* self, spAnimation* from, spAnimation* to, float duration);
 
 /* @param data May be 0 for no mixing. */
 spAnimationState* spAnimationState_create (spAnimationStateData* data);

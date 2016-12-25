@@ -45,26 +45,15 @@ class Soldier
         skeletonData.defaultSkin = skeletonData.findSkin("green");
 
         stateData = new AnimationStateData(skeletonData);
-        enum duration = 0.2;
 
         stayAnimations = readAnimations(["stay", "move-forward", "jump"]);
         sitAnimations = readAnimations(["sit", "sit-forward"]);
 
-        // надо отметить низкие и высокие позы флагом и между собой внутри этих групп анимации перемиксовать
-        stateData.setMixByName("stay", "move-forward", duration);
-        stateData.setMixByName("move-forward", "stay", duration);
-
-        stateData.setMixByName("jump", "move-forward", duration);
-        stateData.setMixByName("move-forward", "jump", duration);
-
-        stateData.setMixByName("stay", "jump", duration);
-        stateData.setMixByName("jump", "stay", duration);
-
-        stateData.setMixByName("sit", "sit-forward", duration);
-        stateData.setMixByName("sit-forward", "sit", duration);
+        mixAnimationsWithEachOther(stayAnimations);
+        mixAnimationsWithEachOther(sitAnimations);
     }
 
-    static Animation[] readAnimations(string[] names)
+    private static Animation[] readAnimations(string[] names)
     {
         Animation[] ret;
 
@@ -72,6 +61,16 @@ class Soldier
             ret ~= skeletonData.findAnimation(name);
 
         return ret;
+    }
+
+    private static void mixAnimationsWithEachOther(Animation[] animations)
+    {
+        enum duration = 0.2;
+
+        foreach(ref a1; animations)
+            foreach(ref a2; animations)
+                if(&a1 != &a2)
+                    stateData.setMix(a1, a2, duration);
     }
 
     this(Map map)
