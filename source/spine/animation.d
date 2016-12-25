@@ -76,6 +76,23 @@ class AnimationStateInstance
     }
 }
 
+class Animation
+{
+    private SkeletonData skeletonData;
+    private spAnimation* sp_animation;
+
+    package this(SkeletonData sd, spAnimation* a)
+    {
+        skeletonData = sd;
+        sp_animation = a;
+    }
+
+    ~this()
+    {
+        spAnimation_dispose(sp_animation);
+    }
+}
+
 private extern(C):
 
 enum spEventType
@@ -90,8 +107,12 @@ enum spEventType
 
 struct spEvent;
 
+void spAnimation_dispose (spAnimation* self);
+
 void spAnimation_apply (const(spAnimation)* self, spSkeleton* skeleton, float lastTime, float time, int loop,
 		spEvent** events, int* eventsCount, float alpha, int /*boolean*/ setupPose, int /*boolean*/ mixingOut);
+
+spAnimation* spSkeletonData_findAnimation (const(spSkeletonData)* self, const(char)* animationName);
 
 alias spAnimationStateListener = void function(spAnimationState* state, spEventType type, spTrackEntry* entry, spEvent* event);
 
