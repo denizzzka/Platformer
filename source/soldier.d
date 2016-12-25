@@ -7,6 +7,7 @@ import spine.dsfml;
 import dsfml.graphics;
 import map;
 import physics;
+import std.traits: EnumMembers;
 
 enum PhysicalState // TODO: move it to Soldier?
 {
@@ -25,8 +26,8 @@ class Soldier
     static private SkeletonData skeletonData;
     static private AnimationStateData stateData;
 
-    static private Animation[] stayAnimations;
-    static private Animation[] sitAnimations;
+    static private AnimationType[] stayAnimations;
+    static private AnimationType[] sitAnimations;
 
     private SkeletonInstanceDrawable skeleton;
     private AnimationStateInstance state;
@@ -38,14 +39,22 @@ class Soldier
 
     const float groundSpeedScale = 1.0;
 
-    enum AnimationsTypes : string
+    enum AnimationType : string
     {
         Stay = "stay",
         MoveForward = "move-forward",
-        Jump = "jump",
+        Fly = "fly",
         Sit = "sit",
         SitForward = "sit-forward"
     }
+
+    private struct AvailableAnimation
+    {
+        AnimationType type;
+        Animation animation;
+    }
+
+    static AvailableAnimation[] availableAnimations;
 
     static this()
     {
@@ -55,34 +64,49 @@ class Soldier
 
         stateData = new AnimationStateData(skeletonData);
 
-        with(AnimationsTypes)
+        readAnimations();
+
+        with(AnimationType)
         {
-            stayAnimations = readAnimations([Stay, MoveForward, Jump]);
-            sitAnimations = readAnimations([Sit, SitForward]);
+            stayAnimations = [Stay, MoveForward, Fly];
+            sitAnimations = [Sit, SitForward];
         }
 
         mixAnimationsWithEachOther(stayAnimations);
         mixAnimationsWithEachOther(sitAnimations);
     }
 
-    private static Animation[] readAnimations(AnimationsTypes[] animationTypes)
+    private static AvailableAnimation readAnimation(AnimationType type)
     {
-        Animation[] ret;
+        AvailableAnimation ret;
 
-        foreach (values; animationTypes)
-            ret ~= skeletonData.findAnimation(values);
+        ret.type = type;
+        ret.animation = skeletonData.findAnimation(type);
 
         return ret;
     }
 
-    private static void mixAnimationsWithEachOther(Animation[] animations)
+    private static void readAnimations()
+    {
+        foreach(type; EnumMembers!AnimationType)
+            availableAnimations ~= readAnimation(type);
+    }
+
+    private static void mixAnimationsWithEachOther(AnimationType[] animations)
     {
         enum duration = 0.2;
 
         foreach(ref a1; animations)
             foreach(ref a2; animations)
-                if(&a1 != &a2)
-                    stateData.setMix(a1, a2, duration);
+                if(a1 != a2)
+                    stateData.setMixByName(a1, a2, duration);
+    }
+
+    private void setAnimation(AnimationType animationType)
+    {
+        foreach(ref a; availableAnimations)
+            if(a.type == animationType)
+                state.setAnimation(0, a.animation, true);
     }
 
     this(Map map)
@@ -124,25 +148,25 @@ class Soldier
         final switch(movingState)
         {
             case Stay:
-                state.setAnimationByName(0, "stay", true);
+                setAnimation(AnimationType.Stay);
                 break;
 
             case Run:
             case MoveUp:
             case MoveDown:
-                state.setAnimationByName(0, "move-forward", true);
+                setAnimation(AnimationType.MoveForward);
                 break;
 
             case Jump:
-                state.setAnimationByName(0, "fly", true);
+                setAnimation(AnimationType.Fly);
                 break;
 
             case Sit:
-                state.setAnimationByName(0, "sit", true);
+                setAnimation(AnimationType.Sit);
                 break;
 
             case Crawl:
-                state.setAnimationByName(0, "sit-forward", true);
+                setAnimation(AnimationType.SitForward);
                 break;
         }
     }
