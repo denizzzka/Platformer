@@ -45,11 +45,11 @@ class Soldier
         enum duration = 0.2;
 
         // надо отметить низкие и высокие позы флагом и между собой внутри этих групп анимации перемиксовать
-        stateData.setMixByName("stay", "run-forward", duration);
-        stateData.setMixByName("run-forward", "stay", duration);
+        stateData.setMixByName("stay", "move-forward", duration);
+        stateData.setMixByName("move-forward", "stay", duration);
 
-        stateData.setMixByName("jump", "run-forward", duration);
-        stateData.setMixByName("run-forward", "jump", duration);
+        stateData.setMixByName("jump", "move-forward", duration);
+        stateData.setMixByName("move-forward", "jump", duration);
 
         stateData.setMixByName("stay", "jump", duration);
         stateData.setMixByName("jump", "stay", duration);
@@ -103,7 +103,7 @@ class Soldier
             case Run:
             case MoveUp:
             case MoveDown:
-                state.setAnimationByName(0, "run-forward", true);
+                state.setAnimationByName(0, "move-forward", true);
                 break;
 
             case Jump:
