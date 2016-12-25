@@ -76,21 +76,17 @@ class AnimationStateInstance
     }
 }
 
-class Animation
+struct Animation
 {
-    private SkeletonData skeletonData;
     private spAnimation* sp_animation;
+}
 
-    package this(SkeletonData sd, spAnimation* a)
-    {
-        skeletonData = sd;
-        sp_animation = a;
-    }
+Animation findAnimation(SkeletonData sd, string animationName)
+{
+    Animation ret;
+    ret.sp_animation = spSkeletonData_findAnimation(sd.sp_skeletonData, animationName.toStringz);
 
-    ~this()
-    {
-        spAnimation_dispose(sp_animation);
-    }
+    return ret;
 }
 
 private extern(C):
