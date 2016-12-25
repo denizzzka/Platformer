@@ -33,6 +33,8 @@ class Soldier
 
     PhysicalState movingState;
 
+    const float groundSpeedScale = 1.0;
+
     static this()
     {
         atlas = new Atlas("resources/textures/GAME.atlas");
@@ -62,6 +64,8 @@ class Soldier
         state = new AnimationStateInstance(stateData);
         state.setAnimationByName(0, "stay", true);
         physicalObject = new PhysicalObject(map);
+
+        groundSpeedScale = 2.0;
     }
 
     void update(float deltaTime)
@@ -76,7 +80,10 @@ class Soldier
         doMotion(acceleration, g_force_dt);
 
         if(movingState != oldPhysicalState)
+        {
+            state.timeScale = groundSpeedScale;
             updateAnimation();
+        }
 
         skeleton.update(deltaTime);
         state.update(deltaTime);
@@ -143,7 +150,7 @@ class Soldier
     {
         const float jumpHeight = 50.0;
         const float jumpForce = sqrt(2.0 * g_force_dt * jumpHeight);
-        const float groundSpeed = 80.0f * deltaTime;
+        const float groundSpeed = 80.0f * deltaTime * groundSpeedScale;
 
         PhysicalState oldPhysicalState = movingState;
 

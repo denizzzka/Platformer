@@ -69,16 +69,45 @@ class AnimationStateInstance
     {
         spAnimationState_addAnimationByName(sp_animationState, trackIndex, animationName.toStringz, loop ? 1 : 0, delay);
     }
+
+    void timeScale(float t)
+    {
+        sp_animationState.timeScale = t;
+    }
 }
 
 private extern(C):
+
+enum spEventType
+{
+    SP_ANIMATION_START,
+    SP_ANIMATION_INTERRUPT,
+    SP_ANIMATION_END,
+    SP_ANIMATION_COMPLETE,
+    SP_ANIMATION_DISPOSE,
+    SP_ANIMATION_EVENT
+}
 
 struct spEvent;
 
 void spAnimation_apply (const(spAnimation)* self, spSkeleton* skeleton, float lastTime, float time, int loop,
 		spEvent** events, int* eventsCount, float alpha, int /*boolean*/ setupPose, int /*boolean*/ mixingOut);
 
-struct spAnimationState;
+alias spAnimationStateListener = void function(spAnimationState* state, spEventType type, spTrackEntry* entry, spEvent* event);
+
+struct spAnimationState
+{
+	const(spAnimationStateData)* data;
+
+	int tracksCount;
+	spTrackEntry** tracks;
+
+	spAnimationStateListener listener;
+
+	float timeScale = 0;
+
+	void* rendererObject;
+}
 
 struct spAnimationStateData;
 
