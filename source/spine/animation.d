@@ -75,6 +75,11 @@ class AnimationStateInstance
         spAnimationState_setAnimationByName(sp_animationState, trackIndex, animationName.toStringz, loop ? 1 : 0);
     }
 
+    void setAnimation(int trackIndex, Animation animation, bool loop)
+    {
+        spAnimationState_setAnimation(sp_animationState, trackIndex, animation.sp_animation, loop);
+    }
+
     void addAnimationByName(int trackIndex, string animationName, bool loop, float delay)
     {
         spAnimationState_addAnimationByName(sp_animationState, trackIndex, animationName.toStringz, loop ? 1 : 0, delay);
@@ -153,6 +158,9 @@ struct spTrackEntry;
 
 /** Set the current animation. Any queued animations are cleared. */
 spTrackEntry* spAnimationState_setAnimationByName (spAnimationState* self, int trackIndex, const(char)* animationName, int/*bool*/loop);
+
+/// ditto
+spTrackEntry* spAnimationState_setAnimation (spAnimationState* self, int trackIndex, spAnimation* animation, int/*bool*/loop);
 
 /** Adds an animation to be played delay seconds after the current or last queued animation, taking into account any mix duration. */
 spTrackEntry* spAnimationState_addAnimationByName (spAnimationState* self, int trackIndex, const(char)* animationName, int/*bool*/loop, float delay);
