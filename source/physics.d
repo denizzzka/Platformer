@@ -2,7 +2,6 @@ module physics;
 
 import map;
 import dsfml.system;
-import dsfml.window.keyboard;
 
 enum TilesState // TODO: rename to PhysicalState?
 {

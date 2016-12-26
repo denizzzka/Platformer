@@ -20,6 +20,13 @@ class SkeletonData
         spSkeletonData_dispose(sp_skeletonData);
     }
 
+    const (spSkeletonData)* getSpSkeletonData() const
+    {
+        return sp_skeletonData;
+    }
+
+    alias getSpSkeletonData this;
+
     Skin findSkin(string name)
     {
         Skin ret;
