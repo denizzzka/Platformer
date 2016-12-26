@@ -47,6 +47,16 @@ class PhysicalObject
             }
         }
 
+        // collide with ceiling
+        if(!onGround)
+        {
+            if(acceleration.y < 0 && tileType.isGround)
+            {
+                position.y = _map.tileSize.y * (tileCoords.y + 1); // fell to down side of this block
+                acceleration.y = 0; // speed damping due to the head
+            }
+        }
+
         // collide with walls
         if(acceleration.x > 0)
         {
