@@ -9,13 +9,29 @@ enum TilesState // TODO: rename to PhysicalState?
     PushesWall
 }
 
+struct ImprovedBox
+{
+    box2f box;
+    alias box this;
+
+    vec2f width()
+    {
+        return vec2f(box.width, 0);
+    }
+
+    vec2f height()
+    {
+        return vec2f(0, box.height);
+    }
+}
+
 class PhysicalObject
 {
     const Map _map;
 
     vec2f position;
     vec2f acceleration = vec2f(0, 0);
-    box2f aabb;
+    ImprovedBox aabb;
 
     PhysLayer.TileType tileType = PhysLayer.TileType.Empty;
     TilesState tilesState;
@@ -30,7 +46,6 @@ class PhysicalObject
     void doMotion(const vec2f doAcceleration, const float deltaTime, const float g_force)
     {
         position += acceleration * deltaTime;
-
         const vec2i tileCoords = _map.worldCoordsToTileCoords(position);
         tileType = _map.tileTypeByTileCoords(tileCoords);
 
@@ -97,6 +112,61 @@ class PhysicalObject
         {
             acceleration.y += g_force * deltaTime;
         }
+    }
+
+    private void doMotionX(const float doAcceleration, const float deltaTime)
+    {
+        position.x += acceleration.x * deltaTime;
+
+        PhysLayer.TileType type;
+
+        vec2f start;
+
+        if(acceleration.x < 0) // move left
+        {
+            start = position + aabb.min;
+        }
+
+        type = checkCollision(start, start + aabb.height);
+    }
+
+    private PhysLayer.TileType checkCollision(vec2f start, vec2f end)
+    {
+        return checkCollision(_map.worldCoordsToTileCoords(start), _map.worldCoordsToTileCoords(end));
+    }
+
+    private PhysLayer.TileType checkCollision(vec2i startTile, vec2i endTile)
+    {
+        PhysLayer.TileType ret = PhysLayer.TileType.Empty;
+
+        foreach(y; startTile.y .. endTile.y)
+            foreach(x; startTile.x .. endTile.x)
+            {
+                auto type = _map.tileTypeByTileCoords(vec2i(x, y));
+
+                with(PhysLayer.TileType)
+                final switch(type)
+                {
+                    case Block:
+                    case SlopeLeft:
+                    case SlopeRight:
+                        return Block;
+
+                    case Ladder:
+                        ret = Ladder;
+                        break;
+
+                    case OneWay:
+                        if(ret == Empty)
+                            ret = OneWay;
+                        break;
+
+                    case Empty:
+                        break;
+                }
+            }
+
+        return ret;
     }
 }
 
