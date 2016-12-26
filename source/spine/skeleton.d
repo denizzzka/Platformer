@@ -25,8 +25,6 @@ class SkeletonData
         return sp_skeletonData;
     }
 
-    alias getSpSkeletonData this;
-
     Skin findSkin(string name)
     {
         Skin ret;
