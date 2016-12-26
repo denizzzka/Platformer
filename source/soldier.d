@@ -7,6 +7,7 @@ import spine.dsfml;
 import dsfml.graphics;
 import map;
 import physics;
+import gfm.math;
 
 enum PhysicalState // TODO: move it to Soldier?
 {
@@ -139,7 +140,7 @@ class Soldier
 
         const float g_force = 1200.0f;
         auto acceleration = readKeys(g_force);
-        doMotion(acceleration, deltaTime, g_force);
+        doMotion(acceleration.gfm_dsfml, deltaTime, g_force);
 
         if(movingState != oldPhysicalState)
         {
@@ -182,7 +183,7 @@ class Soldier
         }
     }
 
-    private Vector2f renderCenter() const
+    private vec2f renderCenter() const
     {
         with(PhysicalState)
         final switch(movingState)
@@ -192,11 +193,11 @@ class Soldier
             case MoveUp:
             case MoveDown:
             case Jump:
-                return Vector2f(0, 24);
+                return vec2f(0, 24);
 
             case Sit:
             case Crawl:
-                return Vector2f(0, 14);
+                return vec2f(0, 14);
         }
     }
 

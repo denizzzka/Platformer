@@ -7,6 +7,7 @@ import dsfml.window.keyboard;
 import dsfml.system.clock;
 import std.conv: to;
 import core.time: to;
+import gfm.math: vec2f;
 
 void main(string[] args)
 {
@@ -47,7 +48,7 @@ void main(string[] args)
     Clock frameClock = new Clock();
 
     auto soldier = new Soldier(testMap);
-    soldier.position = Vector2f(300, 300);
+    soldier.position = vec2f(300, 300);
 
     void soldierDrawCallback()
     {

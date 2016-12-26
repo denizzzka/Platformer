@@ -2,6 +2,7 @@ module physics;
 
 import map;
 import dsfml.system;
+import gfm.math;
 
 enum TilesState // TODO: rename to PhysicalState?
 {
@@ -13,8 +14,9 @@ class PhysicalObject
 {
     const Map _map;
 
-    Vector2f position;
-    Vector2f acceleration = Vector2f(0, 0);
+    vec2f position;
+    vec2f acceleration = vec2f(0, 0);
+    box2f aabb;
 
     PhysLayer.TileType tileType = PhysLayer.TileType.Empty;
     TilesState tilesState;
@@ -26,12 +28,12 @@ class PhysicalObject
         _map = m;
     }
 
-    void doMotion(const Vector2f doAcceleration, const float deltaTime, const float g_force)
+    void doMotion(const vec2f doAcceleration, const float deltaTime, const float g_force)
     {
         position += acceleration * deltaTime;
 
-        const Vector2i tileCoords = _map.worldCoordsToTileCoords(position);
-        tileType = _map.tileTypeByTileCoords(tileCoords);
+        const vec2i tileCoords = _map.worldCoordsToTileCoords(position.gfm_dsfml).gfm_dsfml;
+        tileType = _map.tileTypeByTileCoords(tileCoords.gfm_dsfml);
 
         if(tileType == PhysLayer.TileType.Empty)
             onGround = false;
@@ -49,10 +51,10 @@ class PhysicalObject
         // collide with walls
         if(acceleration.x > 0)
         {
-            Vector2i rightTileCoords = tileCoords;
+            vec2i rightTileCoords = tileCoords;
             rightTileCoords.y -= 1;
 
-            auto tt = _map.tileTypeByTileCoords(rightTileCoords);
+            auto tt = _map.tileTypeByTileCoords(rightTileCoords.gfm_dsfml);
 
             if(tt == PhysLayer.TileType.Block)
                 position.x = _map.tileSize.x * rightTileCoords.x - 1;
@@ -60,10 +62,10 @@ class PhysicalObject
 
         if(acceleration.x < 0)
         {
-            Vector2i leftTileCoords = tileCoords;
+            vec2i leftTileCoords = tileCoords;
             leftTileCoords.y -= 1;
 
-            auto tt = _map.tileTypeByTileCoords(leftTileCoords);
+            auto tt = _map.tileTypeByTileCoords(leftTileCoords.gfm_dsfml);
 
             if(tt == PhysLayer.TileType.Block)
                 position.x = _map.tileSize.x * (leftTileCoords.x + 1);
