@@ -40,11 +40,34 @@ class PhysicalObject
         if(!onGround)
         {
             // collide with ground
-            if(acceleration.y > 0 && tileType != PhysLayer.TileType.Empty)
+            if(acceleration.y > 0 && tileType.isGround)
             {
                 position.y = _map.tileSize.y * tileCoords.y; // fell to upper side of this block
                 onGround = true;
             }
+        }
+
+        // collide with walls
+        if(acceleration.x > 0)
+        {
+            Vector2i rightTileCoords = tileCoords;
+            rightTileCoords.y -= 1;
+
+            auto tt = _map.tileTypeByTileCoords(rightTileCoords);
+
+            if(tt == PhysLayer.TileType.Block)
+                position.x = _map.tileSize.x * rightTileCoords.x;
+        }
+
+        if(acceleration.x < 0)
+        {
+            Vector2i leftTileCoords = tileCoords;
+            leftTileCoords.y -= 1;
+
+            auto tt = _map.tileTypeByTileCoords(leftTileCoords);
+
+            if(tt == PhysLayer.TileType.Block)
+                position.x = _map.tileSize.x * (leftTileCoords.x + 1);
         }
 
         if(onGround)
@@ -68,4 +91,10 @@ class PhysicalObject
             acceleration.y += g_force * deltaTime;
         }
     }
+}
+
+private bool isGround(PhysLayer.TileType t) pure
+{
+//    return t == PhysLayer.TileType.Block || t == PhysLayer.TileType.OneWay;
+    return t != PhysLayer.TileType.Empty;
 }
