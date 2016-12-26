@@ -5,15 +5,22 @@ public import gfm.math;
 alias vec2i = gfm.math.vec2i;
 alias vec2f = gfm.math.vec2f;
 
+alias box2i = gfm.math.box2i;
+alias box2f = gfm.math.box2f;
+
 import std.traits;
 import dsfml.system;
+import dsfml.graphics.rect;
 
 /// gfm and dsfml interaction
 /// params:
 /// Vs - source vector
 /// Vr - result vector
 auto gfm_dsfml(Vs)(Vs s)
-if(isNumeric!(typeof(Vs.x)))
+if(
+    isInstanceOf!(dsfml.system.vector2.Vector2, Vs) ||
+    (isInstanceOf!(gfm.math.Vector, Vs) && Vs.v.length == 2)
+)
 {
     alias T = Unqual!(typeof(Vs.x));
 
@@ -27,7 +34,7 @@ if(isNumeric!(typeof(Vs.x)))
     }
     else
     {
-        static assert(0, "Unsupported source type");
+        static assert(0);
     }
 
     alias R = CopyConstness!(Vs, Vdest);
