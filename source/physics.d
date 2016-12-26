@@ -14,12 +14,12 @@ struct ImprovedBox
     box2f box;
     alias box this;
 
-    vec2f width()
+    vec2f width() const
     {
         return vec2f(box.width, 0);
     }
 
-    vec2f height()
+    vec2f height() const
     {
         return vec2f(0, box.height);
     }
@@ -114,20 +114,17 @@ class PhysicalObject
         }
     }
 
-    private void doMotionX(const float doAcceleration, const float deltaTime)
+    private PhysLayer.TileType checkCollisionX(const float doAcceleration, const float deltaTime)
     {
-        position.x += acceleration.x * deltaTime;
-
-        PhysLayer.TileType type;
-
         vec2f start;
 
         if(acceleration.x < 0) // move left
-        {
             start = position + aabb.min;
-        }
 
-        type = checkCollision(start, start + aabb.height);
+        if(acceleration.x > 0) // move right
+            start = position + aabb.max - aabb.height;
+
+        return checkCollision(start, start + aabb.height);
     }
 
     private PhysLayer.TileType checkCollision(vec2f start, vec2f end)
