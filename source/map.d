@@ -3,7 +3,7 @@ module map;
 import dsfml.graphics;
 import std.exception: enforce;
 import std.conv: to;
-import gfm.math: box2f;
+import math;
 import misc: loadTexture;
 import vibe.data.json;
 
@@ -233,15 +233,15 @@ class Map
     }
 
     /// corner - top left corner of scene
-    void draw(RenderWindow window, Vector2f corner)
+    void draw(RenderWindow window, vec2f corner)
     {
         foreach(lay; layers)
         {
-            window.view = new View(FloatRect(corner * lay.parallax, Vector2f(window.size)));
+            window.view = new View(FloatRect(corner.gfm_dsfml * lay.parallax, Vector2f(window.size)));
 
             if(lay.type == Layer.Type.TILES)
             {
-                renderTilesLayer(lay, window, corner,
+                renderTilesLayer(lay, window, corner.gfm_dsfml,
                     (coords)
                     {
                         auto idx = lay.coords2index(coords);
