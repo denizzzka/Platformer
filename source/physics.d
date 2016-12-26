@@ -45,12 +45,9 @@ class PhysicalObject
                 position.y = _map.tileSize.y * tileCoords.y; // fell to upper side of this block
                 onGround = true;
             }
-        }
 
-        // collide with ceiling
-        if(!onGround)
-        {
-            if(acceleration.y < 0 && tileType.isGround)
+            // collide with ceiling
+            if(acceleration.y < 0 && !tileType.isOneWay)
             {
                 position.y = _map.tileSize.y * (tileCoords.y + 1); // fell to down side of this block
                 acceleration.y = 0; // speed damping due to the head
@@ -105,6 +102,12 @@ class PhysicalObject
 
 private bool isGround(PhysLayer.TileType t) pure
 {
-//    return t == PhysLayer.TileType.Block || t == PhysLayer.TileType.OneWay;
     return t != PhysLayer.TileType.Empty;
+}
+
+private bool isOneWay(PhysLayer.TileType t) pure
+{
+    return  t == PhysLayer.TileType.OneWay ||
+            t == PhysLayer.TileType.Empty ||
+            t == PhysLayer.TileType.Ladder;
 }

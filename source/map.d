@@ -47,8 +47,7 @@ struct PhysLayer
         OneWay,
         Ladder,
         SlopeLeft,
-        SlopeRight,
-        WithSound
+        SlopeRight
     }
 
     TileType[] tiles;
@@ -222,7 +221,6 @@ class Map
                     mapType(Ladder, 1);
                     mapType(SlopeLeft, 2);
                     mapType(SlopeRight, 3);
-                    mapType(WithSound, 4);
                 }
             }
             else
