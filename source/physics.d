@@ -31,8 +31,8 @@ class PhysicalObject
     {
         position += acceleration * deltaTime;
 
-        const vec2i tileCoords = _map.worldCoordsToTileCoords(position.gfm_dsfml).gfm_dsfml;
-        tileType = _map.tileTypeByTileCoords(tileCoords.gfm_dsfml);
+        const vec2i tileCoords = _map.worldCoordsToTileCoords(position);
+        tileType = _map.tileTypeByTileCoords(tileCoords);
 
         if(tileType == PhysLayer.TileType.Empty)
             onGround = false;
@@ -53,7 +53,7 @@ class PhysicalObject
             vec2i rightTileCoords = tileCoords;
             rightTileCoords.y -= 1;
 
-            auto tt = _map.tileTypeByTileCoords(rightTileCoords.gfm_dsfml);
+            auto tt = _map.tileTypeByTileCoords(rightTileCoords);
 
             if(tt == PhysLayer.TileType.Block)
                 position.x = _map.tileSize.x * rightTileCoords.x - 1;
@@ -64,7 +64,7 @@ class PhysicalObject
             vec2i leftTileCoords = tileCoords;
             leftTileCoords.y -= 1;
 
-            auto tt = _map.tileTypeByTileCoords(leftTileCoords.gfm_dsfml);
+            auto tt = _map.tileTypeByTileCoords(leftTileCoords);
 
             if(tt == PhysLayer.TileType.Block)
                 position.x = _map.tileSize.x * (leftTileCoords.x + 1);

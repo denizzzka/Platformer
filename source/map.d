@@ -1,6 +1,6 @@
 module map;
 
-import dsfml.graphics;
+import dsfml.graphics: Sprite, Texture, RenderWindow, View, IntRect, FloatRect, Color;
 import std.exception: enforce;
 import std.conv: to;
 import math;
@@ -17,8 +17,8 @@ struct Layer
 
     Type type;
     string name;
-    Vector2f offset = Vector2f(0, 0);
-    Vector2i layerSize; //TODO: it is equal for all tiles layers, need to move it to Map
+    vec2f offset = vec2f(0, 0);
+    vec2i layerSize; //TODO: it is equal for all tiles layers, need to move it to Map
     float opacity = 1;
     float scale = 1; /// scale factor
     ushort[] spriteNumbers; // for tile layers only
@@ -27,7 +27,7 @@ struct Layer
     bool drawUnits;
 }
 
-private size_t coords2index(T)(inout T s, Vector2i coords)
+private size_t coords2index(T)(inout T s, vec2i coords)
 if(is(T == Layer) || is(T == PhysLayer))
 {
     auto ret = s.layerSize.x * coords.y + coords.x;
@@ -53,13 +53,13 @@ struct PhysLayer
 
     TileType[] tiles;
     alias spriteNumbers = tiles;
-    Vector2i layerSize;
+    vec2i layerSize;
 }
 
 class Map
 {
     const string fileName;
-    const Vector2i tileSize;
+    const vec2i tileSize;
     Layer[] layers;
     Texture[] tilesets;
     Sprite[] tileSprites;
@@ -74,7 +74,7 @@ class Map
 
         enforce(j["version"].get!int == 1, "Map file version mismatch");
 
-        tileSize = Vector2i(
+        tileSize = vec2i(
                 j["tilewidth"].get!int,
                 j["tileheight"].get!int
             );
@@ -193,8 +193,8 @@ class Map
 
                 auto img = loadTexture("resources/maps/test_map/"~l["image"].get!string);
                 layer.image = new Sprite(img);
-                layer.image.position = layer.offset;
-                layer.image.scale = Vector2f(layer.scale, layer.scale);
+                layer.image.position = layer.offset.gfm_dsfml;
+                layer.image.scale = vec2f(layer.scale, layer.scale).gfm_dsfml;
                 layer.image.color = Color(255, 255, 255, (255 * layer.opacity).to!ubyte);
             }
             else assert(0);
@@ -208,7 +208,7 @@ class Map
                 {
                     foreach(x; 0 .. layer.layerSize.x)
                     {
-                        size_t tileIdx = layer.coords2index(Vector2i(x, lineNumber));
+                        size_t tileIdx = layer.coords2index(vec2i(x, lineNumber));
                         ushort spriteNum = layer.spriteNumbers[tileIdx];
 
                         if(spriteNum != 0)
@@ -235,13 +235,15 @@ class Map
     /// corner - top left corner of scene
     void draw(RenderWindow window, vec2f corner)
     {
+        import dsfml.graphics: Vector2f;
+
         foreach(lay; layers)
         {
             window.view = new View(FloatRect(corner.gfm_dsfml * lay.parallax, Vector2f(window.size)));
 
             if(lay.type == Layer.Type.TILES)
             {
-                renderTilesLayer(lay, window, corner.gfm_dsfml,
+                renderTilesLayer(lay, window, corner,
                     (coords)
                     {
                         auto idx = lay.coords2index(coords);
@@ -272,11 +274,13 @@ class Map
     }
 
     /// corner - top left corner of scene
-    private void renderTilesLayer(Layer lay, RenderWindow window, Vector2f corner, void delegate(Vector2i coords) renderer)
+    private void renderTilesLayer(Layer lay, RenderWindow window, vec2f corner, void delegate(vec2i coords) renderer)
     {
+        import dsfml.graphics;
+
         assert(lay.type == Layer.Type.TILES);
 
-        window.view = new View(FloatRect(corner * lay.parallax, Vector2f(window.size)));
+        window.view = new View(FloatRect(corner.gfm_dsfml * lay.parallax, Vector2f(window.size)));
 
         Vector2i cornerTile = Vector2i(
                 corner.x.to!int / tileSize.x,
@@ -301,7 +305,7 @@ class Map
                     y >= 0 && y < lay.layerSize.y
                 )
                 {
-                    renderer(Vector2i(x, y));
+                    renderer(vec2i(x, y));
                 }
     }
 
@@ -313,15 +317,15 @@ class Map
         unitsDrawCallback = callback;
     }
 
-    Vector2i worldCoordsToTileCoords(Vector2f w) const
+    vec2i worldCoordsToTileCoords(vec2f w) const
     {
         import std.math: floor;
         import std.conv: to;
 
-        return Vector2i(w.x.floor.to!int / tileSize.x, w.y.floor.to!int / tileSize.y);
+        return vec2i(w.x.floor.to!int / tileSize.x, w.y.floor.to!int / tileSize.y);
     }
 
-    PhysLayer.TileType tileTypeByTileCoords(Vector2i tileCoords) const
+    PhysLayer.TileType tileTypeByTileCoords(vec2i tileCoords) const
     {
         if(
             tileCoords.x >= 0 &&
@@ -334,7 +338,7 @@ class Map
             return PhysLayer.TileType.Empty;
     }
 
-    PhysLayer.TileType tileTypeByWorldCoords(Vector2f worldCoords) const
+    PhysLayer.TileType tileTypeByWorldCoords(vec2f worldCoords) const
     {
         return tileTypeByTileCoords(worldCoordsToTileCoords(worldCoords));
     }
