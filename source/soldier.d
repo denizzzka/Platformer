@@ -7,7 +7,7 @@ import spine.dsfml;
 import dsfml.graphics;
 import map;
 import physics;
-import gfm.math;
+import math;
 
 enum PhysicalState // TODO: move it to Soldier?
 {
