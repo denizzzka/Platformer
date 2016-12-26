@@ -36,7 +36,6 @@ class Soldier
     alias physicalObject this;
 
     PhysicalState movingState;
-
     const float groundSpeedScale = 1.0;
 
     struct AnimationProperty
@@ -127,6 +126,7 @@ class Soldier
         state = new AnimationStateInstance(stateData);
         setAnimation(AnimationType.Stay);
         physicalObject = new PhysicalObject(map);
+        physicalObject.aabb = box2f(-20, 0, 20, 50);
 
         groundSpeedScale = 2.0;
     }
