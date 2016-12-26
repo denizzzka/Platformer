@@ -29,8 +29,6 @@ class PhysicalObject
 
     void doMotion(Vector2f doAcceleration, float g_force_dt)
     {
-        import std.math: sqrt;
-
         position += acceleration;
 
         const Vector2i tileCoords = _map.worldCoordsToTileCoords(position);
