@@ -3,10 +3,12 @@ module physics;
 import map;
 import math;
 
-enum TilesState // TODO: rename to PhysicalState?
+enum CollisionState
 {
     Default,
-    PushesWall
+    PushesBlock,
+    TouchesOneWay,
+    TouchesLadder
 }
 
 struct ImprovedBox
@@ -43,11 +45,6 @@ class PhysicalObject
 
     void doMotion(const vec2f doAcceleration, const float deltaTime, const float g_force)
     {
-        import std.stdio;
-        writeln("curr position=", position);
-        writeln("curr tile position=", _map.worldCoordsToTileCoords(position));
-        writeln("REAL curr tile=", _map.tileTypeByWorldCoords(position));
-
         // horizontal
         {
             position.x += acceleration.x * deltaTime;
@@ -70,11 +67,6 @@ class PhysicalObject
                     acceleration.x = 0; // FIXME temporary
                 }
             }
-
-            if(tileType.isGround)
-                onGround = true;
-            else
-                onGround = false;
         }
 
         // vertical
@@ -83,22 +75,32 @@ class PhysicalObject
 
             auto tileType = checkCollisionY();
 
-            if(acceleration.y < 0)
+            if(tileType.isGround)
+            {
+                onGround = true;
+                acceleration.y = 0;
+            }
+            else
             {
                 onGround = false;
 
-                // collide with ceiling
-                if(!tileType.isOneWay)
-                    acceleration.y = 0; // speed damping due to the head
-            }
-
-            if(acceleration.y > 0)
-            {
-                // collide with ground
-                if(tileType.isGround)
+                if(acceleration.y < 0)
                 {
-                    acceleration.y = 0; // ground
-                    onGround = true;
+                    onGround = false;
+
+                    // collide with ceiling
+                    if(!tileType.isOneWay)
+                        acceleration.y = 0; // speed damping due to the head
+                }
+
+                if(acceleration.y > 0)
+                {
+                    // collide with ground
+                    if(tileType.isGround)
+                    {
+                        acceleration.y = 0; // ground
+                        onGround = true;
+                    }
                 }
             }
         }
@@ -114,7 +116,7 @@ class PhysicalObject
         }
     }
 
-    private PhysLayer.TileType checkCollisionX()
+    private CollisionState checkCollisionX()
     {
         vec2f start = position;
 
@@ -127,7 +129,7 @@ class PhysicalObject
         return checkCollision(start, start + aabb.height);
     }
 
-    private PhysLayer.TileType checkCollisionY()
+    private CollisionState checkCollisionY()
     {
         vec2f start = position;
 
@@ -144,18 +146,18 @@ class PhysicalObject
         return checkCollision(start, start + aabb.width);
     }
 
-    private PhysLayer.TileType checkCollision(vec2f start, vec2f end)
+    private CollisionState checkCollision(vec2f start, vec2f end)
     {
         return checkCollision(_map.worldCoordsToTileCoords(start), _map.worldCoordsToTileCoords(end));
     }
 
-    private PhysLayer.TileType checkCollision(vec2i startTile, vec2i endTile)
+    private CollisionState checkCollision(vec2i startTile, vec2i endTile)
     {
         import std.stdio;
         writeln("startTile=", startTile);
         writeln("endTile=", endTile);
 
-        PhysLayer.TileType ret = PhysLayer.TileType.Empty;
+        auto ret = CollisionState.Default;
 
         foreach(y; startTile.y .. endTile.y + 1)
             foreach(x; startTile.x .. endTile.x + 1)
@@ -163,20 +165,21 @@ class PhysicalObject
                 auto type = _map.tileTypeByTileCoords(vec2i(x, y));
 
                 with(PhysLayer.TileType)
+                with(CollisionState)
                 final switch(type)
                 {
                     case Block:
                     case SlopeLeft:
                     case SlopeRight:
-                        return Block;
-
-                    case Ladder:
-                        ret = Ladder;
-                        break;
+                        return PushesBlock;
 
                     case OneWay:
+                        ret = TouchesOneWay;
+                        break;
+
+                    case Ladder:
                         if(ret == Empty)
-                            ret = OneWay;
+                            ret = TouchesLadder;
                         break;
 
                     case Empty:
@@ -190,14 +193,13 @@ class PhysicalObject
     }
 }
 
-private bool isGround(PhysLayer.TileType t) pure
+private bool isGround(CollisionState t) pure
 {
-    return t != PhysLayer.TileType.Empty;
+    return t != CollisionState.Default;
 }
 
-private bool isOneWay(PhysLayer.TileType t) pure
+private bool isOneWay(CollisionState t) pure
 {
-    return  t == PhysLayer.TileType.OneWay ||
-            t == PhysLayer.TileType.Empty ||
-            t == PhysLayer.TileType.Ladder;
+    return  t == CollisionState.TouchesOneWay ||
+            t == CollisionState.Default;
 }
