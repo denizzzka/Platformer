@@ -56,7 +56,7 @@ class PhysicalObject
             auto tt = _map.tileTypeByTileCoords(rightTileCoords);
 
             if(tt == PhysLayer.TileType.Block)
-                position.x = _map.tileSize.x * rightTileCoords.x;
+                position.x = _map.tileSize.x * rightTileCoords.x - 1;
         }
 
         if(acceleration.x < 0)
