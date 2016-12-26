@@ -255,11 +255,11 @@ class Soldier
 
             if(kp(W))
             {
-                if(physicalObject.tileType == PhysLayer.TileType.Ladder)
-                {
-                    acceleration.y -= groundSpeed;
-                }
-                else
+                //~ if(physicalObject.tileType == PhysLayer.TileType.Ladder)
+                //~ {
+                    //~ acceleration.y -= groundSpeed;
+                //~ }
+                //~ else
                 {
                     acceleration.y -= jumpForce;
                     movingState = PhysicalState.Jump;
@@ -270,11 +270,12 @@ class Soldier
             {
                 if(onGround)
                 {
-                    if(physicalObject.tileType == PhysLayer.TileType.Ladder)
-                    {
-                        acceleration.y += groundSpeed;
-                    }
-                    else if(kp(A) || kp(D))
+                    //~ if(physicalObject.tileType == PhysLayer.TileType.Ladder)
+                    //~ {
+                        //~ acceleration.y += groundSpeed;
+                    //~ }
+                    //~ else
+                    if(kp(A) || kp(D))
                     {
                         movingState = PhysicalState.Crawl;
                         acceleration.x *= 0.5;

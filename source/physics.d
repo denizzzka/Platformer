@@ -33,8 +33,6 @@ class PhysicalObject
     vec2f acceleration = vec2f(0, 0);
     ImprovedBox aabb;
 
-    PhysLayer.TileType tileType = PhysLayer.TileType.Empty;
-    TilesState tilesState;
     bool onGround;
     bool rightDirection = false;
 
@@ -45,68 +43,51 @@ class PhysicalObject
 
     void doMotion(const vec2f doAcceleration, const float deltaTime, const float g_force)
     {
-        position += acceleration * deltaTime;
-        const vec2i tileCoords = _map.worldCoordsToTileCoords(position);
-        tileType = _map.tileTypeByTileCoords(tileCoords);
+        position.x += acceleration.x * deltaTime;
 
-        if(tileType == PhysLayer.TileType.Empty)
-            onGround = false;
-
-        if(!onGround)
-        {
-            // collide with ground
-            if(acceleration.y > 0 && tileType.isGround)
-            {
-                position.y = _map.tileSize.y * tileCoords.y; // fell to upper side of this block
-                onGround = true;
-            }
-
-            // collide with ceiling
-            if(acceleration.y < 0 && !tileType.isOneWay)
-            {
-                position.y = _map.tileSize.y * (tileCoords.y + 1); // fell to down side of this block
-                acceleration.y = 0; // speed damping due to the head
-            }
-        }
+        auto tileType = checkCollisionX();
 
         // collide with walls
-        if(acceleration.x > 0)
-        {
-            vec2i rightTileCoords = tileCoords;
-            rightTileCoords.y -= 1;
-
-            auto tt = _map.tileTypeByTileCoords(rightTileCoords);
-
-            if(tt == PhysLayer.TileType.Block)
-                position.x = _map.tileSize.x * rightTileCoords.x - 1;
-        }
-
         if(acceleration.x < 0)
         {
-            vec2i leftTileCoords = tileCoords;
-            leftTileCoords.y -= 1;
+            if(tileType == PhysLayer.TileType.Block)
+            {
+                acceleration.x = 0; // FIXME temporary
+            }
+        }
 
-            auto tt = _map.tileTypeByTileCoords(leftTileCoords);
+        if(acceleration.x > 0)
+        {
+            if(tileType == PhysLayer.TileType.Block)
+            {
+                acceleration.x = 0; // FIXME temporary
+            }
+        }
 
-            if(tt == PhysLayer.TileType.Block)
-                position.x = _map.tileSize.x * (leftTileCoords.x + 1);
+        position.y += acceleration.y * deltaTime;
+
+        tileType = checkCollisionY();
+
+        // collide with ceiling
+        if(acceleration.y < 0)
+        {
+            if(tileType == PhysLayer.TileType.Block)
+                acceleration.y = 0; // speed damping due to the head
+        }
+
+        // collide with ground
+        if(acceleration.y > 0)
+        {
+            if(tileType == PhysLayer.TileType.Block)
+                acceleration.y = 0; // ground
+
+            onGround = true;
         }
 
         if(onGround)
         {
             // only on the ground unit can change its speed and direction
             acceleration = doAcceleration;
-
-            if(tileType != PhysLayer.TileType.Ladder)
-            {
-                // prevent settling through the ground
-                if(acceleration.y > 0)
-                    acceleration.y = 0;
-
-                // beginning jump
-                if(acceleration.y < 0)
-                    onGround = false;
-            }
         }
         else
         {
@@ -114,17 +95,30 @@ class PhysicalObject
         }
     }
 
-    private PhysLayer.TileType checkCollisionX(const float doAcceleration, const float deltaTime)
+    private PhysLayer.TileType checkCollisionX()
     {
-        vec2f start;
+        vec2f start = position;
 
         if(acceleration.x < 0) // move left
-            start = position + aabb.min;
+            start += aabb.min;
 
         if(acceleration.x > 0) // move right
-            start = position + aabb.max - aabb.height;
+            start += aabb.max - aabb.height;
 
         return checkCollision(start, start + aabb.height);
+    }
+
+    private PhysLayer.TileType checkCollisionY()
+    {
+        vec2f start = position;
+
+        if(acceleration.y < 0) // move up
+            start += aabb.min + aabb.height;
+
+        if(acceleration.y > 0) // move down
+            start += aabb.min;
+
+        return checkCollision(start, start + aabb.width);
     }
 
     private PhysLayer.TileType checkCollision(vec2f start, vec2f end)
