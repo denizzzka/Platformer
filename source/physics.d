@@ -31,23 +31,6 @@ class PhysicalObject
     {
         import std.math: sqrt;
 
-        if(onGround)
-        {
-            // only on the ground unit can change its speed and direction
-            acceleration = doAcceleration;
-
-            if(tileType != PhysLayer.TileType.Ladder)
-            {
-                // prevent settling through the ground
-                if(acceleration.y > 0)
-                    acceleration.y = 0;
-
-                // beginning jump
-                if(acceleration.y < 0)
-                    onGround = false;
-            }
-        }
-
         position += acceleration;
 
         const Vector2i tileCoords = _map.worldCoordsToTileCoords(position);
@@ -68,7 +51,19 @@ class PhysicalObject
 
         if(onGround)
         {
-            acceleration.x = 0; // unit automatically stops on the ground
+            // only on the ground unit can change its speed and direction
+            acceleration = doAcceleration;
+
+            if(tileType != PhysLayer.TileType.Ladder)
+            {
+                // prevent settling through the ground
+                if(acceleration.y > 0)
+                    acceleration.y = 0;
+
+                // beginning jump
+                if(acceleration.y < 0)
+                    onGround = false;
+            }
         }
         else
         {
