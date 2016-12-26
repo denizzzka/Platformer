@@ -27,9 +27,9 @@ class PhysicalObject
         _map = m;
     }
 
-    void doMotion(Vector2f doAcceleration, float g_force_dt)
+    void doMotion(const Vector2f doAcceleration, const float deltaTime, const float g_force)
     {
-        position += acceleration;
+        position += acceleration * deltaTime;
 
         const Vector2i tileCoords = _map.worldCoordsToTileCoords(position);
         tileType = _map.tileTypeByTileCoords(tileCoords);
@@ -65,7 +65,7 @@ class PhysicalObject
         }
         else
         {
-            acceleration.y += g_force_dt;
+            acceleration.y += g_force * deltaTime;
         }
     }
 }
