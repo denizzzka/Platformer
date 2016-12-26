@@ -73,3 +73,53 @@ unittest
         static assert(is(typeof(g) == const vec2i));
     }
 }
+
+auto gfm_dsfml(Bs)(Bs s)
+if(isInstanceOf!(dsfml.graphics.rect.Rect, Bs))
+{
+    alias T = Unqual!(typeof(Bs.left));
+    alias Bdest = Box!(T, 2);
+    alias R = CopyConstness!(Bs, Bdest);
+
+    return R(s.left, s.top, s.left + s.width, s.top + s.height);
+}
+
+unittest
+{
+    // g means gfm vector type
+    // d means dsfml vector type
+    const d = const IntRect(10, 10, 100,100);
+    auto g = d.gfm_dsfml;
+
+    assert(g.min.x == d.left);
+    assert(g.min.y == d.top);
+    assert(g.width == d.width);
+    assert(g.height == d.height);
+    static assert(is(typeof(g) == const box2i));
+}
+
+//~ auto gfm_dsfml(Bs)(Bs s)
+//~ if(
+    //~ isInstanceOf!(dsfml.graphics.rect.Rect, Bs) ||
+    //~ (isInstanceOf!(gfm.math.Box, Bs) && Bs.bound_t.v.length == 2)
+//~ )
+//~ {
+    //~ alias T = Unqual!(typeof(Bs.x));
+
+    //~ static if(isInstanceOf!(dsfml.graphics.rect.Rect, Bs))
+    //~ {
+        //~ alias Bdest = Box!(T, 2);
+    //~ }
+    //~ else static if(isInstanceOf!(gfm.math.Box, Bs) && Bs.bound_t.v.length == 2)
+    //~ {
+        //~ alias Bdest = Rect!(T);
+    //~ }
+    //~ else
+    //~ {
+        //~ static assert(0);
+    //~ }
+
+    //~ alias R = CopyConstness!(Bs, Bdest);
+
+    //~ return R(s.x, s.y);
+//~ }
