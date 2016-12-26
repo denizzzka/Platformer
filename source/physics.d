@@ -43,45 +43,64 @@ class PhysicalObject
 
     void doMotion(const vec2f doAcceleration, const float deltaTime, const float g_force)
     {
-        position.x += acceleration.x * deltaTime;
+        import std.stdio;
+        writeln("curr position=", position);
+        writeln("curr tile position=", _map.worldCoordsToTileCoords(position));
+        writeln("REAL curr tile=", _map.tileTypeByWorldCoords(position));
 
-        auto tileType = checkCollisionX();
-
-        // collide with walls
-        if(acceleration.x < 0)
+        // horizontal
         {
-            if(tileType == PhysLayer.TileType.Block)
+            position.x += acceleration.x * deltaTime;
+
+            auto tileType = checkCollisionX();
+
+            // collide with walls
+            if(acceleration.x < 0)
             {
-                acceleration.x = 0; // FIXME temporary
+                if(tileType == PhysLayer.TileType.Block)
+                {
+                    acceleration.x = 0; // FIXME temporary
+                }
             }
-        }
 
-        if(acceleration.x > 0)
-        {
-            if(tileType == PhysLayer.TileType.Block)
+            if(acceleration.x > 0)
             {
-                acceleration.x = 0; // FIXME temporary
+                if(tileType == PhysLayer.TileType.Block)
+                {
+                    acceleration.x = 0; // FIXME temporary
+                }
             }
+
+            if(tileType.isGround)
+                onGround = true;
+            else
+                onGround = false;
         }
 
-        position.y += acceleration.y * deltaTime;
-
-        tileType = checkCollisionY();
-
-        // collide with ceiling
-        if(acceleration.y < 0)
+        // vertical
         {
-            if(tileType == PhysLayer.TileType.Block)
-                acceleration.y = 0; // speed damping due to the head
-        }
+            position.y += acceleration.y * deltaTime;
 
-        // collide with ground
-        if(acceleration.y > 0)
-        {
-            if(tileType == PhysLayer.TileType.Block)
-                acceleration.y = 0; // ground
+            auto tileType = checkCollisionY();
 
-            onGround = true;
+            if(acceleration.y < 0)
+            {
+                onGround = false;
+
+                // collide with ceiling
+                if(!tileType.isOneWay)
+                    acceleration.y = 0; // speed damping due to the head
+            }
+
+            if(acceleration.y > 0)
+            {
+                // collide with ground
+                if(tileType.isGround)
+                {
+                    acceleration.y = 0; // ground
+                    onGround = true;
+                }
+            }
         }
 
         if(onGround)
@@ -118,6 +137,10 @@ class PhysicalObject
         if(acceleration.y > 0) // move down
             start += aabb.min;
 
+        import std.stdio;
+        writeln(start);
+        writeln(aabb);
+
         return checkCollision(start, start + aabb.width);
     }
 
@@ -128,10 +151,14 @@ class PhysicalObject
 
     private PhysLayer.TileType checkCollision(vec2i startTile, vec2i endTile)
     {
+        import std.stdio;
+        writeln("startTile=", startTile);
+        writeln("endTile=", endTile);
+
         PhysLayer.TileType ret = PhysLayer.TileType.Empty;
 
-        foreach(y; startTile.y .. endTile.y)
-            foreach(x; startTile.x .. endTile.x)
+        foreach(y; startTile.y .. endTile.y + 1)
+            foreach(x; startTile.x .. endTile.x + 1)
             {
                 auto type = _map.tileTypeByTileCoords(vec2i(x, y));
 
@@ -156,6 +183,8 @@ class PhysicalObject
                         break;
                 }
             }
+
+        writeln("tile ====", ret);
 
         return ret;
     }
