@@ -75,6 +75,16 @@ class PhysicalObject
 
             auto tileType = checkCollisionY();
 
+            import std.stdio;
+
+            static CollisionState old;
+
+            if(tileType != old)
+            {
+                old = tileType;
+                writeln("tile ==== ", tileType);
+            }
+
             if(tileType.isGround)
             {
                 onGround = true;
@@ -86,21 +96,9 @@ class PhysicalObject
 
                 if(acceleration.y < 0)
                 {
-                    onGround = false;
-
                     // collide with ceiling
                     if(!tileType.isOneWay)
                         acceleration.y = 0; // speed damping due to the head
-                }
-
-                if(acceleration.y > 0)
-                {
-                    // collide with ground
-                    if(tileType.isGround)
-                    {
-                        acceleration.y = 0; // ground
-                        onGround = true;
-                    }
                 }
             }
         }
@@ -139,10 +137,6 @@ class PhysicalObject
         if(acceleration.y > 0) // move down
             start += aabb.min;
 
-        import std.stdio;
-        writeln(start);
-        writeln(aabb);
-
         return checkCollision(start, start + aabb.width);
     }
 
@@ -153,10 +147,6 @@ class PhysicalObject
 
     private CollisionState checkCollision(vec2i startTile, vec2i endTile)
     {
-        import std.stdio;
-        writeln("startTile=", startTile);
-        writeln("endTile=", endTile);
-
         auto ret = CollisionState.Default;
 
         foreach(y; startTile.y .. endTile.y + 1)
@@ -186,8 +176,6 @@ class PhysicalObject
                         break;
                 }
             }
-
-        writeln("tile ====", ret);
 
         return ret;
     }
