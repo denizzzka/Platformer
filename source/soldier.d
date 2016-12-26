@@ -4,7 +4,7 @@ import spine.atlas;
 import spine.skeleton;
 import spine.animation;
 import spine.dsfml;
-import dsfml.graphics;
+import dsfml.graphics: RenderTarget, RenderStates;
 import map;
 import physics;
 import math;
@@ -140,7 +140,7 @@ class Soldier
 
         const float g_force = 1200.0f;
         auto acceleration = readKeys(g_force);
-        doMotion(acceleration.gfm_dsfml, deltaTime, g_force);
+        doMotion(acceleration, deltaTime, g_force);
 
         if(movingState != oldPhysicalState)
         {
@@ -210,8 +210,11 @@ class Soldier
     }
 
     /// params: g_force used only for jump force calculation
-    private Vector2f readKeys(const float g_force)
+    private vec2f readKeys(const float g_force)
     {
+        import std.math: sqrt;
+        import dsfml.window: Keyboard;
+
         const float jumpHeight = 50.0;
         const float jumpForce = sqrt(2.0 * g_force * jumpHeight);
         const float groundSpeed = 85.0f * groundSpeedScale;
@@ -223,7 +226,7 @@ class Soldier
         else
             movingState = PhysicalState.Jump;
 
-        Vector2f acceleration = Vector2f(0, 0);
+        vec2f acceleration = vec2f(0, 0);
 
         alias kp = Keyboard.isKeyPressed;
 
