@@ -13,7 +13,7 @@ enum CollisionState
 
 struct ImprovedBox(T)
 {
-    Box!(T, 2) box;
+    T box;
     alias box this;
 
     alias V = typeof(box.min);
@@ -35,7 +35,7 @@ class PhysicalObject
 
     vec2f position;
     vec2f acceleration = vec2f(0, 0);
-    ImprovedBox!float aabb;
+    ImprovedBox!box2f aabb;
 
     bool onGround;
     bool rightDirection = false;
