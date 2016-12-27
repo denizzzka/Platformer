@@ -91,14 +91,14 @@ class PhysicalObject
             }
             else
             {
-                // check what unit is still on ladder
-                //~ if(onLadder)
-                //~ {
-                    //~ vec2i tmp;
-                    //~ auto aabbStrictestTile = checkCollision(position + aabb.min + aabb.height, position + aabb.max, tmp);
+                //~ // check what unit is still on ladder
+                if(onLadder)
+                {
+                    vec2i tmp;
+                    auto aabbStrictestTile = checkCollision(position + aabb.min + aabb.height, position + aabb.max - aabb.height, tmp);
 
-                    //~ onLadder = (aabbStrictestTile == CollisionState.TouchesLadder);
-                //~ }
+                    onLadder = (aabbStrictestTile == CollisionState.TouchesLadder);
+                }
 
                 {
                     const bool movesUp = acceleration.y < 0;
