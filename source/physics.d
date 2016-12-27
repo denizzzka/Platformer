@@ -63,7 +63,12 @@ class PhysicalObject
             {
                 vec2i blameTileCoords;
                 CollisionState tileType = checkCollisionX(blameTileCoords);
-                if(tileType == CollisionState.PushesBlock)
+
+                if(tileType == CollisionState.PushesLeftSlope && onGround)
+                {
+                    position.y -= acceleration.x * deltaTime;
+                }
+                else if(tileType == CollisionState.PushesBlock)
                 {
                     if(acceleration.x > 0)
                         position.x = blameTileCoords.x * _map.tileSize.x - aabb.max.x - 1;
@@ -71,6 +76,9 @@ class PhysicalObject
                         position.x = (blameTileCoords.x + 1) * _map.tileSize.x - aabb.min.x;
 
                     acceleration.x = 0;
+
+                    import std.stdio;
+                    writeln("pushes block!");
                 }
             }
         }
@@ -91,7 +99,7 @@ class PhysicalObject
             }
             else
             {
-                //~ // check what unit is still on ladder
+                // check what unit is still on ladder
                 if(onLadder)
                 {
                     vec2i tmp;
@@ -239,12 +247,16 @@ private bool canStanding(CollisionState t) pure
 {
     return  t == CollisionState.PushesBlock ||
             t == CollisionState.TouchesLadder ||
+            t == CollisionState.PushesLeftSlope ||
+            t == CollisionState.PushesRightSlope ||
             t == CollisionState.TouchesOneWay;
 }
 
 private bool isOneWay(CollisionState t) pure
 {
     return  t == CollisionState.TouchesOneWay ||
+            t == CollisionState.PushesLeftSlope ||
+            t == CollisionState.PushesRightSlope ||
             t == CollisionState.TouchesLadder ||
             t == CollisionState.Default;
 }
