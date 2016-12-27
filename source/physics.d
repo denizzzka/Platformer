@@ -68,9 +68,9 @@ class PhysicalObject
                 if(tileType == CollisionState.PushesBlock)
                 {
                     if(acceleration.x > 0)
-                        position.x = blameTileCoords.x * _map.tileSize.x;
+                        position.x = blameTileCoords.x * _map.tileSize.x - aabb.max.x;
                     else
-                        position.x = (blameTileCoords.x + 1) * _map.tileSize.x;
+                        position.x = (blameTileCoords.x + 1) * _map.tileSize.x - aabb.min.x;
 
                     acceleration.x = 0;
                 }
@@ -98,7 +98,10 @@ class PhysicalObject
             {
                 // collide with ceiling
                 if(!tileType.isOneWay)
+                {
+                    //position.y = blameTileCoords.x * _map.tileSize.x;
                     acceleration.y = 0; // speed damping due to the head
+                }
             }
             else
             {
