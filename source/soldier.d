@@ -255,11 +255,11 @@ class Soldier
 
             if(kp(W))
             {
-                if(physicalObject.onLadder)
-                {
-                    acceleration.y -= groundSpeed;
-                }
-                else
+                //~ if(physicalObject.onLadder)
+                //~ {
+                    //~ acceleration.y -= groundSpeed;
+                //~ }
+                //~ else
                 {
                     acceleration.y -= jumpForce;
                     movingState = PhysicalState.Jump;
@@ -270,11 +270,11 @@ class Soldier
             {
                 if(onGround)
                 {
-                    if(physicalObject.onLadder)
-                    {
-                        acceleration.y += groundSpeed;
-                    }
-                    else
+                    //~ if(physicalObject.onLadder)
+                    //~ {
+                        //~ acceleration.y += groundSpeed;
+                    //~ }
+                    //~ else
                     if(kp(A) || kp(D))
                     {
                         movingState = PhysicalState.Crawl;
