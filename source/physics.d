@@ -88,9 +88,12 @@ import std.stdio; writeln(blameTileCoords, " ", tileType);
                 {
                     if(tileType.isGround)
                     {
-                        position.y = blameTileCoords.y * _map.tileSize.y - aabb.min.y;
-                        acceleration.y = 0;
-                        onGround = true;
+                        if(!onGround)
+                        {
+                            position.y = blameTileCoords.y * _map.tileSize.y - aabb.min.y;
+                            acceleration.y = 0;
+                            onGround = true;
+                        }
                     }
                     else
                     {
