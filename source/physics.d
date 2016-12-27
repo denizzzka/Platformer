@@ -125,7 +125,7 @@ import std.stdio; writeln(blameTileCoords, " ", tileType);
         }
     }
 
-    private CollisionState checkCollisionX(out vec2i blameTileCoords)
+    private CollisionState checkCollisionX(out vec2i blameTileCoords) const
     {
         assert(acceleration.x != 0);
 
@@ -140,7 +140,7 @@ import std.stdio; writeln(blameTileCoords, " ", tileType);
         return checkCollision(start, start - aabb.height, blameTileCoords);
     }
 
-    private CollisionState checkCollisionY(out vec2i blameTileCoords)
+    private CollisionState checkCollisionY(out vec2i blameTileCoords) const
     {
         assert(acceleration.y != 0);
 
@@ -155,12 +155,12 @@ import std.stdio; writeln(blameTileCoords, " ", tileType);
         return checkCollision(start, start + aabb.width, blameTileCoords);
     }
 
-    private CollisionState checkCollision(vec2f start, vec2f end, out vec2i blameTileCoords)
+    private CollisionState checkCollision(vec2f start, vec2f end, out vec2i blameTileCoords) const
     {
         return checkCollision(_map.worldCoordsToTileCoords(start), _map.worldCoordsToTileCoords(end), blameTileCoords);
     }
 
-    private CollisionState checkCollision(vec2i startTile, vec2i endTile, out vec2i blameTileCoords)
+    private CollisionState checkCollision(vec2i startTile, vec2i endTile, out vec2i blameTileCoords) const
     {
         version(assert) auto dir = endTile - startTile;
         assert(dir.x >= 0);
