@@ -49,22 +49,12 @@ class PhysicalObject
         {
             position.x += acceleration.x * deltaTime;
 
-            vec2i blameTileCoords;
-            CollisionState tileType = checkCollisionX(blameTileCoords);
-
-            static CollisionState old1;
-
-            if(tileType != old1)
-            {
-                old1 = tileType;
-
-                import std.stdio;
-                writeln("blameTileCoords: ", blameTileCoords);
-            }
-
             // collide with walls
             if(acceleration.x != 0)
             {
+                vec2i blameTileCoords;
+                CollisionState tileType; // = checkCollisionX(blameTileCoords);
+
                 if(tileType == CollisionState.PushesBlock)
                 {
                     if(acceleration.x > 0)
@@ -81,38 +71,35 @@ class PhysicalObject
         {
             position.y += acceleration.y * deltaTime;
 
+            if(acceleration.y == 0)
+                acceleration.y = 0.000_000_000_1; // ground checking dirty hack
+
             vec2i blameTileCoords;
             auto tileType = checkCollisionY(blameTileCoords);
 
-            static CollisionState old2;
-
-            if(tileType != old2)
-            {
-                old2 = tileType;
-
-                import std.stdio;
-                writeln("hori tile: ", tileType);
-            }
-
-            if(acceleration.y < 0)
-            {
-                // collide with ceiling
-                if(!tileType.isOneWay)
-                {
-                    //position.y = blameTileCoords.x * _map.tileSize.x;
-                    acceleration.y = 0; // speed damping due to the head
-                }
-            }
-            else
+            // fall
+            if(acceleration.y > 0)
             {
                 if(tileType.isGround)
                 {
-                    onGround = true;
+                    position.y = blameTileCoords.y * _map.tileSize.y - aabb.min.y;
                     acceleration.y = 0;
+                    onGround = true;
                 }
                 else
                 {
                     onGround = false;
+                }
+            }
+            else
+            {
+                onGround = false;
+
+                // collide with ceiling
+                if(!tileType.isOneWay)
+                {
+                    position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.max.y;
+                    acceleration.y = 0; // speed damping due to the head
                 }
             }
         }
@@ -130,6 +117,8 @@ class PhysicalObject
 
     private CollisionState checkCollisionX(out vec2i blameTileCoords)
     {
+        assert(acceleration.x != 0);
+
         vec2f start = position;
 
         if(acceleration.x < 0) // move left
@@ -147,6 +136,8 @@ class PhysicalObject
 
     private CollisionState checkCollisionY(out vec2i blameTileCoords)
     {
+        assert(acceleration.y != 0);
+
         vec2f start = position;
 
         if(acceleration.y < 0) // move up
