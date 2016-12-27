@@ -53,6 +53,21 @@ class PhysicalObject
         _map = m;
     }
 
+    ImprovedBox!box2i aabbTiled() const
+    {
+        ImprovedBox!box2i b;
+
+        b.min = _map.worldCoordsToTileCoords(aabb.min);
+        b.max = _map.worldCoordsToTileCoords(aabb.max);
+
+        return b;
+    }
+
+    vec2i tileCoords() const
+    {
+        return _map.worldCoordsToTileCoords(position);
+    }
+
     void doMotion(const vec2f doAcceleration, const float deltaTime, const float g_force)
     {
         // horizontal
@@ -191,6 +206,53 @@ class PhysicalObject
     private CollisionState checkCollision(vec2f start, vec2f end, out vec2i blameTileCoords) const
     {
         return checkCollision(_map.worldCoordsToTileCoords(start), _map.worldCoordsToTileCoords(end), blameTileCoords);
+    }
+
+    private CollisionState checkCollisionForFullAABB(out vec2i blameTileCoords) const
+    {
+        auto b = aabbTiled.translate(tileCoords);
+
+        PhysLayer.TileType ret = PhysLayer.TileType.Empty;
+
+        with(PhysLayer.TileType)
+        with(CollisionState)
+        {
+            foreach(y; b.max.y .. b.min.y)
+            {
+                foreach(x; b.min.x .. b.max.x)
+                {
+                    vec2i coords = vec2i(x, y);
+                    auto type = _map.tileTypeByTileCoords(coords);
+
+                    if(type > ret)
+                    {
+                        ret = type;
+                        blameTileCoords = coords;
+                    }
+                }
+            }
+
+            final switch(ret)
+            {
+                case Ladder:
+                    return TouchesLadder;
+
+                case Block:
+                    return PushesBlock;
+
+                case SlopeLeft:
+                    return PushesLeftSlope;
+
+                case SlopeRight:
+                    return PushesLeftSlope;
+
+                case OneWay:
+                    return TouchesOneWay;
+
+                case Empty:
+                    return Default;
+            }
+        }
     }
 
     private CollisionState checkCollision(vec2i startTile, vec2i endTile, out vec2i blameTileCoords) const
