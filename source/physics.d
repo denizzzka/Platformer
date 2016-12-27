@@ -66,7 +66,7 @@ class PhysicalObject
                 if(tileType == CollisionState.PushesBlock)
                 {
                     if(acceleration.x > 0)
-                        position.x = blameTileCoords.x * _map.tileSize.x - aabb.max.x;
+                        position.x = blameTileCoords.x * _map.tileSize.x - aabb.max.x - 1;
                     else
                         position.x = (blameTileCoords.x + 1) * _map.tileSize.x - aabb.min.x;
 
