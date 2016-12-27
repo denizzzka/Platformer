@@ -57,8 +57,6 @@ class PhysicalObject
                 vec2i blameTileCoords;
                 CollisionState tileType = checkCollisionX(blameTileCoords);
 
-import std.stdio; writeln(blameTileCoords, " ", tileType);
-
                 if(tileType == CollisionState.PushesBlock)
                 {
                     if(acceleration.x > 0)
@@ -75,16 +73,22 @@ import std.stdio; writeln(blameTileCoords, " ", tileType);
         {
             position.y += acceleration.y * deltaTime;
 
-            //~ if(acceleration.y == 0)
-                //~ acceleration.y = 0.000_000_000_1; // ground checking dirty hack
-
-            if(acceleration.y != 0)
+            if(acceleration.y == 0)
             {
                 vec2i blameTileCoords;
-                auto tileType = checkCollisionY(blameTileCoords);
+                auto bottomTileType = checkCollisionY(position + vec2f(0, 1), false, blameTileCoords);
+
+                if(!bottomTileType.isGround)
+                    onGround = false;
+            }
+            else
+            {
+                vec2i blameTileCoords;
+                const bool movesUp = acceleration.y < 0;
+                auto tileType = checkCollisionY(position, movesUp, blameTileCoords);
 
                 // fall
-                if(acceleration.y > 0)
+                if(!movesUp)
                 {
                     if(tileType.isGround)
                     {
@@ -133,23 +137,17 @@ import std.stdio; writeln(blameTileCoords, " ", tileType);
 
         if(acceleration.x < 0) // move left
             start += aabb.max - aabb.width;
-
-        if(acceleration.x > 0) // move right
+        else // move right
             start += aabb.max;
 
         return checkCollision(start, start - aabb.height, blameTileCoords);
     }
 
-    private CollisionState checkCollisionY(out vec2i blameTileCoords) const
+    private CollisionState checkCollisionY(vec2f start, bool movesUp, out vec2i blameTileCoords) const
     {
-        assert(acceleration.y != 0);
-
-        vec2f start = position;
-
-        if(acceleration.y < 0) // move up
+        if(movesUp)
             start += aabb.min + aabb.height;
-
-        if(acceleration.y > 0) // move down
+        else // moves down
             start += aabb.min;
 
         return checkCollision(start, start + aabb.width, blameTileCoords);
