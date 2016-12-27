@@ -27,6 +27,11 @@ struct ImprovedBox(T)
     {
         return V(0, box.height);
     }
+
+    void flipY()
+    {
+        box.max.y *= -1;
+    }
 }
 
 class PhysicalObject
@@ -79,8 +84,7 @@ class PhysicalObject
                 vec2i blameTileCoords;
                 auto bottomTileType = checkCollisionY(position + vec2f(0, 1), false, blameTileCoords);
 
-                if(!bottomTileType.isGround)
-                    onGround = false;
+                onGround = bottomTileType.isGround;
             }
             else
             {
@@ -100,25 +104,20 @@ class PhysicalObject
 
                 if(movesUp)
                 {
-                    onGround = onLadder;
-
-                    // collide with ceiling
-                    if(!tileType.isOneWay && !onLadder)
-                    {
-                        position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.max.y;
-                        acceleration.y = 0; // speed damping due to the head
-                    }
+                    onGround = onLadder; // it is jump or ladder
 
                     // check what unit is still on ladder
                     if(onLadder)
                     {
                         vec2i tmp;
-                        auto bottomTileType = checkCollision(position + aabb.max, position + aabb.min, tmp);
+                        auto bottomTileType = checkCollision(position + aabb.min + aabb.height, position + aabb.max, tmp);
 
-                        if(bottomTileType != CollisionState.TouchesLadder)
-                        {
-                            onLadder = false;
-                        }
+                        onLadder = (bottomTileType == CollisionState.TouchesLadder);
+                    }
+                    else if(!tileType.isOneWay) // collide with ceiling
+                    {
+                        position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.max.y;
+                        acceleration.y = 0; // speed damping due to the head
                     }
                 }
                 else // moves down
