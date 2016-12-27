@@ -85,56 +85,58 @@ class PhysicalObject
                 auto bottomTileType = checkCollisionY(position + vec2f(0, 1), false, blameTileCoords);
 
                 onGround = bottomTileType.canStanding;
+
+                if(!onGround)
+                    onLadder = false;
             }
             else
             {
-                const bool movesUp = acceleration.y < 0;
-                vec2i blameTileCoords;
-                auto tileType = checkCollisionY(position, movesUp, blameTileCoords);
+                // check what unit is still on ladder
+                //~ if(onLadder)
+                //~ {
+                    //~ vec2i tmp;
+                    //~ auto aabbStrictestTile = checkCollision(position + aabb.min + aabb.height, position + aabb.max, tmp);
 
-                if(tileType == CollisionState.TouchesLadder)
-                {
-                    onLadder = true;
-                    onGround = true;
-                }
-                else
-                {
-                    onLadder = false;
-                }
+                    //~ onLadder = (aabbStrictestTile == CollisionState.TouchesLadder);
+                //~ }
 
-                if(movesUp)
                 {
-                    onGround = onLadder; // it is jump or ladder
+                    const bool movesUp = acceleration.y < 0;
+                    vec2i blameTileCoords;
+                    auto tileType = checkCollisionY(position, movesUp, blameTileCoords);
 
-                    // check what unit is still on ladder
-                    if(onLadder)
+                    if(tileType == CollisionState.TouchesLadder)
                     {
-                        vec2i tmp;
-                        auto bottomTileType = checkCollision(position + aabb.min + aabb.height, position + aabb.max, tmp);
-
-                        onLadder = (bottomTileType == CollisionState.TouchesLadder);
+                        onLadder = true;
+                        onGround = true;
                     }
-                    else if(!tileType.isOneWay) // collide with ceiling
+
+                    if(movesUp)
                     {
-                        position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.max.y;
-                        acceleration.y = 0; // speed damping due to the head
-                    }
-                }
-                else // moves down
-                {
-                    if(tileType.canStanding)
-                    {
-                        if(!onGround && !onLadder)
+                        onGround = onLadder; // it is jump or ladder
+
+                        if(!tileType.isOneWay) // collide with ceiling
                         {
-                            position.y = blameTileCoords.y * _map.tileSize.y - aabb.min.y - 1 /*"1" is "do not touch bottom tiles"*/;
-                            acceleration.y = 0;
-                            onGround = true;
+                            position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.max.y;
+                            acceleration.y = 0; // speed damping due to the head
                         }
                     }
-                    else
+                    else // moves down
                     {
-                        onGround = false;
-                        onLadder = false;
+                        if(tileType.canStanding)
+                        {
+                            if(!onGround)
+                            {
+                                position.y = blameTileCoords.y * _map.tileSize.y - aabb.min.y - 1 /*"1" is "do not touch bottom tiles"*/;
+                                acceleration.y = 0;
+                                onGround = true;
+                            }
+                        }
+                        else
+                        {
+                            onGround = false;
+                            onLadder = false;
+                        }
                     }
                 }
             }
@@ -238,5 +240,6 @@ private bool canStanding(CollisionState t) pure
 private bool isOneWay(CollisionState t) pure
 {
     return  t == CollisionState.TouchesOneWay ||
+            t == CollisionState.TouchesLadder ||
             t == CollisionState.Default;
 }
