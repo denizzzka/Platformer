@@ -111,6 +111,9 @@ class PhysicalObject
 
                 if(!onGround)
                     onLadder = false;
+
+                if(bottomTileType == CollisionState.TouchesLadder)
+                    onLadder = true;
             }
             else
             {
