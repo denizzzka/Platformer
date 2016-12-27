@@ -49,22 +49,30 @@ class PhysicalObject
         {
             position.x += acceleration.x * deltaTime;
 
-            auto tileType = checkCollisionX();
+            vec2i blameTileCoords;
+            CollisionState tileType = checkCollisionX(blameTileCoords);
 
-            // collide with walls
-            if(acceleration.x < 0)
+            static CollisionState old1;
+
+            if(tileType != old1)
             {
-                if(tileType == PhysLayer.TileType.Block)
-                {
-                    acceleration.x = 0; // FIXME temporary
-                }
+                old1 = tileType;
+
+                import std.stdio;
+                writeln("blameTileCoords: ", blameTileCoords);
             }
 
-            if(acceleration.x > 0)
+            // collide with walls
+            if(acceleration.x != 0)
             {
-                if(tileType == PhysLayer.TileType.Block)
+                if(tileType == CollisionState.PushesBlock)
                 {
-                    acceleration.x = 0; // FIXME temporary
+                    if(acceleration.x > 0)
+                        position.x = blameTileCoords.x * _map.tileSize.x;
+                    else
+                        position.x = (blameTileCoords.x + 1) * _map.tileSize.x;
+
+                    acceleration.x = 0;
                 }
             }
         }
@@ -73,32 +81,35 @@ class PhysicalObject
         {
             position.y += acceleration.y * deltaTime;
 
-            auto tileType = checkCollisionY();
+            vec2i blameTileCoords;
+            auto tileType = checkCollisionY(blameTileCoords);
 
-            import std.stdio;
+            static CollisionState old2;
 
-            static CollisionState old;
-
-            if(tileType != old)
+            if(tileType != old2)
             {
-                old = tileType;
-                writeln("tile ==== ", tileType);
+                old2 = tileType;
+
+                import std.stdio;
+                writeln("hori tile: ", tileType);
             }
 
-            if(tileType.isGround)
+            if(acceleration.y < 0)
             {
-                onGround = true;
-                acceleration.y = 0;
+                // collide with ceiling
+                if(!tileType.isOneWay)
+                    acceleration.y = 0; // speed damping due to the head
             }
             else
             {
-                onGround = false;
-
-                if(acceleration.y < 0)
+                if(tileType.isGround)
                 {
-                    // collide with ceiling
-                    if(!tileType.isOneWay)
-                        acceleration.y = 0; // speed damping due to the head
+                    onGround = true;
+                    acceleration.y = 0;
+                }
+                else
+                {
+                    onGround = false;
                 }
             }
         }
@@ -114,20 +125,24 @@ class PhysicalObject
         }
     }
 
-    private CollisionState checkCollisionX()
+    private CollisionState checkCollisionX(out vec2i blameTileCoords)
     {
         vec2f start = position;
 
         if(acceleration.x < 0) // move left
-            start += aabb.min;
+            start += aabb.max - aabb.width;
 
         if(acceleration.x > 0) // move right
-            start += aabb.max - aabb.height;
+            start += aabb.max;
 
-        return checkCollision(start, start + aabb.height);
+        import std.stdio;
+//        if(start.x != start.y)
+//            writeln("checkCollisionX ", start, " ", start - aabb.height);
+
+        return checkCollision(start, start - aabb.height, blameTileCoords);
     }
 
-    private CollisionState checkCollisionY()
+    private CollisionState checkCollisionY(out vec2i blameTileCoords)
     {
         vec2f start = position;
 
@@ -137,22 +152,27 @@ class PhysicalObject
         if(acceleration.y > 0) // move down
             start += aabb.min;
 
-        return checkCollision(start, start + aabb.width);
+        return checkCollision(start, start + aabb.width, blameTileCoords);
     }
 
-    private CollisionState checkCollision(vec2f start, vec2f end)
+    private CollisionState checkCollision(vec2f start, vec2f end, out vec2i blameTileCoords)
     {
-        return checkCollision(_map.worldCoordsToTileCoords(start), _map.worldCoordsToTileCoords(end));
+        return checkCollision(_map.worldCoordsToTileCoords(start), _map.worldCoordsToTileCoords(end), blameTileCoords);
     }
 
-    private CollisionState checkCollision(vec2i startTile, vec2i endTile)
+    private CollisionState checkCollision(vec2i startTile, vec2i endTile, out vec2i blameTileCoords)
     {
+        version(assert) auto dir = endTile - startTile;
+        assert(dir.x >= 0);
+        assert(dir.y >= 0);
+
         auto ret = CollisionState.Default;
 
         foreach(y; startTile.y .. endTile.y + 1)
             foreach(x; startTile.x .. endTile.x + 1)
             {
-                auto type = _map.tileTypeByTileCoords(vec2i(x, y));
+                vec2i coords = vec2i(x, y);
+                auto type = _map.tileTypeByTileCoords(coords);
 
                 with(PhysLayer.TileType)
                 with(CollisionState)
@@ -161,15 +181,20 @@ class PhysicalObject
                     case Block:
                     case SlopeLeft:
                     case SlopeRight:
+                        blameTileCoords = coords;
                         return PushesBlock;
 
                     case OneWay:
+                        blameTileCoords = coords;
                         ret = TouchesOneWay;
                         break;
 
                     case Ladder:
                         if(ret == Empty)
+                        {
+                            blameTileCoords = coords;
                             ret = TouchesLadder;
+                        }
                         break;
 
                     case Empty:
