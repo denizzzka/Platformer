@@ -127,7 +127,7 @@ class PhysicalObject
                 }
 
                 {
-                    const bool movesUp = acceleration.y < 0;
+                    const bool movesUp = acceleration.isUp;
                     vec2i blameTileCoords;
                     auto tileType = checkCollisionY(position, movesUp, blameTileCoords);
 

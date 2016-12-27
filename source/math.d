@@ -13,6 +13,9 @@ immutable right = vec2i(1, 0);
 immutable up = vec2i(0, -1);
 immutable down = vec2i(0, 1);
 
+bool isUp(T)(T v){ return v.y < 0; }
+bool isDown(T)(T v){ return v.y > 0; }
+
 import std.traits;
 import dsfml.system;
 import dsfml.graphics.rect;
