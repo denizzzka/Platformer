@@ -84,7 +84,7 @@ class PhysicalObject
                 vec2i blameTileCoords;
                 auto bottomTileType = checkCollisionY(position + vec2f(0, 1), false, blameTileCoords);
 
-                onGround = bottomTileType.isGround;
+                onGround = bottomTileType.canStanding;
             }
             else
             {
@@ -122,7 +122,7 @@ class PhysicalObject
                 }
                 else // moves down
                 {
-                    if(tileType.isGround)
+                    if(tileType.canStanding)
                     {
                         if(!onGround && !onLadder)
                         {
@@ -226,7 +226,7 @@ class PhysicalObject
     }
 }
 
-private bool isGround(CollisionState t) pure
+private bool canStanding(CollisionState t) pure
 {
     return  t == CollisionState.PushesBlock ||
             t == CollisionState.TouchesLadder ||
