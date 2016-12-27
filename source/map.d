@@ -43,11 +43,11 @@ struct PhysLayer
     enum TileType : ubyte
     {
         Empty,
-        Block,
         OneWay,
-        Ladder,
         SlopeLeft,
-        SlopeRight
+        SlopeRight,
+        Block,
+        Ladder
     }
 
     TileType[] tiles;

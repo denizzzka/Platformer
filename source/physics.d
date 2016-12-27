@@ -6,8 +6,8 @@ import math;
 enum CollisionState
 {
     Default,
-    PushesBlock,
     TouchesOneWay,
+    PushesBlock,
     TouchesLadder
 }
 
@@ -38,6 +38,7 @@ class PhysicalObject
     ImprovedBox!box2f aabb;
 
     bool onGround;
+    bool onLadder;
     bool rightDirection = false;
 
     this(Map m)
@@ -89,14 +90,20 @@ class PhysicalObject
 
                 if(tileType == CollisionState.TouchesLadder)
                 {
+                    onLadder = true;
                     onGround = true;
                 }
-                else if(movesUp)
+                else
                 {
-                    onGround = false;
+                    onLadder = false;
+                }
+
+                if(movesUp)
+                {
+                    onGround = onLadder;
 
                     // collide with ceiling
-                    if(!tileType.isOneWay)
+                    if(!tileType.isOneWay && !onLadder)
                     {
                         position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.max.y;
                         acceleration.y = 0; // speed damping due to the head
@@ -106,7 +113,7 @@ class PhysicalObject
                 {
                     if(tileType.isGround)
                     {
-                        if(!onGround)
+                        if(!onGround && !onLadder)
                         {
                             position.y = blameTileCoords.y * _map.tileSize.y - aabb.min.y - 1 /*"1" is "do not touch bottom tiles"*/;
                             acceleration.y = 0;
@@ -116,6 +123,7 @@ class PhysicalObject
                     else
                     {
                         onGround = false;
+                        onLadder = false;
                     }
                 }
             }
@@ -167,49 +175,51 @@ class PhysicalObject
         assert(dir.x >= 0);
         assert(dir.y >= 0);
 
-        auto ret = CollisionState.Default;
+        PhysLayer.TileType ret = PhysLayer.TileType.Empty;
 
-        foreach(y; startTile.y .. endTile.y + 1)
-            foreach(x; startTile.x .. endTile.x + 1)
+        with(PhysLayer.TileType)
+        with(CollisionState)
+        {
+            foreach(y; startTile.y .. endTile.y + 1)
             {
-                vec2i coords = vec2i(x, y);
-                auto type = _map.tileTypeByTileCoords(coords);
-
-                with(PhysLayer.TileType)
-                with(CollisionState)
-                final switch(type)
+                foreach(x; startTile.x .. endTile.x + 1)
                 {
-                    case Block:
-                    case SlopeLeft:
-                    case SlopeRight:
+                    vec2i coords = vec2i(x, y);
+                    auto type = _map.tileTypeByTileCoords(coords);
+
+                    if(type > ret)
+                    {
+                        ret = type;
                         blameTileCoords = coords;
-                        return PushesBlock;
-
-                    case OneWay:
-                        blameTileCoords = coords;
-                        ret = TouchesOneWay;
-                        break;
-
-                    case Ladder:
-                        if(ret == Empty)
-                        {
-                            blameTileCoords = coords;
-                            ret = TouchesLadder;
-                        }
-                        break;
-
-                    case Empty:
-                        break;
+                    }
                 }
             }
 
-        return ret;
+            final switch(ret)
+            {
+                case Ladder:
+                    return TouchesLadder;
+
+                case Block:
+                case SlopeLeft:
+                case SlopeRight:
+                    return PushesBlock;
+
+                case OneWay:
+                    return TouchesOneWay;
+
+                case Empty:
+                    return Default;
+            }
+        }
     }
 }
 
 private bool isGround(CollisionState t) pure
 {
-    return t != CollisionState.Default;
+    return  t == CollisionState.PushesBlock ||
+            t == CollisionState.TouchesLadder ||
+            t == CollisionState.TouchesOneWay;
 }
 
 private bool isOneWay(CollisionState t) pure
