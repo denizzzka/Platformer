@@ -108,6 +108,18 @@ class PhysicalObject
                         position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.max.y;
                         acceleration.y = 0; // speed damping due to the head
                     }
+
+                    // check what unit is still on ladder
+                    if(onLadder)
+                    {
+                        vec2i tmp;
+                        auto bottomTileType = checkCollision(position + aabb.max, position + aabb.min, tmp);
+
+                        if(bottomTileType != CollisionState.TouchesLadder)
+                        {
+                            onLadder = false;
+                        }
+                    }
                 }
                 else // moves down
                 {
