@@ -126,7 +126,7 @@ class Soldier
         state = new AnimationStateInstance(stateData);
         setAnimation(AnimationType.Stay);
         physicalObject = new PhysicalObject(map);
-        physicalObject.aabb.box = box2f(-10, 0, 10, -50);
+        physicalObject.aabb.box = box2f(-5, 0, 5, -50);
 
         groundSpeedScale = 2.0;
     }

@@ -83,11 +83,15 @@ class PhysicalObject
             }
             else
             {
-                vec2i blameTileCoords;
                 const bool movesUp = acceleration.y < 0;
+                vec2i blameTileCoords;
                 auto tileType = checkCollisionY(position, movesUp, blameTileCoords);
 
-                if(movesUp)
+                if(tileType == CollisionState.TouchesLadder)
+                {
+                    onGround = true;
+                }
+                else if(movesUp)
                 {
                     onGround = false;
 
@@ -98,7 +102,7 @@ class PhysicalObject
                         acceleration.y = 0; // speed damping due to the head
                     }
                 }
-                else
+                else // moves down
                 {
                     if(tileType.isGround)
                     {
