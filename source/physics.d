@@ -105,7 +105,7 @@ class PhysicalObject
             if(acceleration.y == 0)
             {
                 vec2i blameTileCoords;
-                auto bottomTileType = checkCollisionY(position + vec2f(0, 1), false, blameTileCoords);
+                auto bottomTileType = checkCollisionY(position + down, false, blameTileCoords);
 
                 onGround = bottomTileType.canStanding;
 

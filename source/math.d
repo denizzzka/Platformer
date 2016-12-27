@@ -8,6 +8,11 @@ alias vec2f = gfm.math.vec2f;
 alias box2i = gfm.math.box2i;
 alias box2f = gfm.math.box2f;
 
+immutable left = vec2i(-1, 0);
+immutable right = vec2i(1, 0);
+immutable up = vec2i(0, -1);
+immutable down = vec2i(0, 1);
+
 import std.traits;
 import dsfml.system;
 import dsfml.graphics.rect;
