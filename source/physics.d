@@ -90,7 +90,7 @@ import std.stdio; writeln(blameTileCoords, " ", tileType);
                     {
                         if(!onGround)
                         {
-                            position.y = blameTileCoords.y * _map.tileSize.y - aabb.min.y;
+                            position.y = blameTileCoords.y * _map.tileSize.y - aabb.min.y - 1 /*"1" is "do not touch bottom tiles"*/;
                             acceleration.y = 0;
                             onGround = true;
                         }
