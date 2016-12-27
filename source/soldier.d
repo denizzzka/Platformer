@@ -9,7 +9,7 @@ import map;
 import physics;
 import math;
 
-enum PhysicalState // TODO: move it to Soldier?
+enum PhysicalState
 {
     Stay,
     Run,

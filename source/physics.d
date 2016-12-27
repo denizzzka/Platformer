@@ -3,10 +3,12 @@ module physics;
 import map;
 import math;
 
-enum CollisionState
+enum CollisionState // TODO: remove it?
 {
     Default,
     TouchesOneWay,
+    PushesLeftSlope,
+    PushesRightSlope,
     PushesBlock,
     TouchesLadder
 }
@@ -57,12 +59,10 @@ class PhysicalObject
         {
             position.x += acceleration.x * deltaTime;
 
-            // collide with walls
             if(acceleration.x != 0)
             {
                 vec2i blameTileCoords;
                 CollisionState tileType = checkCollisionX(blameTileCoords);
-
                 if(tileType == CollisionState.PushesBlock)
                 {
                     if(acceleration.x > 0)
@@ -217,9 +217,13 @@ class PhysicalObject
                     return TouchesLadder;
 
                 case Block:
-                case SlopeLeft:
-                case SlopeRight:
                     return PushesBlock;
+
+                case SlopeLeft:
+                    return PushesLeftSlope;
+
+                case SlopeRight:
+                    return PushesLeftSlope;
 
                 case OneWay:
                     return TouchesOneWay;
