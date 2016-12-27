@@ -149,6 +149,8 @@ class PhysicalObject
         {
             acceleration.y += g_force * deltaTime;
         }
+
+        assert(!(onLadder && !onGround));
     }
 
     private CollisionState checkCollisionX(out vec2i blameTileCoords) const
