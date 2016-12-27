@@ -11,19 +11,21 @@ enum CollisionState
     TouchesLadder
 }
 
-struct ImprovedBox
+struct ImprovedBox(T)
 {
-    box2f box;
+    Box!(T, 2) box;
     alias box this;
 
-    vec2f width() const
+    alias V = typeof(box.min);
+
+    auto width() const
     {
-        return vec2f(box.width, 0);
+        return V(box.width, 0);
     }
 
-    vec2f height() const
+    auto height() const
     {
-        return vec2f(0, box.height);
+        return V(0, box.height);
     }
 }
 
@@ -33,7 +35,7 @@ class PhysicalObject
 
     vec2f position;
     vec2f acceleration = vec2f(0, 0);
-    ImprovedBox aabb;
+    ImprovedBox!float aabb;
 
     bool onGround;
     bool rightDirection = false;
