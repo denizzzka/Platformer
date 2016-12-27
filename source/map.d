@@ -44,10 +44,10 @@ struct PhysLayer
     {
         Empty,
         OneWay,
+        Ladder,
         SlopeLeft,
         SlopeRight,
         Block,
-        Ladder
     }
 
     TileType[] tiles;

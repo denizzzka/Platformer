@@ -125,11 +125,12 @@ class PhysicalObject
                     {
                         if(tileType.canStanding)
                         {
-                            if(!onGround)
+                            if(!onGround || tileType != CollisionState.TouchesLadder)
                             {
                                 position.y = blameTileCoords.y * _map.tileSize.y - aabb.min.y - 1 /*"1" is "do not touch bottom tiles"*/;
                                 acceleration.y = 0;
                                 onGround = true;
+                                onLadder = false;
                             }
                         }
                         else
