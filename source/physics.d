@@ -121,7 +121,7 @@ class PhysicalObject
                 if(onLadder)
                 {
                     vec2i tmp;
-                    auto aabbStrictestTile = checkCollision(position + aabb.min + aabb.height, position + aabb.max - aabb.height, tmp);
+                    auto aabbStrictestTile = checkCollisionForFullAABB(tmp);
 
                     onLadder = (aabbStrictestTile == CollisionState.TouchesLadder);
                 }
@@ -215,14 +215,17 @@ class PhysicalObject
     {
         auto b = aabbTiled.translate(tileCoords);
 
+        assert(b.size.x >= 0);
+        assert(b.size.y <= 0);
+
         PhysLayer.TileType ret = PhysLayer.TileType.Empty;
 
         with(PhysLayer.TileType)
         with(CollisionState)
         {
-            foreach(y; b.max.y .. b.min.y)
+            foreach(y; b.max.y .. b.min.y + 1)
             {
-                foreach(x; b.min.x .. b.max.x)
+                foreach(x; b.min.x .. b.max.x + 1)
                 {
                     vec2i coords = vec2i(x, y);
                     auto type = _map.tileTypeByTileCoords(coords);
