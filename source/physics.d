@@ -87,8 +87,18 @@ class PhysicalObject
                 const bool movesUp = acceleration.y < 0;
                 auto tileType = checkCollisionY(position, movesUp, blameTileCoords);
 
-                // fall
-                if(!movesUp)
+                if(movesUp)
+                {
+                    onGround = false;
+
+                    // collide with ceiling
+                    if(!tileType.isOneWay)
+                    {
+                        position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.max.y;
+                        acceleration.y = 0; // speed damping due to the head
+                    }
+                }
+                else
                 {
                     if(tileType.isGround)
                     {
@@ -102,17 +112,6 @@ class PhysicalObject
                     else
                     {
                         onGround = false;
-                    }
-                }
-                else
-                {
-                    onGround = false;
-
-                    // collide with ceiling
-                    if(!tileType.isOneWay)
-                    {
-                        position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.max.y;
-                        acceleration.y = 0; // speed damping due to the head
                     }
                 }
             }
