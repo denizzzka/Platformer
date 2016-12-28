@@ -13,6 +13,7 @@ immutable rightVec = vec2i(1, 0);
 immutable upVec = vec2i(0, -1);
 immutable downVec = vec2i(0, 1);
 
+bool isLeftDirection(T)(T v){ return v.x < 0; }
 bool isUpDirection(T)(T v){ return v.y < 0; }
 bool isDownDirection(T)(T v){ return v.y > 0; }
 
@@ -27,6 +28,12 @@ struct ImprovedBox(B)
     this(T v1, T v2, T v3, T v4)
     {
         box = B(v1, v2, v3 ,v4);
+    }
+
+    this(V min, V max)
+    {
+        box.min = min;
+        box.max = max;
     }
 
     auto width() const

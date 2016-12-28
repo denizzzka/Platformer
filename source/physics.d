@@ -2,6 +2,7 @@ module physics;
 
 import map;
 import math;
+debug(physics) import std.stdio;
 
 enum CollisionState // TODO: remove it?
 {
@@ -19,7 +20,7 @@ class PhysicalObject
 
     vec2f position;
     vec2f speed = vec2f(0, 0);
-    box2f _aabb;
+    private box2f _aabb;
 
     bool onGround;
     bool rightDirection = false;
@@ -39,12 +40,23 @@ class PhysicalObject
 
     box2f aabb() const { return _aabb; }
 
+    // TODO: remove it
     box2i aabbTiled() const
     {
         box2i b;
 
         b.min = _map.worldCoordsToTileCoords(aabb.min);
         b.max = _map.worldCoordsToTileCoords(aabb.max);
+
+        return b;
+    }
+
+    box2i worldAabbTiled() const
+    {
+        box2i b;
+
+        b.min = _map.worldCoordsToTileCoords(position + aabb.min);
+        b.max = _map.worldCoordsToTileCoords(position + aabb.max);
 
         return b;
     }
@@ -121,30 +133,25 @@ class PhysicalObject
 
     private void motionRoutineX(float dt)
     {
-        position.x += speed.x * dt;
+        if(speed.x != 0)
+        {
+            position.x += speed.x * dt;
 
-        //~ if(speed.x != 0)
-        //~ {
-            //~ vec2i blameTileCoords;
-            //~ CollisionState tileType = checkCollisionX(blameTileCoords);
+            vec2i blameTileCoords;
+            CollisionState tileType = checkCollisionX(blameTileCoords);
 
-            //~ if(tileType == CollisionState.PushesLeftSlope && onGround)
-            //~ {
-                //~ position.y -= speed.x * dt;
-            //~ }
-            //~ else if(tileType == CollisionState.PushesBlock)
-            //~ {
-                //~ if(speed.x > 0)
-                    //~ position.x = blameTileCoords.x * _map.tileSize.x - aabb.max.x - 1;
-                //~ else
-                    //~ position.x = (blameTileCoords.x + 1) * _map.tileSize.x - aabb.min.x;
+            if(tileType == CollisionState.PushesBlock)
+            {
+                if(speed.x > 0)
+                    position.x = blameTileCoords.x * _map.tileSize.x - aabb.max.x - 1;
+                else
+                    position.x = (blameTileCoords.x + 1) * _map.tileSize.x - aabb.min.x;
 
-                //~ speed.x = 0;
+                speed.x = 0;
 
-                //~ import std.stdio;
-                //~ writeln("pushes block!");
-            //~ }
-        //~ }
+                debug(physics) writeln("pushes block!");
+            }
+        }
     }
 
     private void motionRoutineY(in float dt)
@@ -156,9 +163,9 @@ class PhysicalObject
             onGround = false;
         }
 
-        if(!onGround && position.y > 200)
+        if(!onGround && position.y > 300)
         {
-            position.y = 200;
+            position.y = 300;
             speed.y = 0;
             onGround = true;
         }
@@ -181,14 +188,15 @@ class PhysicalObject
     {
         assert(speed.x != 0);
 
-        vec2f start = position;
+        box2i box = worldAabbTiled;
+        vec2i start;
 
-        if(speed.x < 0) // move left
-            start += aabb.max - aabb.width;
+        if(speed.isLeftDirection)
+            start = box.min;
         else // move right
-            start += aabb.max;
+            start = box.min + box.width;
 
-        return checkCollision(start, start - aabb.height, blameTileCoords);
+        return checkCollision(start, start + box.height, blameTileCoords);
     }
 
     private CollisionState checkCollisionY(vec2f start, bool movesUp, out vec2i blameTileCoords) const
@@ -201,6 +209,7 @@ class PhysicalObject
         return checkCollision(start, start + aabb.width, blameTileCoords);
     }
 
+    // TODO: delete it
     private CollisionState checkCollision(vec2f start, vec2f end, out vec2i blameTileCoords) const
     {
         return checkCollision(_map.worldCoordsToTileCoords(start), _map.worldCoordsToTileCoords(end), blameTileCoords);
