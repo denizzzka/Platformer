@@ -131,7 +131,7 @@ class PhysicalObject
             }
 
             // ceiling collider
-            if(speed.isUpDirection)
+            if(speed.isUpDirection && unitState != UnitState.OnLadder)
             {
                 if(!collisionStateY.isOneWay)
                 {
