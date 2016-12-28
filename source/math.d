@@ -14,6 +14,7 @@ immutable upVec = vec2i(0, -1);
 immutable downVec = vec2i(0, 1);
 
 bool isLeftDirection(T)(T v){ return v.x < 0; }
+bool isRightDirection(T)(T v){ return v.x > 0; }
 bool isUpDirection(T)(T v){ return v.y < 0; }
 bool isDownDirection(T)(T v){ return v.y > 0; }
 

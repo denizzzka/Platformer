@@ -24,6 +24,7 @@ class PhysicalObject
 
     bool onGround;
     bool rightDirection = false;
+    CollisionState collisionStateX;
 
     this(Map m)
     {
@@ -138,12 +139,12 @@ class PhysicalObject
             position.x += speed.x * dt;
 
             vec2i blameTileCoords;
-            CollisionState tileType = checkCollisionX(blameTileCoords);
+            collisionStateX = checkCollisionX(blameTileCoords);
 
-            if(tileType == CollisionState.PushesBlock)
+            if(collisionStateX == CollisionState.PushesBlock)
             {
-                if(speed.x > 0)
-                    position.x = blameTileCoords.x * _map.tileSize.x - aabb.max.x - 1;
+                if(speed.isRightDirection)
+                    position.x = blameTileCoords.x * _map.tileSize.x - aabb.max.x;
                 else
                     position.x = (blameTileCoords.x + 1) * _map.tileSize.x - aabb.min.x;
 
