@@ -80,64 +80,6 @@ class PhysicalObject
         motionRoutineX(dt);
         motionRoutineY(dt);
         motionAppendSpeed(appendSpeed, dt, g_force);
-
-        //~ // vertical
-        //~ {
-            //~ position.y += speed.y * deltaTime;
-
-            //~ if(speed.y == 0)
-            //~ {
-                //~ vec2i blameTileCoords;
-                //~ auto bottomTileType = checkCollisionY(position + down, false, blameTileCoords);
-
-                //~ onGround = bottomTileType.canStanding;
-            //~ }
-            //~ else
-            //~ {
-                //~ {
-                    //~ const bool movesUp = speed.isUp;
-                    //~ vec2i blameTileCoords;
-                    //~ auto tileType = checkCollisionY(position, movesUp, blameTileCoords);
-
-                    //~ if(movesUp)
-                    //~ {
-                        //~ onGround = false;
-
-                        //~ if(!tileType.isOneWay) // collide with ceiling
-                        //~ {
-                            //~ position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.max.y;
-                            //~ speed.y = 0; // speed damping due to the head
-                        //~ }
-                    //~ }
-                    //~ else // moves down
-                    //~ {
-                        //~ if(tileType.canStanding)
-                        //~ {
-                            //~ if(!onGround)
-                            //~ {
-                                //~ position.y = blameTileCoords.y * _map.tileSize.y - aabb.min.y - 1 /*"1" is "do not touch bottom tiles"*/;
-                                //~ speed.y = 0;
-                                //~ onGround = true;
-                            //~ }
-                        //~ }
-                        //~ else
-                        //~ {
-                            //~ onGround = false;
-                        //~ }
-                    //~ }
-                //~ }
-            //~ }
-        //~ }
-
-        //~ if(onGround)
-        //~ {
-            //~ // only on the ground unit can change its speed and direction
-            //~ speed = doAcceleration;
-        //~ }
-        //~ else
-        //~ {
-            //~ speed.y += g_force * deltaTime;
-        //~ }
     }
 
     private void motionRoutineX(float dt)
@@ -261,12 +203,6 @@ class PhysicalObject
             start = box.min + box.height; // FIXME: зависит от направления осей графики
 
         return checkCollision(start, start + box.width, blameTileCoords);
-    }
-
-    // TODO: delete it
-    private CollisionState checkCollision(vec2f start, vec2f end, out vec2i blameTileCoords) const
-    {
-        return checkCollision(_map.worldCoordsToTileCoords(start), _map.worldCoordsToTileCoords(end), blameTileCoords);
     }
 
     private CollisionState checkCollisionForFullAABB(out vec2i blameTileCoords) const
