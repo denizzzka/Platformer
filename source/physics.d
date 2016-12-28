@@ -120,7 +120,7 @@ class PhysicalObject
             collisionStateY = checkCollisionY(blameTileCoords);
 
             // ground collider
-            if(speed.isDownDirection && unitState == UnitState.OnFly)
+            if(speed.isDownDirection && unitState != UnitState.OnGround)
             {
                 if(collisionStateY.canStanding)
                 {
@@ -306,7 +306,7 @@ class PhysicalObject
 private bool canStanding(CollisionState t) pure
 {
     return  t == CollisionState.PushesBlock ||
-            t == CollisionState.TouchesLadder ||
+            //~ t == CollisionState.TouchesLadder ||
             //~ t == CollisionState.PushesLeftSlope ||
             //~ t == CollisionState.PushesRightSlope ||
             t == CollisionState.TouchesOneWay;
