@@ -18,7 +18,7 @@ class PhysicalObject
     const Map _map;
 
     vec2f position;
-    vec2f acceleration = vec2f(0, 0);
+    vec2f speed = vec2f(0, 0);
     box2f _aabb;
 
     bool onGround;
@@ -62,9 +62,9 @@ class PhysicalObject
 
         //~ // vertical
         //~ {
-            //~ position.y += acceleration.y * deltaTime;
+            //~ position.y += speed.y * deltaTime;
 
-            //~ if(acceleration.y == 0)
+            //~ if(speed.y == 0)
             //~ {
                 //~ vec2i blameTileCoords;
                 //~ auto bottomTileType = checkCollisionY(position + down, false, blameTileCoords);
@@ -74,7 +74,7 @@ class PhysicalObject
             //~ else
             //~ {
                 //~ {
-                    //~ const bool movesUp = acceleration.isUp;
+                    //~ const bool movesUp = speed.isUp;
                     //~ vec2i blameTileCoords;
                     //~ auto tileType = checkCollisionY(position, movesUp, blameTileCoords);
 
@@ -85,7 +85,7 @@ class PhysicalObject
                         //~ if(!tileType.isOneWay) // collide with ceiling
                         //~ {
                             //~ position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.max.y;
-                            //~ acceleration.y = 0; // speed damping due to the head
+                            //~ speed.y = 0; // speed damping due to the head
                         //~ }
                     //~ }
                     //~ else // moves down
@@ -95,7 +95,7 @@ class PhysicalObject
                             //~ if(!onGround)
                             //~ {
                                 //~ position.y = blameTileCoords.y * _map.tileSize.y - aabb.min.y - 1 /*"1" is "do not touch bottom tiles"*/;
-                                //~ acceleration.y = 0;
+                                //~ speed.y = 0;
                                 //~ onGround = true;
                             //~ }
                         //~ }
@@ -111,35 +111,35 @@ class PhysicalObject
         //~ if(onGround)
         //~ {
             //~ // only on the ground unit can change its speed and direction
-            //~ acceleration = doAcceleration;
+            //~ speed = doAcceleration;
         //~ }
         //~ else
         //~ {
-            //~ acceleration.y += g_force * deltaTime;
+            //~ speed.y += g_force * deltaTime;
         //~ }
     }
 
     private void motionRoutineX(float dt)
     {
-        position.x += acceleration.x * dt;
+        position.x += speed.x * dt;
 
-        //~ if(acceleration.x != 0)
+        //~ if(speed.x != 0)
         //~ {
             //~ vec2i blameTileCoords;
             //~ CollisionState tileType = checkCollisionX(blameTileCoords);
 
             //~ if(tileType == CollisionState.PushesLeftSlope && onGround)
             //~ {
-                //~ position.y -= acceleration.x * dt;
+                //~ position.y -= speed.x * dt;
             //~ }
             //~ else if(tileType == CollisionState.PushesBlock)
             //~ {
-                //~ if(acceleration.x > 0)
+                //~ if(speed.x > 0)
                     //~ position.x = blameTileCoords.x * _map.tileSize.x - aabb.max.x - 1;
                 //~ else
                     //~ position.x = (blameTileCoords.x + 1) * _map.tileSize.x - aabb.min.x;
 
-                //~ acceleration.x = 0;
+                //~ speed.x = 0;
 
                 //~ import std.stdio;
                 //~ writeln("pushes block!");
@@ -149,9 +149,9 @@ class PhysicalObject
 
     private void motionRoutineY(in float dt)
     {
-        position.y += acceleration.y * dt;
+        position.y += speed.y * dt;
 
-        if(acceleration.isUpDirection)
+        if(speed.isUpDirection)
         {
             onGround = false;
         }
@@ -159,7 +159,7 @@ class PhysicalObject
         if(!onGround && position.y > 200)
         {
             position.y = 200;
-            acceleration.y = 0;
+            speed.y = 0;
             onGround = true;
         }
     }
@@ -169,21 +169,21 @@ class PhysicalObject
         if(onGround)
         {
             // only on the ground unit can change its speed and direction
-            acceleration = doAcceleration;
+            speed = doAcceleration;
         }
         else
         {
-            acceleration.y += g_force * dt;
+            speed.y += g_force * dt;
         }
     }
 
     private CollisionState checkCollisionX(out vec2i blameTileCoords) const
     {
-        assert(acceleration.x != 0);
+        assert(speed.x != 0);
 
         vec2f start = position;
 
-        if(acceleration.x < 0) // move left
+        if(speed.x < 0) // move left
             start += aabb.max - aabb.width;
         else // move right
             start += aabb.max;
