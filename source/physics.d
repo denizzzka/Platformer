@@ -113,7 +113,7 @@ class PhysicalObject
             collisionStateY = checkCollisionY(blameTileCoords);
 
             // ground collider
-            if(speed.isDownDirection && unitState != UnitState.OnGround)
+            if(speed.isDownDirection && unitState == UnitState.OnFly)
             {
                 if(collisionStateY == CollisionState.PushesBlock)
                 {
@@ -124,43 +124,47 @@ class PhysicalObject
             }
 
             // ceiling collider
-            if(speed.isUpDirection)
-            {
-                if(!collisionStateY.isOneWay)
-                {
-                    position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.min.y; // FIXME: зависит от направления осей графики
-                    speed.y = 0; // speed damping due to the head
-                }
-            }
+            //~ if(speed.isUpDirection)
+            //~ {
+                //~ if(!collisionStateY.isOneWay)
+                //~ {
+                    //~ position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.min.y; // FIXME: зависит от направления осей графики
+                    //~ speed.y = 0; // speed damping due to the head
+                //~ }
+            //~ }
         }
 
         // flags set
-        if(speed.isUpDirection && unitState == UnitState.OnGround)
+        if(unitState == UnitState.OnGround)
         {
-            unitState = UnitState.OnFly;
-        }
-        else
-        {
-            // check if unit is still on ground
-            vec2i blameTileCoords;
-            collisionStateY = checkCollisionY(blameTileCoords, true);
+            if(speed.isUpDirection)
+            {
+                unitState = UnitState.OnFly;
+            }
+            else
+            {
+                // check if unit is still on ground
+                vec2i blameTileCoords;
+                collisionStateY = checkCollisionY(blameTileCoords, true);
 
-            unitState = collisionStateY.canStanding ? UnitState.OnGround : unitState;
+                if(!collisionStateY.canStanding)
+                    unitState = UnitState.OnFly;
+            }
         }
 
-        if
-        (
-            collisionStateX == CollisionState.TouchesLadder ||
-            collisionStateY == CollisionState.TouchesLadder
-        )
-        {
-            unitState = UnitState.OnLadder;
-        }
-        else if(unitState == UnitState.OnLadder) // special full AABB ladder mode check
-        {
-            vec2i blameTileCoords;
-            unitState = checkLadderForFullAABB(blameTileCoords) ? UnitState.OnLadder : unitState;
-        }
+        //~ if
+        //~ (
+            //~ collisionStateX == CollisionState.TouchesLadder ||
+            //~ collisionStateY == CollisionState.TouchesLadder
+        //~ )
+        //~ {
+            //~ unitState = UnitState.OnLadder;
+        //~ }
+        //~ else if(unitState == UnitState.OnLadder) // special full AABB ladder mode check
+        //~ {
+            //~ vec2i blameTileCoords;
+            //~ unitState = checkLadderForFullAABB(blameTileCoords) ? UnitState.OnLadder : unitState;
+        //~ }
 
         debug(physics) if(oldStates != states)
         {
@@ -298,8 +302,8 @@ private bool canStanding(CollisionState t) pure
 {
     return  t == CollisionState.PushesBlock ||
             t == CollisionState.TouchesLadder ||
-            t == CollisionState.PushesLeftSlope ||
-            t == CollisionState.PushesRightSlope ||
+            //~ t == CollisionState.PushesLeftSlope ||
+            //~ t == CollisionState.PushesRightSlope ||
             t == CollisionState.TouchesOneWay;
 }
 
