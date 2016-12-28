@@ -14,6 +14,13 @@ enum CollisionState // TODO: remove it?
     TouchesLadder
 }
 
+struct States
+{
+    bool onGround;
+    bool rightDirection = false;
+    CollisionState collisionStateX;
+}
+
 class PhysicalObject
 {
     const Map _map;
@@ -22,9 +29,9 @@ class PhysicalObject
     vec2f speed = vec2f(0, 0);
     private box2f _aabb;
 
-    bool onGround;
-    bool rightDirection = false;
-    CollisionState collisionStateX;
+    States states;
+    debug States oldStates;
+    alias states this;
 
     this(Map m)
     {
@@ -138,6 +145,8 @@ class PhysicalObject
         {
             position.x += speed.x * dt;
 
+            debug oldStates.collisionStateX = collisionStateX;
+
             vec2i blameTileCoords;
             collisionStateX = checkCollisionX(blameTileCoords);
 
@@ -149,8 +158,6 @@ class PhysicalObject
                     position.x = (blameTileCoords.x + 1) * _map.tileSize.x - aabb.min.x;
 
                 speed.x = 0;
-
-                debug(physics) writeln("pushes block!");
             }
         }
     }
