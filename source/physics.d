@@ -67,6 +67,8 @@ class PhysicalObject
 
     void doMotion(in vec2f appendSpeed, const float dt, const float g_force)
     {
+        debug oldStates = states;
+
         motionRoutineX(dt);
         motionRoutineY(dt);
         motionAppendSpeed(appendSpeed, dt, g_force);
@@ -77,8 +79,6 @@ class PhysicalObject
         if(speed.x != 0)
         {
             position.x += speed.x * dt;
-
-            debug oldStates.collisionStateX = collisionStateX;
 
             vec2i blameTileCoords;
             collisionStateX = checkCollisionX(blameTileCoords);
@@ -100,23 +100,9 @@ class PhysicalObject
         // do motion
         position.y += speed.y * dt;
 
-        debug oldStates.onGround = onGround;
-        debug oldStates.onLadder = onLadder;
-
-        // special ladder mode
-        if(onLadder)
-        {
-            vec2i blameTileCoords;
-            onLadder = checkLadderForFullAABB(blameTileCoords);
-
-            return;
-        }
-
         // collision check
         if(speed.y != 0)
         {
-            debug oldStates.collisionStateY = collisionStateY;
-
             vec2i blameTileCoords;
             collisionStateY = checkCollisionY(blameTileCoords);
 
@@ -145,7 +131,8 @@ class PhysicalObject
         // flags set
         if(speed.isUpDirection)
         {
-            onGround = false;
+            if(!onLadder)
+                onGround = false;
         }
         else
         {
@@ -159,14 +146,27 @@ class PhysicalObject
             }
         }
 
-        if(collisionStateY.TouchesLadder)
+        if(collisionStateY == CollisionState.TouchesLadder || collisionStateX == CollisionState.TouchesLadder)
         {
             onLadder = true;
+            onGround = true;
+        }
+        else if(onLadder) // special full AABB ladder mode check
+        {
+            vec2i blameTileCoords;
+            onLadder = checkLadderForFullAABB(blameTileCoords);
+        }
+
+        debug(physics) if(oldStates != states)
+        {
+            writeln("state: ", states);
         }
     }
 
     private void motionAppendSpeed(in vec2f appendSpeed, in float dt, in float g_force)
     {
+        assert(!(onLadder && !onGround));
+
         if(onGround)
         {
             // only on the ground unit can change its speed and direction
