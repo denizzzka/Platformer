@@ -115,7 +115,7 @@ class PhysicalObject
             // ground collider
             if(speed.isDownDirection && unitState == UnitState.OnFly)
             {
-                if(collisionStateY == CollisionState.PushesBlock)
+                if(collisionStateY.canStanding)
                 {
                     position.y = blameTileCoords.y * _map.tileSize.y - aabb.max.y - 1 /*"1" is "do not touch bottom tiles"*/; // FIXME: зависит от направления осей графики
                     speed.y = 0;
@@ -159,11 +159,7 @@ class PhysicalObject
             if(!checkLadderForFullAABB(blameTileCoords))
                 unitState = UnitState.OnFly;
         }
-        else if
-        (
-            collisionStateX == CollisionState.TouchesLadder ||
-            collisionStateY == CollisionState.TouchesLadder
-        )
+        else if(unitState == UnitState.OnFly && collisionStateY == CollisionState.TouchesLadder)
         {
             unitState = UnitState.OnLadder;
         }
