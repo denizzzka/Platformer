@@ -13,36 +13,13 @@ enum CollisionState // TODO: remove it?
     TouchesLadder
 }
 
-struct ImprovedBox(T)
-{
-    T box;
-    alias box this;
-
-    alias V = typeof(box.min);
-
-    auto width() const
-    {
-        return V(box.width, 0);
-    }
-
-    auto height() const
-    {
-        return V(0, box.height);
-    }
-
-    void flipY()
-    {
-        box.max.y *= -1;
-    }
-}
-
 class PhysicalObject
 {
     const Map _map;
 
     vec2f position;
     vec2f acceleration = vec2f(0, 0);
-    ImprovedBox!box2f aabb;
+    box2f aabb;
 
     bool onGround;
     bool rightDirection = false;
@@ -52,9 +29,9 @@ class PhysicalObject
         _map = m;
     }
 
-    ImprovedBox!box2i aabbTiled() const
+    box2i aabbTiled() const
     {
-        ImprovedBox!box2i b;
+        box2i b;
 
         b.min = _map.worldCoordsToTileCoords(aabb.min);
         b.max = _map.worldCoordsToTileCoords(aabb.max);

@@ -5,8 +5,8 @@ public import gfm.math;
 alias vec2i = gfm.math.vec2i;
 alias vec2f = gfm.math.vec2f;
 
-alias box2i = gfm.math.box2i;
-alias box2f = gfm.math.box2f;
+alias box2i = ImprovedBox!(gfm.math.box2i);
+alias box2f = ImprovedBox!(gfm.math.box2f);
 
 immutable left = vec2i(-1, 0);
 immutable right = vec2i(1, 0);
@@ -15,6 +15,35 @@ immutable down = vec2i(0, 1);
 
 bool isUp(T)(T v){ return v.y < 0; }
 bool isDown(T)(T v){ return v.y > 0; }
+
+struct ImprovedBox(B)
+{
+    B box;
+    alias box this;
+
+    alias V = typeof(box.min);
+    alias T = typeof(V.x);
+
+    this(T v1, T v2, T v3, T v4)
+    {
+        box = B(v1, v2, v3 ,v4);
+    }
+
+    auto width() const
+    {
+        return V(box.width, 0);
+    }
+
+    auto height() const
+    {
+        return V(0, box.height);
+    }
+
+    void flipY()
+    {
+        box.max.y *= -1;
+    }
+}
 
 import std.traits;
 import dsfml.system;
