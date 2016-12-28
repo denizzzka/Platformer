@@ -39,7 +39,7 @@ struct ImprovedBox(B)
         return V(0, box.height);
     }
 
-    ImprovedBox flipY()
+    ImprovedBox flipY() const
     {
         ImprovedBox b = this;
 
