@@ -154,9 +154,9 @@ class PhysicalObject
             if(collisionStateX == CollisionState.PushesBlock)
             {
                 if(speed.isRightDirection)
-                    position.x = blameTileCoords.x * _map.tileSize.x - aabb.max.x;
+                    position.x = blameTileCoords.x * _map.tileSize.x - aabb.max.x; // FIXME: зависит от направления осей графики
                 else
-                    position.x = (blameTileCoords.x + 1) * _map.tileSize.x - aabb.min.x;
+                    position.x = (blameTileCoords.x + 1) * _map.tileSize.x - aabb.min.x; // FIXME: зависит от направления осей графики
 
                 speed.x = 0;
             }
@@ -165,34 +165,44 @@ class PhysicalObject
 
     private void motionRoutineY(in float dt)
     {
-        if(speed.y == 0)
-            return;
-
+        // do motion
         position.y += speed.y * dt;
 
         debug oldStates.onGround = onGround;
 
-        if(speed.isUpDirection)
+        // collision check
+        if(speed.y != 0)
         {
-            onGround = false;
-        }
-
-        if(!onGround)
-        {
-            // collisions check
             debug oldStates.collisionStateY = collisionStateY;
 
             vec2i blameTileCoords;
             collisionStateY = checkCollisionY(blameTileCoords);
 
-            if(speed.isDownDirection)
+            if(speed.isDownDirection && !onGround)
             {
                 if(collisionStateY.canStanding)
                 {
-                    position.y = blameTileCoords.y * _map.tileSize.y - aabb.max.y - 1 /*"1" is "do not touch bottom tiles"*/;
+                    position.y = blameTileCoords.y * _map.tileSize.y - aabb.max.y - 1 /*"1" is "do not touch bottom tiles"*/; // FIXME: зависит от направления осей графики
                     speed.y = 0;
                     onGround = true;
                 }
+            }
+        }
+
+        // flags set
+        if(speed.isUpDirection)
+        {
+            onGround = false;
+        }
+        else
+        {
+            // check if unit is still on ground
+            if(onGround)
+            {
+                vec2i blameTileCoords;
+                auto bottomTileType = checkCollisionY(blameTileCoords, true);
+
+                onGround = bottomTileType.canStanding;
             }
         }
     }
@@ -225,14 +235,16 @@ class PhysicalObject
         return checkCollision(start, start + box.height, blameTileCoords);
     }
 
-    private CollisionState checkCollisionY(out vec2i blameTileCoords) const
+    private CollisionState checkCollisionY(out vec2i blameTileCoords, bool checkBottomLine = false) const
     {
-        assert(speed.y != 0);
+        assert(checkBottomLine || speed.y != 0);
 
         box2i box = worldAabbTiled;
         vec2i start;
 
-        if(speed.isUpDirection)
+        if(checkBottomLine)
+            start = box.min + box.height + vec2i(0, 1); // FIXME: зависит от направления осей графики
+        else if(speed.isUpDirection)
             start = box.min;
         else // moves down
             start = box.min + box.height;
