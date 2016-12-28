@@ -54,11 +54,11 @@ class PhysicalObject
         return _map.worldCoordsToTileCoords(position);
     }
 
-    void doMotion(in vec2f doAcceleration, const float dt, const float g_force)
+    void doMotion(in vec2f appendSpeed, const float dt, const float g_force)
     {
         motionRoutineX(dt);
         motionRoutineY(dt);
-        motionAppendAcceleration(doAcceleration, dt, g_force);
+        motionAppendSpeed(appendSpeed, dt, g_force);
 
         //~ // vertical
         //~ {
@@ -164,12 +164,12 @@ class PhysicalObject
         }
     }
 
-    private void motionAppendAcceleration(in vec2f doAcceleration, in float dt, in float g_force)
+    private void motionAppendSpeed(in vec2f appendSpeed, in float dt, in float g_force)
     {
         if(onGround)
         {
             // only on the ground unit can change its speed and direction
-            speed = doAcceleration;
+            speed = appendSpeed;
         }
         else
         {
