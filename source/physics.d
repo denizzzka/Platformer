@@ -14,20 +14,21 @@ enum CollisionState // TODO: remove it?
     TouchesLadder
 }
 
+enum UnitState
+{
+    OnFly,
+    OnLadder,
+    OnGround
+}
+
 struct States
 {
+    UnitState unitState;
     bool onGround;
     bool onLadder;
     bool rightDirection = false;
     CollisionState collisionStateX;
     CollisionState collisionStateY;
-}
-
-enum UnitState
-{
-    Default,
-    OnLadder,
-    OnGround
 }
 
 class PhysicalObject
@@ -114,13 +115,13 @@ class PhysicalObject
             collisionStateY = checkCollisionY(blameTileCoords);
 
             // ground collider
-            if(speed.isDownDirection && !onGround)
+            if(speed.isDownDirection && unitState != UnitState.OnGround)
             {
-                if(collisionStateY.canStanding)
+                if(collisionStateY == CollisionState.PushesBlock)
                 {
                     position.y = blameTileCoords.y * _map.tileSize.y - aabb.max.y - 1 /*"1" is "do not touch bottom tiles"*/; // FIXME: зависит от направления осей графики
                     speed.y = 0;
-                    onGround = true;
+                    unitState = UnitState.OnGround;
                 }
             }
 
@@ -136,20 +137,17 @@ class PhysicalObject
         }
 
         // flags set
-        if(speed.isUpDirection)
+        if(speed.isUpDirection && unitState == UnitState.OnGround)
         {
-            onGround = false;
+            unitState = UnitState.OnFly;
         }
         else
         {
             // check if unit is still on ground
-            if(onGround)
-            {
-                vec2i blameTileCoords;
-                collisionStateY = checkCollisionY(blameTileCoords, true);
+            vec2i blameTileCoords;
+            collisionStateY = checkCollisionY(blameTileCoords, true);
 
-                onGround = collisionStateY.canStanding;
-            }
+            unitState = collisionStateY.canStanding ? UnitState.OnGround : unitState;
         }
 
         if
@@ -158,12 +156,12 @@ class PhysicalObject
             collisionStateY == CollisionState.TouchesLadder
         )
         {
-            onLadder = true;
+            unitState = UnitState.OnLadder;
         }
-        else if(onLadder) // special full AABB ladder mode check
+        else if(unitState == UnitState.OnLadder) // special full AABB ladder mode check
         {
             vec2i blameTileCoords;
-            onLadder = checkLadderForFullAABB(blameTileCoords);
+            unitState = checkLadderForFullAABB(blameTileCoords) ? UnitState.OnLadder : unitState;
         }
 
         debug(physics) if(oldStates != states)
@@ -174,7 +172,7 @@ class PhysicalObject
 
     private void motionAppendSpeed(in vec2f appendSpeed, in float dt, in float g_force)
     {
-        if(onGround || onLadder)
+        if(unitState != UnitState.OnFly)
         {
             // only on the ground unit can change its speed and direction
             speed = appendSpeed;
