@@ -221,7 +221,7 @@ class Soldier
 
         PhysicalState oldPhysicalState = movingState;
 
-        if(physicalObject.onGround || physicalObject.onLadder)
+        if(!unitState == UnitState.OnFly)
             movingState = PhysicalState.Stay;
         else
             movingState = PhysicalState.Jump;
@@ -237,7 +237,7 @@ class Soldier
                 physicalObject.rightDirection = toRight;
                 acceleration.x += groundSpeed * (physicalObject.rightDirection ? rightVec.x : leftVec.x);
 
-                if(physicalObject.onGround)
+                if(!physicalObject.unitState == UnitState.OnFly)
                     movingState = PhysicalState.Run;
                 else
                     movingState = PhysicalState.Jump;
@@ -255,7 +255,7 @@ class Soldier
 
             if(kp(W))
             {
-                if(physicalObject.onLadder)
+                if(unitState == UnitState.OnLadder)
                 {
                     acceleration.y -= groundSpeed;
                 }
@@ -268,26 +268,18 @@ class Soldier
 
             if(kp(S))
             {
-                if(onGround)
+                if(unitState != UnitState.OnGround)
                 {
-                    if(physicalObject.onLadder)
-                    {
-                        acceleration.y += groundSpeed;
-                    }
-                    else
-                    if(kp(A) || kp(D))
-                    {
-                        movingState = PhysicalState.Crawl;
-                        acceleration.x *= 0.5;
-                    }
-                    else
-                    {
-                        movingState = PhysicalState.Sit;
-                    }
+                    acceleration.y += groundSpeed;
+                }
+                else if(kp(A) || kp(D))
+                {
+                    movingState = PhysicalState.Crawl;
+                    acceleration.x *= 0.5;
                 }
                 else
                 {
-                    acceleration.y += groundSpeed;
+                    movingState = PhysicalState.Sit;
                 }
             }
         }

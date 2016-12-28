@@ -24,8 +24,6 @@ enum UnitState
 struct States
 {
     UnitState unitState;
-    bool onGround;
-    bool onLadder;
     bool rightDirection = false;
     CollisionState collisionStateX;
     CollisionState collisionStateY;
