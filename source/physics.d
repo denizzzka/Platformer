@@ -152,23 +152,23 @@ class PhysicalObject
             {
                 // check if unit is still on ground
                 vec2i blameTileCoords;
-                collisionStateY = checkCollisionY(blameTileCoords, true);
+                auto state = checkCollisionY(blameTileCoords, true);
 
-                if(!collisionStateY.canStanding)
+                if(!state.canStanding)
                     unitState = UnitState.OnFly;
             }
         }
 
-        if(unitState == UnitState.OnLadder) // special full AABB ladder mode check
+        if(unitState == UnitState.OnFly && collisionStateY == CollisionState.TouchesLadder)
+        {
+            unitState = UnitState.OnLadder;
+        }
+        else if(unitState == UnitState.OnLadder) // special full AABB ladder mode check
         {
             vec2i blameTileCoords;
 
             if(!checkLadderForFullAABB(blameTileCoords))
                 unitState = UnitState.OnFly;
-        }
-        else if(unitState == UnitState.OnFly && collisionStateY == CollisionState.TouchesLadder)
-        {
-            unitState = UnitState.OnLadder;
         }
 
         debug(physics) if(oldStates != states)
@@ -306,7 +306,7 @@ class PhysicalObject
 private bool canStanding(CollisionState t) pure
 {
     return  t == CollisionState.PushesBlock ||
-            //~ t == CollisionState.TouchesLadder ||
+            t == CollisionState.TouchesLadder ||
             //~ t == CollisionState.PushesLeftSlope ||
             //~ t == CollisionState.PushesRightSlope ||
             t == CollisionState.TouchesOneWay;
