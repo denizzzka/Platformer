@@ -255,7 +255,7 @@ class Soldier
 
             if(kp(W))
             {
-                if(unitState == UnitState.OnLadder)
+                if(isTouchesLadder)
                 {
                     acceleration.y -= groundSpeed;
                 }
@@ -268,7 +268,7 @@ class Soldier
 
             if(kp(S))
             {
-                if(unitState != UnitState.OnGround)
+                if(isTouchesLadder)
                 {
                     acceleration.y += groundSpeed;
                 }
