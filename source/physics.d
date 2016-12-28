@@ -154,7 +154,7 @@ class PhysicalObject
             if(collisionStateX == CollisionState.PushesBlock)
             {
                 if(speed.isRightDirection)
-                    position.x = blameTileCoords.x * _map.tileSize.x - aabb.max.x; // FIXME: зависит от направления осей графики
+                    position.x = blameTileCoords.x * _map.tileSize.x - aabb.max.x - 1 /*"1" is "do not touch right tiles"*/; // FIXME: зависит от направления осей графики
                 else
                     position.x = (blameTileCoords.x + 1) * _map.tileSize.x - aabb.min.x; // FIXME: зависит от направления осей графики
 
@@ -178,6 +178,7 @@ class PhysicalObject
             vec2i blameTileCoords;
             collisionStateY = checkCollisionY(blameTileCoords);
 
+            // ground collider
             if(speed.isDownDirection && !onGround)
             {
                 if(collisionStateY.canStanding)
@@ -185,6 +186,16 @@ class PhysicalObject
                     position.y = blameTileCoords.y * _map.tileSize.y - aabb.max.y - 1 /*"1" is "do not touch bottom tiles"*/; // FIXME: зависит от направления осей графики
                     speed.y = 0;
                     onGround = true;
+                }
+            }
+
+            // ceiling collider
+            if(speed.isUpDirection)
+            {
+                if(!collisionStateY.isOneWay)
+                {
+                    position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.min.y; // FIXME: зависит от направления осей графики
+                    speed.y = 0; // speed damping due to the head
                 }
             }
         }
@@ -245,9 +256,9 @@ class PhysicalObject
         if(checkBottomLine)
             start = box.min + box.height + vec2i(0, 1); // FIXME: зависит от направления осей графики
         else if(speed.isUpDirection)
-            start = box.min;
+            start = box.min; // FIXME: зависит от направления осей графики
         else // moves down
-            start = box.min + box.height;
+            start = box.min + box.height; // FIXME: зависит от направления осей графики
 
         return checkCollision(start, start + box.width, blameTileCoords);
     }
