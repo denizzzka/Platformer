@@ -17,6 +17,7 @@ enum CollisionState // TODO: remove it?
 struct States
 {
     bool onGround;
+    bool onLadder;
     bool rightDirection = false;
     CollisionState collisionStateX;
     CollisionState collisionStateY;
@@ -48,17 +49,6 @@ class PhysicalObject
     }
 
     box2f aabb() const { return _aabb; }
-
-    // TODO: remove it
-    box2i aabbTiled() const
-    {
-        box2i b;
-
-        b.min = _map.worldCoordsToTileCoords(aabb.min);
-        b.max = _map.worldCoordsToTileCoords(aabb.max);
-
-        return b;
-    }
 
     box2i worldAabbTiled() const
     {
@@ -111,6 +101,16 @@ class PhysicalObject
         position.y += speed.y * dt;
 
         debug oldStates.onGround = onGround;
+        debug oldStates.onLadder = onLadder;
+
+        // special ladder mode
+        if(onLadder)
+        {
+            vec2i blameTileCoords;
+            onLadder = checkLadderForFullAABB(blameTileCoords);
+
+            return;
+        }
 
         // collision check
         if(speed.y != 0)
@@ -157,6 +157,11 @@ class PhysicalObject
 
                 onGround = bottomTileType.canStanding;
             }
+        }
+
+        if(collisionStateY.TouchesLadder)
+        {
+            onLadder = true;
         }
     }
 
@@ -205,54 +210,35 @@ class PhysicalObject
         return checkCollision(start, start + box.width, blameTileCoords);
     }
 
-    private CollisionState checkCollisionForFullAABB(out vec2i blameTileCoords) const
+    private bool checkLadderForFullAABB(out vec2i blameTileCoords) const
     {
-        auto b = aabbTiled.translate(tileCoords);
+        auto b = worldAabbTiled;
 
+        // FIXME: зависит от направления осей графики
         assert(b.size.x >= 0);
-        assert(b.size.y <= 0);
+        assert(b.size.y >= 0);
 
         PhysLayer.TileType ret = PhysLayer.TileType.Empty;
 
         with(PhysLayer.TileType)
-        with(CollisionState)
         {
-            foreach(y; b.max.y .. b.min.y + 1)
+            foreach(y; b.min.y .. b.max.y + 1)
             {
                 foreach(x; b.min.x .. b.max.x + 1)
                 {
                     vec2i coords = vec2i(x, y);
                     auto type = _map.tileTypeByTileCoords(coords);
 
-                    if(type > ret)
+                    if(type == Ladder)
                     {
-                        ret = type;
                         blameTileCoords = coords;
+                        return true;
                     }
                 }
             }
-
-            final switch(ret)
-            {
-                case Ladder:
-                    return TouchesLadder;
-
-                case Block:
-                    return PushesBlock;
-
-                case SlopeLeft:
-                    return PushesLeftSlope;
-
-                case SlopeRight:
-                    return PushesLeftSlope;
-
-                case OneWay:
-                    return TouchesOneWay;
-
-                case Empty:
-                    return Default;
-            }
         }
+
+        return false;
     }
 
     private CollisionState checkCollision(vec2i startTile, vec2i endTile, out vec2i blameTileCoords) const
