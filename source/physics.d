@@ -82,6 +82,10 @@ class PhysicalObject
     {
         debug oldStates = states;
 
+        // special ladder case
+        if(isTouchesLadder && speed.isDownDirection)
+            unitState = UnitState.OnLadder;
+
         motionRoutineX(dt);
         motionRoutineY(dt);
         motionAppendSpeed(appendSpeed, dt, g_force);
@@ -122,11 +126,16 @@ class PhysicalObject
             // ground collider
             if(speed.isDownDirection && unitState != UnitState.OnGround)
             {
-                if(collisionStateY.canStanding)
+                if(collisionStateY != CollisionState.Default)
                 {
-                    position.y = blameTileCoords.y * _map.tileSize.y - aabb.max.y - 1 /*"1" is "do not touch bottom tiles"*/; // FIXME: зависит от направления осей графики
                     speed.y = 0;
-                    unitState = UnitState.OnGround;
+
+                    if(collisionStateY.canStanding)
+                    {
+                        position.y = blameTileCoords.y * _map.tileSize.y - aabb.max.y - 1 /*"1" is "do not touch bottom tiles"*/; // FIXME: зависит от направления осей графики
+
+                        unitState = UnitState.OnGround;
+                    }
                 }
             }
 
@@ -306,7 +315,7 @@ class PhysicalObject
 private bool canStanding(CollisionState t) pure
 {
     return  t == CollisionState.PushesBlock ||
-            t == CollisionState.TouchesLadder ||
+            //~ t == CollisionState.TouchesLadder ||
             //~ t == CollisionState.PushesLeftSlope ||
             //~ t == CollisionState.PushesRightSlope ||
             t == CollisionState.TouchesOneWay;
