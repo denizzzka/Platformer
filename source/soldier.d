@@ -235,7 +235,7 @@ class Soldier
             void horisontalMove(bool toRight)
             {
                 physicalObject.rightDirection = toRight;
-                acceleration.x += groundSpeed * (physicalObject.rightDirection ? 1 : -1);
+                acceleration.x += groundSpeed * (physicalObject.rightDirection ? rightVec.x : leftVec.x);
 
                 if(physicalObject.onGround)
                     movingState = PhysicalState.Run;

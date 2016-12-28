@@ -31,7 +31,7 @@ class PhysicalObject
 
     void aabb(box2f b)
     {
-        if(up.y < 0)
+        if(upVec.y < 0)
             _aabb = b.flipY.sort;
         else
             _aabb = b;

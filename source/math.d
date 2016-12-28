@@ -8,10 +8,10 @@ alias vec2f = gfm.math.vec2f;
 alias box2i = ImprovedBox!(gfm.math.box2i);
 alias box2f = ImprovedBox!(gfm.math.box2f);
 
-immutable left = vec2i(-1, 0);
-immutable right = vec2i(1, 0);
-immutable up = vec2i(0, -1);
-immutable down = vec2i(0, 1);
+immutable leftVec = vec2i(-1, 0);
+immutable rightVec = vec2i(1, 0);
+immutable upVec = vec2i(0, -1);
+immutable downVec = vec2i(0, 1);
 
 bool isUpDirection(T)(T v){ return v.y < 0; }
 bool isDownDirection(T)(T v){ return v.y > 0; }
