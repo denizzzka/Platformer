@@ -142,23 +142,6 @@ class PhysicalObject
         }
 
         // flags set
-        if(unitState == UnitState.OnGround)
-        {
-            if(speed.isUpDirection)
-            {
-                unitState = UnitState.OnFly;
-            }
-            else
-            {
-                // check if unit is still on ground
-                vec2i blameTileCoords;
-                auto state = checkCollisionY(blameTileCoords, true);
-
-                if(!state.canStanding)
-                    unitState = UnitState.OnFly;
-            }
-        }
-
         if(unitState == UnitState.OnFly && collisionStateY == CollisionState.TouchesLadder)
         {
             unitState = UnitState.OnLadder;
@@ -169,6 +152,23 @@ class PhysicalObject
 
             if(!checkLadderForFullAABB(blameTileCoords))
                 unitState = UnitState.OnFly;
+        }
+
+        if(unitState == UnitState.OnGround)
+        {
+            if(speed.isUpDirection)
+            {
+                unitState = UnitState.OnFly;
+            }
+            else
+            {
+                // check if unit is still on ground
+                vec2i blameTileCoords;
+                collisionStateY = checkCollisionY(blameTileCoords, true);
+
+                if(!collisionStateY.canStanding)
+                    unitState = UnitState.OnFly;
+            }
         }
 
         debug(physics) if(oldStates != states)
