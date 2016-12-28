@@ -135,8 +135,8 @@ class PhysicalObject
         }
         else
         {
-            // check if unit is still on ground
-            if(onGround)
+            // check if unit is still on ground and get ladder status
+            if(onGround || onLadder)
             {
                 vec2i blameTileCoords;
                 collisionStateY = checkCollisionY(blameTileCoords, true);

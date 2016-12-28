@@ -255,7 +255,7 @@ class Soldier
 
             if(kp(W))
             {
-                if(physicalObject.onLadder)
+                if(!physicalObject.onGround && physicalObject.onLadder)
                 {
                     acceleration.y -= groundSpeed;
                 }
