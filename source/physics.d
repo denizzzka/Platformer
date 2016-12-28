@@ -82,9 +82,12 @@ class PhysicalObject
     {
         debug oldStates = states;
 
-        // special ladder case
-        if(isTouchesLadder && speed.isDownDirection)
+        // FIXME: special ladder case (dirty hack)
+        if(isTouchesLadder && (appendSpeed.y > 10))
+        {
             unitState = UnitState.OnLadder;
+            writeln("special ladder case!");
+        }
 
         motionRoutineX(dt);
         motionRoutineY(dt);
@@ -132,7 +135,7 @@ class PhysicalObject
 
                     if(collisionStateY.canStanding)
                     {
-                        position.y = blameTileCoords.y * _map.tileSize.y - aabb.max.y - 1 /*"1" is "do not touch bottom tiles"*/; // FIXME: зависит от направления осей графики
+                        position.y = blameTileCoords.y * _map.tileSize.y - aabb.max.y - 3 /*"1" is "do not touch bottom tiles"*/; // FIXME: зависит от направления осей графики
 
                         unitState = UnitState.OnGround;
                     }
@@ -175,14 +178,14 @@ class PhysicalObject
                 vec2i blameTileCoords;
                 collisionStateY = checkCollisionY(blameTileCoords, true);
 
-                if(!collisionStateY.canStanding)
+                if(!(collisionStateY.canStanding || collisionStateY == CollisionState.TouchesLadder))
                     unitState = UnitState.OnFly;
             }
         }
 
         debug(physics) if(oldStates != states)
         {
-            writeln("state: ", states);
+            writeln("state: ", states, " coords=", position, " speed=", speed);
         }
     }
 
@@ -315,10 +318,16 @@ class PhysicalObject
 private bool canStanding(CollisionState t) pure
 {
     return  t == CollisionState.PushesBlock ||
-            //~ t == CollisionState.TouchesLadder ||
-            //~ t == CollisionState.PushesLeftSlope ||
-            //~ t == CollisionState.PushesRightSlope ||
+            t == CollisionState.PushesLeftSlope ||
+            t == CollisionState.PushesRightSlope ||
             t == CollisionState.TouchesOneWay;
+}
+
+private bool isBlock(CollisionState t) pure
+{
+    return  t == CollisionState.PushesBlock ||
+            t == CollisionState.PushesLeftSlope ||
+            t == CollisionState.PushesRightSlope;
 }
 
 private bool isOneWay(CollisionState t) pure
