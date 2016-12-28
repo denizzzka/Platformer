@@ -31,7 +31,10 @@ class PhysicalObject
 
     void aabb(box2f b)
     {
-        _aabb = b;
+        if(up.y < 0)
+            _aabb = b.flipY.sort;
+        else
+            _aabb = b;
     }
 
     box2f aabb() const { return _aabb; }
@@ -51,84 +54,117 @@ class PhysicalObject
         return _map.worldCoordsToTileCoords(position);
     }
 
-    void doMotion(const vec2f doAcceleration, const float deltaTime, const float g_force)
+    void doMotion(in vec2f doAcceleration, const float dt, const float g_force)
     {
-        // horizontal
+        motionRoutineX(dt);
+        motionRoutineY(dt);
+        motionAppendAcceleration(doAcceleration, dt, g_force);
+
+        //~ // vertical
+        //~ {
+            //~ position.y += acceleration.y * deltaTime;
+
+            //~ if(acceleration.y == 0)
+            //~ {
+                //~ vec2i blameTileCoords;
+                //~ auto bottomTileType = checkCollisionY(position + down, false, blameTileCoords);
+
+                //~ onGround = bottomTileType.canStanding;
+            //~ }
+            //~ else
+            //~ {
+                //~ {
+                    //~ const bool movesUp = acceleration.isUp;
+                    //~ vec2i blameTileCoords;
+                    //~ auto tileType = checkCollisionY(position, movesUp, blameTileCoords);
+
+                    //~ if(movesUp)
+                    //~ {
+                        //~ onGround = false;
+
+                        //~ if(!tileType.isOneWay) // collide with ceiling
+                        //~ {
+                            //~ position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.max.y;
+                            //~ acceleration.y = 0; // speed damping due to the head
+                        //~ }
+                    //~ }
+                    //~ else // moves down
+                    //~ {
+                        //~ if(tileType.canStanding)
+                        //~ {
+                            //~ if(!onGround)
+                            //~ {
+                                //~ position.y = blameTileCoords.y * _map.tileSize.y - aabb.min.y - 1 /*"1" is "do not touch bottom tiles"*/;
+                                //~ acceleration.y = 0;
+                                //~ onGround = true;
+                            //~ }
+                        //~ }
+                        //~ else
+                        //~ {
+                            //~ onGround = false;
+                        //~ }
+                    //~ }
+                //~ }
+            //~ }
+        //~ }
+
+        //~ if(onGround)
+        //~ {
+            //~ // only on the ground unit can change its speed and direction
+            //~ acceleration = doAcceleration;
+        //~ }
+        //~ else
+        //~ {
+            //~ acceleration.y += g_force * deltaTime;
+        //~ }
+    }
+
+    private void motionRoutineX(float dt)
+    {
+        position.x += acceleration.x * dt;
+
+        //~ if(acceleration.x != 0)
+        //~ {
+            //~ vec2i blameTileCoords;
+            //~ CollisionState tileType = checkCollisionX(blameTileCoords);
+
+            //~ if(tileType == CollisionState.PushesLeftSlope && onGround)
+            //~ {
+                //~ position.y -= acceleration.x * dt;
+            //~ }
+            //~ else if(tileType == CollisionState.PushesBlock)
+            //~ {
+                //~ if(acceleration.x > 0)
+                    //~ position.x = blameTileCoords.x * _map.tileSize.x - aabb.max.x - 1;
+                //~ else
+                    //~ position.x = (blameTileCoords.x + 1) * _map.tileSize.x - aabb.min.x;
+
+                //~ acceleration.x = 0;
+
+                //~ import std.stdio;
+                //~ writeln("pushes block!");
+            //~ }
+        //~ }
+    }
+
+    private void motionRoutineY(float dt)
+    {
+        position.y += acceleration.y * dt;
+
+        if(position.y > 500)
         {
-            position.x += acceleration.x * deltaTime;
-
-            if(acceleration.x != 0)
-            {
-                vec2i blameTileCoords;
-                CollisionState tileType = checkCollisionX(blameTileCoords);
-
-                if(tileType == CollisionState.PushesLeftSlope && onGround)
-                {
-                    position.y -= acceleration.x * deltaTime;
-                }
-                else if(tileType == CollisionState.PushesBlock)
-                {
-                    if(acceleration.x > 0)
-                        position.x = blameTileCoords.x * _map.tileSize.x - aabb.max.x - 1;
-                    else
-                        position.x = (blameTileCoords.x + 1) * _map.tileSize.x - aabb.min.x;
-
-                    acceleration.x = 0;
-
-                    import std.stdio;
-                    writeln("pushes block!");
-                }
-            }
+            position.y = 500;
+            acceleration.y = 0;
+            onGround = true;
         }
-
-        // vertical
+        else
         {
-            position.y += acceleration.y * deltaTime;
-
-            if(acceleration.y == 0)
-            {
-                vec2i blameTileCoords;
-                auto bottomTileType = checkCollisionY(position + down, false, blameTileCoords);
-
-                onGround = bottomTileType.canStanding;
-            }
-            else
-            {
-                {
-                    const bool movesUp = acceleration.isUp;
-                    vec2i blameTileCoords;
-                    auto tileType = checkCollisionY(position, movesUp, blameTileCoords);
-
-                    if(movesUp)
-                    {
-                        onGround = false;
-
-                        if(!tileType.isOneWay) // collide with ceiling
-                        {
-                            position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.max.y;
-                            acceleration.y = 0; // speed damping due to the head
-                        }
-                    }
-                    else // moves down
-                    {
-                        if(tileType.canStanding)
-                        {
-                            if(!onGround)
-                            {
-                                position.y = blameTileCoords.y * _map.tileSize.y - aabb.min.y - 1 /*"1" is "do not touch bottom tiles"*/;
-                                acceleration.y = 0;
-                                onGround = true;
-                            }
-                        }
-                        else
-                        {
-                            onGround = false;
-                        }
-                    }
-                }
-            }
+            onGround = false;
         }
+    }
 
+    private void motionAppendAcceleration(in vec2f doAcceleration, in float dt, in float g_force)
+    {
         if(onGround)
         {
             // only on the ground unit can change its speed and direction
@@ -136,7 +172,7 @@ class PhysicalObject
         }
         else
         {
-            acceleration.y += g_force * deltaTime;
+            acceleration.y += g_force * dt;
         }
     }
 
