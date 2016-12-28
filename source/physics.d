@@ -167,7 +167,7 @@ class PhysicalObject
 
     private void motionAppendSpeed(in vec2f appendSpeed, in float dt, in float g_force)
     {
-        if(onGround)
+        if(onGround || onLadder)
         {
             // only on the ground unit can change its speed and direction
             speed = appendSpeed;

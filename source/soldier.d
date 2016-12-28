@@ -221,7 +221,7 @@ class Soldier
 
         PhysicalState oldPhysicalState = movingState;
 
-        if(physicalObject.onGround)
+        if(physicalObject.onGround || physicalObject.onLadder)
             movingState = PhysicalState.Stay;
         else
             movingState = PhysicalState.Jump;
