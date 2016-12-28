@@ -19,6 +19,7 @@ struct States
     bool onGround;
     bool rightDirection = false;
     CollisionState collisionStateX;
+    CollisionState collisionStateY;
 }
 
 class PhysicalObject
@@ -164,18 +165,35 @@ class PhysicalObject
 
     private void motionRoutineY(in float dt)
     {
+        if(speed.y == 0)
+            return;
+
         position.y += speed.y * dt;
+
+        debug oldStates.onGround = onGround;
 
         if(speed.isUpDirection)
         {
             onGround = false;
         }
 
-        if(!onGround && position.y > 300)
+        if(!onGround)
         {
-            position.y = 300;
-            speed.y = 0;
-            onGround = true;
+            // collisions check
+            debug oldStates.collisionStateY = collisionStateY;
+
+            vec2i blameTileCoords;
+            collisionStateY = checkCollisionY(blameTileCoords);
+
+            if(speed.isDownDirection)
+            {
+                if(collisionStateY.canStanding)
+                {
+                    position.y = blameTileCoords.y * _map.tileSize.y - aabb.max.y - 1 /*"1" is "do not touch bottom tiles"*/;
+                    speed.y = 0;
+                    onGround = true;
+                }
+            }
         }
     }
 
@@ -207,14 +225,19 @@ class PhysicalObject
         return checkCollision(start, start + box.height, blameTileCoords);
     }
 
-    private CollisionState checkCollisionY(vec2f start, bool movesUp, out vec2i blameTileCoords) const
+    private CollisionState checkCollisionY(out vec2i blameTileCoords) const
     {
-        if(movesUp)
-            start += aabb.min + aabb.height;
-        else // moves down
-            start += aabb.min;
+        assert(speed.y != 0);
 
-        return checkCollision(start, start + aabb.width, blameTileCoords);
+        box2i box = worldAabbTiled;
+        vec2i start;
+
+        if(speed.isUpDirection)
+            start = box.min;
+        else // moves down
+            start = box.min + box.height;
+
+        return checkCollision(start, start + box.width, blameTileCoords);
     }
 
     // TODO: delete it
