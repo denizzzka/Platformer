@@ -23,6 +23,13 @@ struct States
     CollisionState collisionStateY;
 }
 
+enum UnitState
+{
+    Default,
+    OnLadder,
+    OnGround
+}
+
 class PhysicalObject
 {
     const Map _map;
