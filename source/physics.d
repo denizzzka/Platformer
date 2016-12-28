@@ -152,19 +152,21 @@ class PhysicalObject
             }
         }
 
-        //~ if
-        //~ (
-            //~ collisionStateX == CollisionState.TouchesLadder ||
-            //~ collisionStateY == CollisionState.TouchesLadder
-        //~ )
-        //~ {
-            //~ unitState = UnitState.OnLadder;
-        //~ }
-        //~ else if(unitState == UnitState.OnLadder) // special full AABB ladder mode check
-        //~ {
-            //~ vec2i blameTileCoords;
-            //~ unitState = checkLadderForFullAABB(blameTileCoords) ? UnitState.OnLadder : unitState;
-        //~ }
+        if(unitState == UnitState.OnLadder) // special full AABB ladder mode check
+        {
+            vec2i blameTileCoords;
+
+            if(!checkLadderForFullAABB(blameTileCoords))
+                unitState = UnitState.OnFly;
+        }
+        else if
+        (
+            collisionStateX == CollisionState.TouchesLadder ||
+            collisionStateY == CollisionState.TouchesLadder
+        )
+        {
+            unitState = UnitState.OnLadder;
+        }
 
         debug(physics) if(oldStates != states)
         {
