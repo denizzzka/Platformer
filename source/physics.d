@@ -124,14 +124,14 @@ class PhysicalObject
             }
 
             // ceiling collider
-            //~ if(speed.isUpDirection)
-            //~ {
-                //~ if(!collisionStateY.isOneWay)
-                //~ {
-                    //~ position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.min.y; // FIXME: зависит от направления осей графики
-                    //~ speed.y = 0; // speed damping due to the head
-                //~ }
-            //~ }
+            if(speed.isUpDirection)
+            {
+                if(!collisionStateY.isOneWay)
+                {
+                    position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.min.y; // FIXME: зависит от направления осей графики
+                    speed.y = 0; // speed damping due to the head
+                }
+            }
         }
 
         // flags set
