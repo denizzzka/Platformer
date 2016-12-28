@@ -19,7 +19,7 @@ class PhysicalObject
 
     vec2f position;
     vec2f acceleration = vec2f(0, 0);
-    box2f aabb;
+    box2f _aabb;
 
     bool onGround;
     bool rightDirection = false;
@@ -28,6 +28,13 @@ class PhysicalObject
     {
         _map = m;
     }
+
+    void aabb(box2f b)
+    {
+        _aabb = b;
+    }
+
+    box2f aabb() const { return _aabb; }
 
     box2i aabbTiled() const
     {

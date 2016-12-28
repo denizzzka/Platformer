@@ -39,9 +39,29 @@ struct ImprovedBox(B)
         return V(0, box.height);
     }
 
-    void flipY()
+    ImprovedBox flipY()
     {
-        box.max.y *= -1;
+        ImprovedBox b = this;
+
+        b.max.y *= -1;
+
+        return b;
+    }
+
+    ImprovedBox sort() const
+    out(ret)
+    {
+        assert(ret.isSorted);
+    }
+    body
+    {
+        return ImprovedBox
+            (
+                min.x < max.x ? min.x : max.x,
+                min.y < max.y ? min.y : max.y,
+                min.x > max.x ? min.x : max.x,
+                min.y > max.y ? min.y : max.y
+            );
     }
 }
 
