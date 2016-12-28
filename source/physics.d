@@ -131,8 +131,7 @@ class PhysicalObject
         // flags set
         if(speed.isUpDirection)
         {
-            if(!onLadder)
-                onGround = false;
+            onGround = false;
         }
         else
         {
@@ -140,16 +139,19 @@ class PhysicalObject
             if(onGround)
             {
                 vec2i blameTileCoords;
-                auto bottomTileType = checkCollisionY(blameTileCoords, true);
+                collisionStateY = checkCollisionY(blameTileCoords, true);
 
-                onGround = bottomTileType.canStanding;
+                onGround = collisionStateY.canStanding;
             }
         }
 
-        if(collisionStateY == CollisionState.TouchesLadder || collisionStateX == CollisionState.TouchesLadder)
+        if
+        (
+            collisionStateX == CollisionState.TouchesLadder ||
+            collisionStateY == CollisionState.TouchesLadder
+        )
         {
             onLadder = true;
-            onGround = true;
         }
         else if(onLadder) // special full AABB ladder mode check
         {
@@ -165,8 +167,6 @@ class PhysicalObject
 
     private void motionAppendSpeed(in vec2f appendSpeed, in float dt, in float g_force)
     {
-        assert(!(onLadder && !onGround));
-
         if(onGround)
         {
             // only on the ground unit can change its speed and direction
