@@ -131,7 +131,7 @@ class Soldier
         groundSpeedScale = 2.0;
     }
 
-    void update(float deltaTime)
+    void update(in float deltaTime)
     {
         skeleton.flipX = !rightDirection;
         skeleton.flipY = true;

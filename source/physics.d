@@ -147,19 +147,20 @@ class PhysicalObject
         //~ }
     }
 
-    private void motionRoutineY(float dt)
+    private void motionRoutineY(in float dt)
     {
         position.y += acceleration.y * dt;
 
-        if(position.y > 500)
-        {
-            position.y = 500;
-            acceleration.y = 0;
-            onGround = true;
-        }
-        else
+        if(acceleration.isUpDirection)
         {
             onGround = false;
+        }
+
+        if(!onGround && position.y > 200)
+        {
+            position.y = 200;
+            acceleration.y = 0;
+            onGround = true;
         }
     }
 
