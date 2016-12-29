@@ -240,6 +240,8 @@ class PhysicalObject
         }
         else
         {
+            speed.x += appendSpeed.x * 0.01; // tiny opportunity to turning in the flight
+
             speed.y += g_force * dt;
         }
     }
