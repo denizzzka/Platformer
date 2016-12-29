@@ -18,13 +18,18 @@ bool isRightDirection(T)(T v){ return v.x > 0; }
 bool isUpDirection(T)(T v){ return v.y < 0; }
 bool isDownDirection(T)(T v){ return v.y > 0; }
 
-struct ImprovedBox(B)
+struct ImprovedBox(B) // TODO: переделать это в temlate с функциями, расширяющими B
 {
     B box;
     alias box this;
 
     alias V = typeof(box.min);
     alias T = typeof(V.x);
+
+    this(B)(B b)
+    {
+        box = b;
+    }
 
     this(T v1, T v2, T v3, T v4)
     {

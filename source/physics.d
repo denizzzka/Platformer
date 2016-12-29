@@ -56,14 +56,24 @@ class PhysicalObject
 
     box2f aabb() const { return _aabb; }
 
+    box2f worldAabb() const
+    {
+        return box2f(aabb.translate(position));
+    }
+
     box2i worldAabbTiled() const
     {
-        box2i b;
+        return fBox2tiledBox(worldAabb);
+    }
 
-        b.min = _map.worldCoordsToTileCoords(position + aabb.min);
-        b.max = _map.worldCoordsToTileCoords(position + aabb.max);
+    private box2i fBox2tiledBox(box2f b) const
+    {
+        box2i ret;
 
-        return b;
+        ret.min = _map.worldCoordsToTileCoords(b.min);
+        ret.max = _map.worldCoordsToTileCoords(b.max);
+
+        return ret;
     }
 
     vec2i tileCoords() const
@@ -245,7 +255,9 @@ class PhysicalObject
 
     private bool checkLadderForFullAABB(out vec2i blameTileCoords) const
     {
-        auto b = worldAabbTiled;
+        auto ladderAABB = worldAabb;
+        ladderAABB.max.y += 3; // FIXME: зависит от направления осей графики
+        const b = fBox2tiledBox(ladderAABB);
 
         // FIXME: зависит от направления осей графики
         assert(b.size.x >= 0);
