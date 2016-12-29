@@ -3,6 +3,7 @@ module physics;
 import map;
 import math;
 debug(physics) import std.stdio;
+debug(physics) import std.conv: to;
 
 enum CollisionState // TODO: remove it?
 {
@@ -152,15 +153,19 @@ class PhysicalObject
                     {
                         position.y = blameTileCoords.y * _map.tileSize.y - aabb.max.y - 1 /*"1" is "do not touch bottom tiles"*/; // FIXME: зависит от направления осей графики
 
-                        unitState = UnitState.OnGround;
+                        // fall to ladder?
+                        if(collisionStateY == CollisionState.TouchesLadder)
+                            unitState = UnitState.OnLadder;
+                        else
+                            unitState = UnitState.OnGround;
 
-                        debug(physics) writeln("Floor bump");
+                        debug(physics) writeln("Floor bump, "~unitState.to!string);
                     }
                 }
             }
 
             // ceiling collider
-            if(speed.isUpDirection && unitState != UnitState.OnGround)
+            if(speed.isUpDirection && unitState == UnitState.OnFly)
             {
                 if(!collisionStateY.isOneWay)
                 {
@@ -175,6 +180,8 @@ class PhysicalObject
                     else
                     {
                         unitState = UnitState.OnLadder;
+
+                        debug(physics) writeln("Cling to the ladder");
                     }
                 }
             }
