@@ -97,8 +97,6 @@ class PhysicalObject
         // FIXME: special ladder case (dirty hack)
         if(isTouchesLadder && appendSpeed.isDownDirection)
             unitState = UnitState.OnLadder;
-        //~ else if(!isTouchesLadder && unitState == UnitState.OnGround && appendSpeed.isUpDirection)
-            //~ unitState = UnitState.OnFly;
 
         motionRoutineX(dt);
         motionRoutineY(dt);
@@ -184,7 +182,7 @@ class PhysicalObject
             }
         }
 
-        debug(physics) if(oldStates != states || oldSpeed.x != speed.x|| oldSpeed.y != speed.y)
+        debug(physics) if(oldStates != states)
         {
             writeln("state: ", states, " coords=", position, " speed=", speed);
         }
