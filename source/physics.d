@@ -140,16 +140,16 @@ class PhysicalObject
                 {
                     speed.y = 0;
 
-                    // need to place unit on top of tile?
+                    // need to place unit on top of the tile?
                     if
                     (collisionStateY.canStanding &&
                         (
-                            unitState == UnitState.OnFly ||
-                            collisionStateY != CollisionState.TouchesLadder
+                            unitState == UnitState.OnFly || // falls to the ground
+                            collisionStateY != CollisionState.TouchesLadder // means moving down by ladder
                         )
                     )
                     {
-                        position.y = blameTileCoords.y * _map.tileSize.y - aabb.max.y - 3 /*"1" is "do not touch bottom tiles"*/; // FIXME: зависит от направления осей графики
+                        position.y = blameTileCoords.y * _map.tileSize.y - aabb.max.y - 1 /*"1" is "do not touch bottom tiles"*/; // FIXME: зависит от направления осей графики
 
                         unitState = UnitState.OnGround;
 
