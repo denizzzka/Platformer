@@ -122,6 +122,8 @@ class PhysicalObject
                     position.x = (blameTileCoords.x + 1) * _map.tileSize.x - aabb.min.x; // FIXME: зависит от направления осей графики
 
                 speed.x = 0;
+
+                debug(physics) writeln("Push into block on X coord");
             }
             else if(unitState == UnitState.OnFly && collisionStateX == CollisionState.TouchesLadder)
             {
