@@ -153,19 +153,15 @@ class PhysicalObject
                     // need to place unit on top of the tile?
                     if
                     (
-                        unitState == UnitState.OnFly || // falls to the ground
+                        unitState == UnitState.OnFly || // falls to the ground or top of the ladder
                         collisionStateY != CollisionState.TouchesLadder // means moving down by ladder
                     )
                     {
                         position.y = blameTileCoords.y * _map.tileSize.y - aabb.max.y - 1 /*"1" is "do not touch bottom tiles"*/; // FIXME: зависит от направления осей графики
 
-                        // fall to ladder?
-                        if(collisionStateY == CollisionState.TouchesLadder)
-                            unitState = UnitState.OnLadder;
-                        else
-                            unitState = UnitState.OnGround;
+                        unitState = UnitState.OnGround;
 
-                        debug(physics) writeln("Floor bump, "~unitState.to!string);
+                        debug(physics) writeln("Floor bump");
                     }
                 }
             }
