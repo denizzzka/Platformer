@@ -261,10 +261,14 @@ class PhysicalObject
     {
         assert(speed.x != 0);
 
-        box2i box = worldAabbTiled;
+        box2f aabb = worldAabb;
+        // опускаем верхнюю грань пониже чтобы не тормозить об потолок
+        aabb.min.y += 3; // FIXME: зависит от направления осей графики
+
+        box2i box = fBox2tiledBox(aabb);
         vec2i start;
 
-        if(speed.isLeftDirection)
+        if(speed.isLeftDirection) // FIXME: зависит от направления осей графики
             start = box.min;
         else // move right
             start = box.min + box.width;
