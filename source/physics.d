@@ -103,7 +103,7 @@ class PhysicalObject
             vec2i blameTileCoords;
             collisionStateX = checkCollisionX(blameTileCoords);
 
-            if(collisionStateX == CollisionState.PushesBlock)
+            if(collisionStateX.isBlock)
             {
                 if(speed.isRightDirection)
                     position.x = blameTileCoords.x * _map.tileSize.x - aabb.max.x - 1 /*"1" is "do not touch right tiles"*/; // FIXME: зависит от направления осей графики
@@ -133,11 +133,20 @@ class PhysicalObject
                 {
                     speed.y = 0;
 
-                    if(collisionStateY.canStanding)
+                    // need to place unit on top of tile?
+                    if
+                    (collisionStateY.canStanding &&
+                        (
+                            unitState == UnitState.OnFly ||
+                            collisionStateY != CollisionState.TouchesLadder
+                        )
+                    )
                     {
                         position.y = blameTileCoords.y * _map.tileSize.y - aabb.max.y - 3 /*"1" is "do not touch bottom tiles"*/; // FIXME: зависит от направления осей графики
 
                         unitState = UnitState.OnGround;
+
+                        debug(physics) writeln("Floor bump");
                     }
                 }
             }
@@ -320,6 +329,7 @@ private bool canStanding(CollisionState t) pure
     return  t == CollisionState.PushesBlock ||
             t == CollisionState.PushesLeftSlope ||
             t == CollisionState.PushesRightSlope ||
+            t == CollisionState.TouchesLadder ||
             t == CollisionState.TouchesOneWay;
 }
 
