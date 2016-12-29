@@ -154,7 +154,7 @@ class PhysicalObject
                     if
                     (
                         unitState == UnitState.OnFly || // falls to the ground or top of the ladder
-                        collisionStateY != CollisionState.TouchesLadder // means moving down by ladder
+                        collisionStateY != CollisionState.TouchesLadder // bumps to the ground by moving down on ladder
                     )
                     {
                         position.y = blameTileCoords.y * _map.tileSize.y - aabb.max.y - 1 /*"1" is "do not touch bottom tiles"*/; // FIXME: зависит от направления осей графики
