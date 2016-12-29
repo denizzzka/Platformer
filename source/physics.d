@@ -94,10 +94,7 @@ class PhysicalObject
 
         // FIXME: special ladder case (dirty hack)
         if(isTouchesLadder && (appendSpeed.y > 10))
-        {
             unitState = UnitState.OnLadder;
-            writeln("special ladder case!");
-        }
 
         motionRoutineX(dt);
         motionRoutineY(dt);
@@ -214,6 +211,9 @@ class PhysicalObject
         {
             // only on the ground unit can change its speed and direction
             speed = appendSpeed;
+
+            if(unitState == UnitState.OnGround && speed.isDownDirection)
+                speed.y = 0;
         }
         else
         {
