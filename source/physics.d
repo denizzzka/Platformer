@@ -93,11 +93,14 @@ class PhysicalObject
         debug oldStates = states;
 
         // FIXME: special ladder case (dirty hack)
-        if(isTouchesLadder && (appendSpeed.y > 10))
+        if(isTouchesLadder && appendSpeed.isDownDirection)
             unitState = UnitState.OnLadder;
+        else if(unitState == UnitState.OnGround && appendSpeed.isUpDirection)
+            unitState = UnitState.OnFly;
 
         motionRoutineX(dt);
         motionRoutineY(dt);
+        updateUnitState();
         motionAppendSpeed(appendSpeed, dt, g_force);
     }
 
@@ -165,10 +168,20 @@ class PhysicalObject
                 {
                     position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.min.y; // FIXME: зависит от направления осей графики
                     speed.y = 0; // speed damping due to the head
+
+                    debug(physics) writeln("Ceiling bump");
                 }
             }
         }
 
+        debug(physics) if(oldStates != states)
+        {
+            writeln("state: ", states, " coords=", position, " speed=", speed);
+        }
+    }
+
+    private void updateUnitState()
+    {
         // flags set
         if(unitState == UnitState.OnFly && collisionStateY == CollisionState.TouchesLadder)
         {
@@ -204,11 +217,6 @@ class PhysicalObject
                 if(!collisionStateY.canStanding)
                     unitState = UnitState.OnFly;
             }
-        }
-
-        debug(physics) if(oldStates != states)
-        {
-            writeln("state: ", states, " coords=", position, " speed=", speed);
         }
     }
 
