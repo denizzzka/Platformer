@@ -159,7 +159,7 @@ class PhysicalObject
             }
 
             // ceiling collider
-            if(speed.isUpDirection && unitState != UnitState.OnLadder)
+            if(speed.isUpDirection)
             {
                 if(!collisionStateY.isOneWay)
                 {
@@ -174,15 +174,22 @@ class PhysicalObject
         {
             unitState = UnitState.OnLadder;
         }
-        else if(unitState == UnitState.OnLadder) // special full AABB ladder mode check
+        else if(unitState == UnitState.OnLadder) // check if unit is still on ladder
         {
-            vec2i blameTileCoords;
+            if
+            (
+                (speed.x != 0 && (collisionStateX != CollisionState.TouchesLadder)) ||
+                (speed.y != 0 && (collisionStateY != CollisionState.TouchesLadder))
+            )
+            {
+                // special full ladder AABB mode check
+                vec2i blameTileCoords;
 
-            if(!checkLadderForFullAABB(blameTileCoords))
-                unitState = UnitState.OnFly;
+                if(!checkLadderForFullAABB(blameTileCoords))
+                    unitState = UnitState.OnFly;
+            }
         }
-
-        if(unitState == UnitState.OnGround)
+        else if(unitState == UnitState.OnGround)
         {
             if(speed.isUpDirection)
             {
@@ -194,7 +201,7 @@ class PhysicalObject
                 vec2i blameTileCoords;
                 collisionStateY = checkCollisionY(blameTileCoords, true);
 
-                if(!(collisionStateY.canStanding || collisionStateY == CollisionState.TouchesLadder))
+                if(!collisionStateY.canStanding)
                     unitState = UnitState.OnFly;
             }
         }
@@ -255,11 +262,7 @@ class PhysicalObject
 
     private bool checkLadderForFullAABB(out vec2i blameTileCoords) const
     {
-        auto ladderAABB = worldAabb;
-        // Small AABB grow to the ground is need for ladder detection
-        // after beginning moving down from top of the ladder
-        ladderAABB.max.y += 1; // FIXME: зависит от направления осей графики
-        const b = fBox2tiledBox(ladderAABB);
+        const b = worldAabbTiled;
 
         // FIXME: зависит от направления осей графики
         assert(b.size.x >= 0);
