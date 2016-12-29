@@ -39,6 +39,7 @@ class PhysicalObject
 
     States states;
     debug States oldStates;
+    debug vec2f oldSpeed;
     alias states this;
 
     this(Map m)
@@ -91,12 +92,13 @@ class PhysicalObject
     void doMotion(in vec2f appendSpeed, const float dt, const float g_force)
     {
         debug oldStates = states;
+        debug oldSpeed = speed;
 
         // FIXME: special ladder case (dirty hack)
         if(isTouchesLadder && appendSpeed.isDownDirection)
             unitState = UnitState.OnLadder;
-        else if(unitState == UnitState.OnGround && appendSpeed.isUpDirection)
-            unitState = UnitState.OnFly;
+        //~ else if(!isTouchesLadder && unitState == UnitState.OnGround && appendSpeed.isUpDirection)
+            //~ unitState = UnitState.OnFly;
 
         motionRoutineX(dt);
         motionRoutineY(dt);
@@ -162,19 +164,27 @@ class PhysicalObject
             }
 
             // ceiling collider
-            if(speed.isUpDirection)
+            if(speed.isUpDirection && unitState != UnitState.OnGround)
             {
                 if(!collisionStateY.isOneWay)
                 {
-                    position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.min.y; // FIXME: зависит от направления осей графики
-                    speed.y = 0; // speed damping due to the head
+                    speed.y = 0; // speed damping due to bumping by head
 
-                    debug(physics) writeln("Ceiling bump");
+                    if(collisionStateY != CollisionState.TouchesLadder)
+                    {
+                        position.y = (blameTileCoords.y + 1) * _map.tileSize.y - aabb.min.y; // FIXME: зависит от направления осей графики
+
+                        debug(physics) writeln("Ceiling bump");
+                    }
+                    else
+                    {
+                        unitState = UnitState.OnLadder;
+                    }
                 }
             }
         }
 
-        debug(physics) if(oldStates != states)
+        debug(physics) if(oldStates != states || oldSpeed.x != speed.x|| oldSpeed.y != speed.y)
         {
             writeln("state: ", states, " coords=", position, " speed=", speed);
         }
@@ -370,6 +380,5 @@ private bool isOneWay(CollisionState t) pure
     return  t == CollisionState.TouchesOneWay ||
             t == CollisionState.PushesLeftSlope ||
             t == CollisionState.PushesRightSlope ||
-            t == CollisionState.TouchesLadder ||
             t == CollisionState.Default;
 }
