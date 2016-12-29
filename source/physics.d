@@ -123,6 +123,12 @@ class PhysicalObject
 
                 speed.x = 0;
             }
+            else if(unitState == UnitState.OnFly && collisionStateX == CollisionState.TouchesLadder)
+            {
+                unitState = UnitState.OnLadder;
+
+                debug(physics) writeln("Flight into ladder");
+            }
         }
     }
 
