@@ -256,7 +256,9 @@ class PhysicalObject
     private bool checkLadderForFullAABB(out vec2i blameTileCoords) const
     {
         auto ladderAABB = worldAabb;
-        ladderAABB.max.y += 3; // FIXME: зависит от направления осей графики
+        // Small AABB grow to the ground is need for ladder detection
+        // after beginning moving down from top of the ladder
+        ladderAABB.max.y += 1; // FIXME: зависит от направления осей графики
         const b = fBox2tiledBox(ladderAABB);
 
         // FIXME: зависит от направления осей графики
