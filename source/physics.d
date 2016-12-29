@@ -101,6 +101,13 @@ class PhysicalObject
 
         motionRoutineX(dt);
         motionRoutineY(dt);
+
+        debug(physics)
+        if(oldStates != states)
+        {
+            writeln("state: ", states, " coords=", position, " speed=", speed);
+        }
+
         updateUnitState();
         motionAppendSpeed(appendSpeed, dt, g_force);
     }
@@ -189,11 +196,6 @@ class PhysicalObject
                     }
                 }
             }
-        }
-
-        debug(physics) if(oldStates != states)
-        {
-            writeln("state: ", states, " coords=", position, " speed=", speed);
         }
     }
 
