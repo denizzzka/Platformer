@@ -137,6 +137,7 @@ class SkeletonInstance
         return ret;
     }
 
+    /// @param attachmentName May be null
     package spAttachment* getAttachmentForSlotIndex(int slotIdx, string attachmentName)
     {
         spAttachment* ret = spSkeleton_getAttachmentForSlotIndex(sp_skeleton, slotIdx, attachmentName.toStringz);
