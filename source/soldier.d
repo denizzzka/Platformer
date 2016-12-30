@@ -19,7 +19,8 @@ enum PhysicalState
     MoveDown,
     Jump,
     Sit,
-    Crawl
+    Crawl,
+    CrawlBackwards,
 }
 
 class Soldier
@@ -55,7 +56,8 @@ class Soldier
         MoveBackward = AnimationProperty("move-backward", 0.2),
         Fly = AnimationProperty("fly", 0.6),
         Sit = AnimationProperty("sit", 0.2),
-        SitForward = AnimationProperty("sit-forward", 0.2)
+        SitForward = AnimationProperty("sit-forward", 0.2),
+        SitBackward = AnimationProperty("sit-backward", 0.2)
     }
 
     private struct AvailableAnimation
@@ -150,8 +152,13 @@ class Soldier
         const float g_force = 1200.0f;
         auto acceleration = readKeys(g_force);
 
-        if(movingState == PhysicalState.Run && acceleration.isRightDirection != looksToRight)
-            movingState = PhysicalState.RunBackwards;
+        if(acceleration.isRightDirection != looksToRight)
+        {
+            if(movingState == PhysicalState.Run)
+                movingState = PhysicalState.RunBackwards;
+            else if(movingState == PhysicalState.Crawl)
+                movingState = PhysicalState.CrawlBackwards;
+        }
 
         doMotion(acceleration, deltaTime, g_force);
 
@@ -196,6 +203,10 @@ class Soldier
                 setAnimation(AnimationType.Sit);
                 break;
 
+            case CrawlBackwards:
+                setAnimation(AnimationType.SitBackward);
+                break;
+
             case Crawl:
                 setAnimation(AnimationType.SitForward);
                 break;
@@ -217,6 +228,7 @@ class Soldier
 
             case Sit:
             case Crawl:
+            case CrawlBackwards:
                 return vec2f(0, 14);
         }
     }
