@@ -138,8 +138,8 @@ class Soldier
 
     void update(in float deltaTime)
     {
-        skeleton.flipX = !rightDirection;
-        skeleton.flipY = true;
+        skeleton.flipX = weapon.aimingDirection.isLeftDirection;
+        skeleton.flipY = true; // FIXME: зависит от направления осей графики
 
         auto oldPhysicalState = movingState;
 
