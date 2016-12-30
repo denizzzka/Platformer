@@ -10,6 +10,13 @@ class Weapon
     private Soldier soldier;
     private vec2f _aimingDirection;
 
+    private static int rootHandsIdx;
+
+    static this()
+    {
+        rootHandsIdx = Soldier.skeletonData.findBoneIndex("root-hands");
+    }
+
     this(Soldier s)
     {
         soldier = s;

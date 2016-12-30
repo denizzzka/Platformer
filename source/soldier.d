@@ -26,7 +26,7 @@ enum PhysicalState
 class Soldier
 {
     static private Atlas atlas;
-    static private SkeletonData skeletonData;
+    static public SkeletonData skeletonData;
     static private AnimationStateData stateData;
 
     static private AnimationType[] stayAnimations;
