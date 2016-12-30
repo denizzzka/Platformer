@@ -10048,6 +10048,16 @@
             }
         },
         "xmas": {
+            "slot-primary": {
+                "watergun-skin": {
+                    "height": 30,
+                    "scaleX": 0.4,
+                    "scaleY": 0.4,
+                    "width": 68,
+                    "x": 8.88,
+                    "y": 3.61
+                }
+            },
             "body": {
                 "player-default": {
                     "height": 32,

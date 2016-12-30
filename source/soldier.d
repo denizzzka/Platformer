@@ -75,7 +75,7 @@ class Soldier
     {
         atlas = new Atlas("resources/textures/GAME.atlas");
         skeletonData = new SkeletonData("resources/animations/actor_pretty.json", atlas);
-        skeletonData.defaultSkin = skeletonData.findSkin("green");
+        skeletonData.defaultSkin = skeletonData.findSkin("xmas");
         spineHandsBoneIdx = skeletonData.findBoneIndex("root-hands");
         spineHeadBoneIdx = skeletonData.findBoneIndex("head-root");
 
@@ -135,8 +135,11 @@ class Soldier
     this(Map map)
     {
         skeleton = new SkeletonInstanceDrawable(skeletonData);
+        skeleton.setAttachment("slot-primary", "watergun-skin");
+
         state = new AnimationStateInstance(stateData);
         setAnimation(AnimationType.Stay);
+
         physicalObject = new PhysicalObject(map);
         physicalObject.aabb = box2f(-15, 0, 15, 50);
 

@@ -227,8 +227,11 @@ unittest
 
     auto a = new Atlas("resources/textures/GAME.atlas");
     auto sd = new SkeletonData("resources/animations/actor_pretty.json", a);
+    sd.defaultSkin = sd.findSkin("default");
+
     auto si1 = new SkeletonInstance(sd);
     auto si2 = new SkeletonInstanceDrawable(sd);
+
     auto bounds = new SkeletonBounds;
     bounds.update(si2, true);
 
@@ -238,9 +241,9 @@ unittest
     // attaching check
     {
         int slotIdx = sd.findSlotIndex("slot-primary");
+        auto att = si2.getAttachmentForSlotIndex(slotIdx, "watergun-skin");
 
-        //~ auto att = ak74inst.getAttachmentForSlotIndex(slotIdx, "watergun-skin");
-        si1.setAttachment("slot-primary", "watergun-skin");
+        si2.setAttachment("slot-primary", "watergun-skin");
     }
 
     destroy(a);
