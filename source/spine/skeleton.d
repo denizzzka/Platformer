@@ -137,6 +137,15 @@ class SkeletonInstance
         return ret;
     }
 
+    package spAttachment* getAttachmentForSlotIndex(int slotIdx, string attachmentName)
+    {
+        spAttachment* ret = spSkeleton_getAttachmentForSlotIndex(sp_skeleton, slotIdx, attachmentName.toStringz);
+
+        enforce(ret !is null, "Slot or attachment is not found");
+
+        return ret;
+    }
+
     /// @param attachmentName May be null
     void setAttachment(string slotName, string attachmentName)
     {
@@ -353,4 +362,5 @@ spSkeleton* spSkeleton_create (spSkeletonData* data);
 void spSkeleton_dispose (spSkeleton* self);
 
 void spSkeleton_setToSetupPose (const(spSkeleton)* self);
+spAttachment* spSkeleton_getAttachmentForSlotIndex (const(spSkeleton)* self, int slotIndex, const(char)* attachmentName);
 int spSkeleton_setAttachment (spSkeleton* self, const(char)* slotName, const(char)* attachmentName);
