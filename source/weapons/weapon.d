@@ -8,7 +8,7 @@ debug(weapons) import std.stdio;
 class Weapon
 {
     private Soldier soldier;
-    private vec2f _aimingDirection; /// world coords
+    private vec2f _aimingDirection;
 
     this(Soldier s)
     {
