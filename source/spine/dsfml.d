@@ -235,8 +235,13 @@ unittest
     int boneIdx = sd.findBoneIndex("root-hands");
     auto bone = si1.getBoneByIndex(boneIdx);
 
-    int slotIdx = sd.findSlotIndex("slot-primary");
-    si1.setAttachment("slot-primary", "ak74-clip-double");
+    // attaching check
+    {
+        int slotIdx = sd.findSlotIndex("slot-primary");
+
+        //~ auto att = ak74inst.getAttachmentForSlotIndex(slotIdx, "watergun-skin");
+        si1.setAttachment("slot-primary", "watergun-skin");
+    }
 
     destroy(a);
     destroy(sd);
