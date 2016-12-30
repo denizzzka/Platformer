@@ -347,7 +347,7 @@ unittest
     auto m = new Map("test_map/map_1");
     assert(m.tileTypeByWorldCoords(vec2f(0, 0)) == PhysLayer.TileType.Empty);
     assert(m.tileTypeByWorldCoords(vec2f(50, 50)) == PhysLayer.TileType.Empty);
-    assert(m.tileTypeByWorldCoords(vec2f(20, 25 * 18)) == PhysLayer.TileType.Block);
+    assert(m.tileTypeByWorldCoords(vec2f(60 * 18, 30 * 18)) == PhysLayer.TileType.Block);
 
     //~ import std.stdio;
     //~ writeln(m.tileTypeByWorldCoords(vec2f(17 * 18, 21 * 18)));

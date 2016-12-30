@@ -175,7 +175,7 @@ unittest
     assert(g.min.y == d.top);
     assert(g.width == d.width);
     assert(g.height == d.height);
-    static assert(is(typeof(g) == const box2i));
+    static assert(is(typeof(g) == const (gfm.math.box2i)));
 
     auto d2 = g.gfm_dsfml;
     assert(d2 == d);
