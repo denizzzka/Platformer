@@ -86,7 +86,7 @@ class Soldier
         with(AnimationType)
         {
             stayAnimations = [Stay, MoveForward, MoveBackward, Fly];
-            sitAnimations = [Sit, SitForward];
+            sitAnimations = [Sit, SitForward, SitBackward];
         }
 
         mixAnimationsWithEachOther(stayAnimations);
