@@ -232,6 +232,8 @@ unittest
     auto bounds = new SkeletonBounds;
     bounds.update(si2, true);
 
+    assert(sd.findBoneIndex("root-hands") != 0);
+
     destroy(a);
     destroy(sd);
     destroy(si1);

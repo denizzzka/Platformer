@@ -38,11 +38,21 @@ class SkeletonData
     {
         sp_skeletonData.defaultSkin = s.skin;
     }
+
+    int findBoneIndex(string boneName)
+    {
+        return spSkeletonData_findBoneIndex(sp_skeletonData, boneName.toStringz);
+    }
 }
 
 struct Skin
 {
     spSkin* skin;
+}
+
+struct Bone
+{
+    spBone* bone;
 }
 
 class SkeletonInstance
@@ -292,6 +302,7 @@ void spSkeletonJson_dispose(spSkeletonJson* json);
 spSkeletonData* spSkeletonJson_readSkeletonDataFile(spSkeletonJson*, const(char)* path);
 void spSkeletonData_dispose (spSkeletonData* self);
 spSkin* spSkeletonData_findSkin (const(spSkeletonData)* self, const(char)* skinName);
+int spSkeletonData_findBoneIndex (const(spSkeletonData)* self, const(char)* boneName);
 
 spSkeleton* spSkeleton_create (spSkeletonData* data);
 
