@@ -225,15 +225,22 @@ class Soldier
         auto hands = skeleton.getBoneByIndex(spineHandsBoneIdx);
         auto head = skeleton.getBoneByIndex(spineHeadBoneIdx);
 
+        // FIXME: дальнейший код зависит от направления осей графики
         auto angle = atan(aimingDirection.x / aimingDirection.y);
 
-        if(angle > 0)
-            angle = angle - PI;
+        if(angle >= 0)
+        {
+            if(aimingDirection.y < 0 && aimingDirection.x == 0)
+                angle = 0;
+            else
+                angle = angle - PI;
+        }
 
-        if(!looksToRight)
-            angle = -angle - PI;
+        if(aimingDirection.x < 0)
+            angle = -(angle + PI);
 
-        auto degrees = (angle + PI/2) * (180 / PI);
+        const spineDefaultRotation = PI/2;
+        auto degrees = (angle + spineDefaultRotation) * (180 / PI);
 
         hands.rotation = degrees;
         head.rotation = degrees;
