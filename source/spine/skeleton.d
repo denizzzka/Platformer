@@ -40,11 +40,20 @@ class SkeletonData
         sp_skeletonData.defaultSkin = s.skin;
     }
 
-    int findBoneIndex(string boneName)
+    int findBoneIndex(string boneName) const
     {
         int idx = spSkeletonData_findBoneIndex(sp_skeletonData, boneName.toStringz);
 
         enforce(idx >= 0, "Bone not found");
+
+        return idx;
+    }
+
+    int findSlotIndex(string slotName) const
+    {
+        int idx = spSkeletonData_findSlotIndex(sp_skeletonData, slotName.toStringz);
+
+        enforce(idx >= 0, "Slot not found");
 
         return idx;
     }
@@ -321,6 +330,7 @@ spSkeletonData* spSkeletonJson_readSkeletonDataFile(spSkeletonJson*, const(char)
 void spSkeletonData_dispose (spSkeletonData* self);
 spSkin* spSkeletonData_findSkin (const(spSkeletonData)* self, const(char)* skinName);
 int spSkeletonData_findBoneIndex (const(spSkeletonData)* self, const(char)* boneName);
+int spSkeletonData_findSlotIndex (const(spSkeletonData)* self, const(char)* slotName);
 
 spSkeleton* spSkeleton_create (spSkeletonData* data);
 

@@ -232,8 +232,10 @@ unittest
     auto bounds = new SkeletonBounds;
     bounds.update(si2, true);
 
-    int idx = sd.findBoneIndex("root-hands");
-    auto bone = si1.getBoneByIndex(idx);
+    int boneIdx = sd.findBoneIndex("root-hands");
+    auto bone = si1.getBoneByIndex(boneIdx);
+
+    int slotIdx = sd.findSlotIndex("slot-primary");
 
     destroy(a);
     destroy(sd);
