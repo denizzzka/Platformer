@@ -8,6 +8,7 @@ import dsfml.graphics: RenderTarget, RenderStates;
 import map;
 import physics;
 import math;
+import weapons.weapon;
 
 enum PhysicalState
 {
@@ -37,6 +38,8 @@ class Soldier
 
     PhysicalState movingState;
     const float groundSpeedScale = 1.0;
+
+    Weapon weapon;
 
     struct AnimationProperty
     {
@@ -129,6 +132,8 @@ class Soldier
         physicalObject.aabb = box2f(-15, 0, 15, 50);
 
         groundSpeedScale = 2.0;
+
+        weapon = new Weapon(skeleton);
     }
 
     void update(in float deltaTime)
