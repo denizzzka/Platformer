@@ -14,6 +14,7 @@ enum PhysicalState
 {
     Stay,
     Run,
+    RunBackwards,
     MoveUp,
     MoveDown,
     Jump,
@@ -51,6 +52,7 @@ class Soldier
     {
         Stay = AnimationProperty("stay", 0.2),
         MoveForward = AnimationProperty("move-forward", 0.2),
+        MoveBackward = AnimationProperty("move-backward", 0.2),
         Fly = AnimationProperty("fly", 0.6),
         Sit = AnimationProperty("sit", 0.2),
         SitForward = AnimationProperty("sit-forward", 0.2)
@@ -76,7 +78,7 @@ class Soldier
 
         with(AnimationType)
         {
-            stayAnimations = [Stay, MoveForward, Fly];
+            stayAnimations = [Stay, MoveForward, MoveBackward, Fly];
             sitAnimations = [Sit, SitForward];
         }
 
@@ -138,13 +140,19 @@ class Soldier
 
     void update(in float deltaTime)
     {
-        skeleton.flipX = weapon.aimingDirection.isLeftDirection;
+        const bool looksToRight = weapon.aimingDirection.isRightDirection;
+
+        skeleton.flipX = !looksToRight; // FIXME: зависит от направления осей графики
         skeleton.flipY = true; // FIXME: зависит от направления осей графики
 
         auto oldPhysicalState = movingState;
 
         const float g_force = 1200.0f;
         auto acceleration = readKeys(g_force);
+
+        if(movingState == PhysicalState.Run && acceleration.isRightDirection != looksToRight)
+            movingState = PhysicalState.RunBackwards;
+
         doMotion(acceleration, deltaTime, g_force);
 
         if(movingState != oldPhysicalState)
@@ -176,6 +184,10 @@ class Soldier
                 setAnimation(AnimationType.MoveForward);
                 break;
 
+            case RunBackwards:
+                setAnimation(AnimationType.MoveBackward);
+                break;
+
             case Jump:
                 setAnimation(AnimationType.Fly);
                 break;
@@ -197,6 +209,7 @@ class Soldier
         {
             case Stay:
             case Run:
+            case RunBackwards:
             case MoveUp:
             case MoveDown:
             case Jump:
