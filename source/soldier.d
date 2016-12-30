@@ -153,6 +153,8 @@ class Soldier
             updateAnimation();
         }
 
+        weapon.update();
+
         skeleton.update(deltaTime);
         state.update(deltaTime);
         state.apply(skeleton);

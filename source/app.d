@@ -8,6 +8,7 @@ import dsfml.system.clock;
 import std.conv: to;
 import core.time: to;
 import math: vec2f;
+import controls_reader;
 
 void main(string[] args)
 {
@@ -69,7 +70,9 @@ void main(string[] args)
 
         if (!window.isOpen())
             break;
-        
+
+        controls.update(currViewPosition, window);
+
         window.clear();
         
         //~ window.draw(head);
