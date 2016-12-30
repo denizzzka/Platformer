@@ -8,7 +8,7 @@ import dsfml.graphics: RenderTarget, RenderStates;
 import map;
 import physics;
 import math;
-import weapons.weapon;
+import controls_reader;
 
 enum PhysicalState
 {
@@ -41,7 +41,8 @@ class Soldier
     PhysicalState movingState;
     const float groundSpeedScale = 1.0;
 
-    Weapon weapon;
+    private vec2f _aimingDirection;
+    private static int spineRootHandsIdx;
 
     struct AnimationProperty
     {
@@ -73,6 +74,7 @@ class Soldier
         atlas = new Atlas("resources/textures/GAME.atlas");
         skeletonData = new SkeletonData("resources/animations/actor_pretty.json", atlas);
         skeletonData.defaultSkin = skeletonData.findSkin("green");
+        spineRootHandsIdx = skeletonData.findBoneIndex("root-hands");
 
         stateData = new AnimationStateData(skeletonData);
 
@@ -136,13 +138,11 @@ class Soldier
         physicalObject.aabb = box2f(-15, 0, 15, 50);
 
         groundSpeedScale = 2.0;
-
-        weapon = new Weapon(this);
     }
 
     void update(in float deltaTime)
     {
-        const bool looksToRight = weapon.aimingDirection.isRightDirection;
+        const bool looksToRight = aimingDirection.isRightDirection;
 
         skeleton.flipX = !looksToRight; // FIXME: зависит от направления осей графики
         skeleton.flipY = true; // FIXME: зависит от направления осей графики
@@ -168,7 +168,8 @@ class Soldier
             updateAnimation();
         }
 
-        weapon.update();
+        _aimingDirection = controls.worldMouseCoords - position;
+        debug(weapons) writeln("aim dir=", aimingDirection);
 
         skeleton.update(deltaTime);
         state.update(deltaTime);
@@ -317,6 +318,11 @@ class Soldier
         }
 
         return acceleration;
+    }
+
+    vec2f aimingDirection() const
+    {
+        return _aimingDirection;
     }
 }
 
