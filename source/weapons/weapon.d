@@ -1,29 +1,29 @@
 module weapons.weapon;
 
 import math;
-import spine.skeleton;
+import soldier;
 import controls_reader;
-debug(weapon) import std.stdio;
+debug(weapons) import std.stdio;
 
 class Weapon
 {
-    private SkeletonInstance skeletonInstance;
-    private vec2f _aimingTo; /// world coords
+    private Soldier soldier;
+    private vec2f _aimingDirection; /// world coords
 
-    this(SkeletonInstance si)
+    this(Soldier s)
     {
-        skeletonInstance = si;
+        soldier = s;
     }
 
-    vec2f aimingTo() const
+    vec2f aimingDirection() const
     {
-        return _aimingTo;
+        return _aimingDirection;
     }
 
     void update()
     {
-        _aimingTo = controls.worldMouseCoords;
+        _aimingDirection = controls.worldMouseCoords - soldier.position;
 
-        debug(weapon) writeln("aim dir=", aimingTo);
+        debug(weapons) writeln("aim dir=", aimingDirection);
     }
 }

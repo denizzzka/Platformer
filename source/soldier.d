@@ -133,7 +133,7 @@ class Soldier
 
         groundSpeedScale = 2.0;
 
-        weapon = new Weapon(skeleton);
+        weapon = new Weapon(this);
     }
 
     void update(in float deltaTime)
