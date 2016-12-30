@@ -57,6 +57,14 @@ class SkeletonData
 
         return idx;
     }
+
+    package spSlotData* findSlotByIndex(int idx)
+    {
+        assert(idx >= 0);
+        assert(idx < sp_skeletonData.slotsCount);
+
+        return sp_skeletonData.slots[idx];
+    }
 }
 
 struct Skin
@@ -127,6 +135,14 @@ class SkeletonInstance
         ret.bone = sp_skeleton.bones[idx];
 
         return ret;
+    }
+
+    /// @param attachmentName May be null
+    void setAttachment(string slotName, string attachmentName)
+    {
+        auto ret = spSkeleton_setAttachment(sp_skeleton, slotName.toStringz, attachmentName.toStringz);
+
+        enforce(ret != 0, "Slot or attachment is not found");
     }
 }
 
@@ -337,3 +353,4 @@ spSkeleton* spSkeleton_create (spSkeletonData* data);
 void spSkeleton_dispose (spSkeleton* self);
 
 void spSkeleton_setToSetupPose (const(spSkeleton)* self);
+int spSkeleton_setAttachment (spSkeleton* self, const(char)* slotName, const(char)* attachmentName);

@@ -236,6 +236,7 @@ unittest
     auto bone = si1.getBoneByIndex(boneIdx);
 
     int slotIdx = sd.findSlotIndex("slot-primary");
+    si1.setAttachment("slot-primary", "ak74-clip-double");
 
     destroy(a);
     destroy(sd);
