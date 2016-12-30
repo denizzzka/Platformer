@@ -2,6 +2,7 @@ module spine.skeleton;
 
 import spine.atlas;
 import std.string: toStringz;
+import std.exception: enforce;
 
 class SkeletonData
 {
@@ -41,7 +42,11 @@ class SkeletonData
 
     int findBoneIndex(string boneName)
     {
-        return spSkeletonData_findBoneIndex(sp_skeletonData, boneName.toStringz);
+        int idx = spSkeletonData_findBoneIndex(sp_skeletonData, boneName.toStringz);
+
+        enforce(idx >= 0, "Bone not found");
+
+        return idx;
     }
 }
 
@@ -100,6 +105,18 @@ class SkeletonInstance
         sp_skeleton.flipY = (b ? 1 : 0);
 
         return b;
+    }
+
+    Bone getBoneByIndex(int idx)
+    {
+        assert(idx >= 0);
+        assert(idx < sp_skeleton.bonesCount);
+
+        Bone ret;
+
+        ret.bone = sp_skeleton.bones[idx];
+
+        return ret;
     }
 }
 
