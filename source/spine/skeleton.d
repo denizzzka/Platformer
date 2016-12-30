@@ -58,6 +58,7 @@ struct Skin
 struct Bone
 {
     spBone* bone;
+    alias bone this;
 }
 
 class SkeletonInstance

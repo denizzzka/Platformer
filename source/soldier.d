@@ -9,6 +9,7 @@ import map;
 import physics;
 import math;
 import controls_reader;
+debug(weapons) import std.stdio: writeln;
 
 enum PhysicalState
 {
@@ -42,7 +43,8 @@ class Soldier
     const float groundSpeedScale = 1.0;
 
     private vec2f _aimingDirection;
-    private static int spineRootHandsIdx;
+    private static int spineHandsBoneIdx;
+    private static int spineHeadBoneIdx;
 
     struct AnimationProperty
     {
@@ -74,7 +76,8 @@ class Soldier
         atlas = new Atlas("resources/textures/GAME.atlas");
         skeletonData = new SkeletonData("resources/animations/actor_pretty.json", atlas);
         skeletonData.defaultSkin = skeletonData.findSkin("green");
-        spineRootHandsIdx = skeletonData.findBoneIndex("root-hands");
+        spineHandsBoneIdx = skeletonData.findBoneIndex("root-hands");
+        spineHeadBoneIdx = skeletonData.findBoneIndex("head-root");
 
         stateData = new AnimationStateData(skeletonData);
 
@@ -152,6 +155,9 @@ class Soldier
         const float g_force = 1200.0f;
         auto acceleration = readKeys(g_force);
 
+        _aimingDirection = controls.worldMouseCoords - position;
+        debug(weapons) writeln("aim dir=", aimingDirection);
+
         if(acceleration.isRightDirection != looksToRight)
         {
             if(movingState == PhysicalState.Run)
@@ -168,12 +174,10 @@ class Soldier
             updateAnimation();
         }
 
-        _aimingDirection = controls.worldMouseCoords - position;
-        debug(weapons) writeln("aim dir=", aimingDirection);
-
         skeleton.update(deltaTime);
         state.update(deltaTime);
         state.apply(skeleton);
+        updateSkeletonAimingDirection(looksToRight);
         skeleton.updateWorldTransform();
     }
 
@@ -212,6 +216,29 @@ class Soldier
                 setAnimation(AnimationType.SitForward);
                 break;
         }
+    }
+
+    private void updateSkeletonAimingDirection(bool looksToRight)
+    {
+        import std.math;
+
+        auto hands = skeleton.getBoneByIndex(spineHandsBoneIdx);
+        auto head = skeleton.getBoneByIndex(spineHeadBoneIdx);
+
+        auto angle = atan(aimingDirection.x / aimingDirection.y);
+
+        if(angle > 0)
+            angle = angle - PI;
+
+        if(!looksToRight)
+            angle = -angle - PI;
+
+        auto degrees = (angle + PI/2) * (180 / PI);
+
+        hands.rotation = degrees;
+        head.rotation = degrees;
+
+        debug(weapons) writeln("aim x=", aimingDirection.x, " y=", aimingDirection.y, " aim angle=", angle, " degrees=", degrees);
     }
 
     private vec2f renderCenter() const
