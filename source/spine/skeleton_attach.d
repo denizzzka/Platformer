@@ -87,4 +87,5 @@ struct spSkeletonAttachment_unofficial
 void* _malloc (size_t size, const(char)* file, int line);
 void* _calloc (size_t num, size_t size, const(char)* file, int line);
 
+spAttachment* spAttachmentLoader_createAttachment (spAttachmentLoader* self, spSkin* skin, spAttachmentType type, const(char)* name, const(char)* path);
 void spSlot_setAttachment (spSlot* self, spAttachment* attachment);
