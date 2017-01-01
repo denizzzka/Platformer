@@ -28,12 +28,18 @@ private SkAtt* createSkeletonAttachment(string name, size_t attachedSkeletonIdx)
 {
     SkAtt* sa = cast(SkAtt*) spineCalloc(SkAtt.sizeof, 1, __FILE__, __LINE__);
 
-    sa.name = name.toStringz;
-    sa.type = spAttachmentType.SKELETON;
-    sa.attachmentLoader = null; // FIXME
+    _spAttachment_init(&sa._super, name.toStringz, spAttachmentType.SKELETON, &disposeSkeletonAttachment);
     sa.attachedSkeletonIdx = attachedSkeletonIdx;
 
     return sa;
+}
+
+private extern (C) void disposeSkeletonAttachment(spAttachment* attachment)
+{
+	SkAtt* self = cast(SkAtt*) attachment;
+
+	_spAttachment_deinit(attachment);
+    _free(self);
 }
 
 private void* spineMalloc(size_t size, string fileName, int line)
@@ -86,6 +92,10 @@ struct spSkeletonAttachment_unofficial
 
 void* _malloc (size_t size, const(char)* file, int line);
 void* _calloc (size_t num, size_t size, const(char)* file, int line);
+void _free (void* ptr);
+
+void _spAttachment_init (spAttachment* self, const(char)* name, spAttachmentType type, void function(spAttachment* self) dispose);
+void _spAttachment_deinit (spAttachment* self);
 
 spAttachment* spAttachmentLoader_createAttachment (spAttachmentLoader* self, spSkin* skin, spAttachmentType type, const(char)* name, const(char)* path);
 void spSlot_setAttachment (spSlot* self, spAttachment* attachment);

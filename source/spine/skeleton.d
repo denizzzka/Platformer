@@ -280,7 +280,7 @@ struct spAttachment
 {
 	const(char)* name;
 	spAttachmentType type = spAttachmentType.REGION;
-	const(void*) vtable;
+	void* vtable;
 	void* attachmentLoader;
 }
 
