@@ -49,8 +49,11 @@ class Soldier
     const float groundSpeedScale = 1.0;
 
     private vec2f _aimingDirection;
-    private static int spineHandsBoneIdx;
-    private static int spineHeadBoneIdx;
+    private static const int spineHandsBoneIdx;
+    private static const int spineHeadBoneIdx;
+    private static const int spineSlotPrimaryIdx;
+
+    private Bone holderPrimary;
 
     struct AnimationProperty
     {
@@ -84,6 +87,7 @@ class Soldier
         skeletonData.defaultSkin = skeletonData.findSkin("xmas");
         spineHandsBoneIdx = skeletonData.findBoneIndex("root-hands");
         spineHeadBoneIdx = skeletonData.findBoneIndex("head-root");
+        spineSlotPrimaryIdx = skeletonData.findSlotIndex("slot-primary");
 
         stateData = new AnimationStateData(skeletonData);
 
@@ -158,11 +162,8 @@ class Soldier
         skeletonAK74 = new SkeletonInstanceDrawable(ak74data);
         stateAK74 = new AnimationStateInstance(stateDataAK74);
 
-        const primarySlotIdx = skeletonData.findSlotIndex("slot-primary");
-
         import spine.skeleton_attach;
-        setAttachment(skeleton, "ak 74 num 0", primarySlotIdx, skeletonAK74);
-        setAttachment(skeleton, "ak 74 num 1", primarySlotIdx, skeletonAK74);
+        setAttachment(skeleton, "ak-74 gun", spineSlotPrimaryIdx, skeletonAK74);
     }
 
     void update(in float deltaTime)
@@ -199,15 +200,17 @@ class Soldier
             updateAnimation();
         }
 
-        skeleton.update(deltaTime);
+        //~ skeleton.update(deltaTime);
         state.update(deltaTime);
         state.apply(skeleton);
-        updateSkeletonAimingDirection(looksToRight);
-        skeleton.updateWorldTransform();
 
-        skeletonAK74.update(0);
-        stateAK74.update(0);
+        //~ skeletonAK74.update(deltaTime);
+        stateAK74.update(deltaTime);
         stateAK74.apply(skeletonAK74);
+
+        updateSkeletonAimingDirection(looksToRight);
+
+        skeleton.updateWorldTransform();
         skeletonAK74.updateWorldTransform();
     }
 
@@ -254,6 +257,7 @@ class Soldier
 
         auto hands = skeleton.getBoneByIndex(spineHandsBoneIdx);
         auto head = skeleton.getBoneByIndex(spineHeadBoneIdx);
+        auto holder = skeleton.getBoneByIndex(spineSlotPrimaryIdx);
 
         // FIXME: дальнейший код зависит от направления осей графики
         auto angle = atan(aimingDirection.x / aimingDirection.y);
@@ -274,8 +278,10 @@ class Soldier
 
         hands.rotation = degrees;
         head.rotation = degrees;
+        holder.rotation = degrees;
 
         debug(weapons) writeln("aim x=", aimingDirection.x, " y=", aimingDirection.y, " aim angle=", angle, " degrees=", degrees);
+        debug(weapons) writeln("holder.rotation=", holder.rotation);
     }
 
     private vec2f renderCenter() const
