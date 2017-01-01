@@ -2,12 +2,13 @@ module spine.dsfml;
 
 import spine.atlas;
 import spine.skeleton;
+import spine.skeleton_attach;
 import spine.animation;
 import dsfml.graphics;
 import dsfml.graphics.drawable;
 debug import std.math: isNaN;
 debug import std.conv: to;
-debug(spine_dsfml) import std.stdio;
+debug import std.stdio;
 
 enum SPINE_MESH_VERTEX_COUNT_MAX = 1000;
 
@@ -185,6 +186,13 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
                     //~ break;
 
                 case spAttachmentType.BOUNDING_BOX:
+                    break;
+
+                case spAttachmentType.SKELETON:
+                    spSkeletonAttachment_unofficial* skAttachment = cast(spSkeletonAttachment_unofficial*) attachment;
+                    SkeletonInstanceDrawable si = cast(SkeletonInstanceDrawable) attachedSkeletons[skAttachment.attachedSkeletonIdx];
+                    si.draw(target, states);
+                    debug(spine_dsfml_skeleton) writeln("Skeleton ", skAttachment._super.name.to!string, " draw: attachedSkeletonIdx=", skAttachment.attachedSkeletonIdx);
                     break;
 
                 default:

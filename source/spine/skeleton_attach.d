@@ -4,7 +4,7 @@ import spine.skeleton;
 import std.string: toStringz;
 import std.exception: enforce;
 
-private static SkeletonInstance[size_t] attachedSkeletons;
+package static SkeletonInstance[size_t] attachedSkeletons;
 
 alias SkAtt = spSkeletonAttachment_unofficial;
 
@@ -66,7 +66,17 @@ private void* spineCalloc(size_t num, size_t size, string fileName, int line)
     return ret;
 }
 
-private extern (C):
+package extern (C):
+
+struct spSkeletonAttachment_unofficial
+{
+    spAttachment _super;
+    alias _super this;
+
+    size_t attachedSkeletonIdx;
+}
+
+private:
 
 struct spAttachmentLoader
 {
@@ -82,14 +92,6 @@ struct _spAttachmentLoaderVtable
 	void function(spAttachmentLoader* self, spAttachment*) configureAttachment;
 	void function(spAttachmentLoader* self, spAttachment*) disposeAttachment;
 	void function(spAttachmentLoader* self) dispose;
-}
-
-struct spSkeletonAttachment_unofficial
-{
-    spAttachment _super;
-    alias _super this;
-
-    size_t attachedSkeletonIdx;
 }
 
 void* _malloc (size_t size, const(char)* file, int line);
