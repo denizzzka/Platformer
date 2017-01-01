@@ -117,19 +117,11 @@ class SkeletonInstance
         spSkeleton_setToSetupPose(sp_skeleton);
     }
 
-    bool flipX(bool b)
-    {
-        sp_skeleton.flipX = (b ? 1 : 0);
+    bool flipX(bool b){ sp_skeleton.flipX = b; return b; }
+    bool flipY(bool b){ sp_skeleton.flipY = b; return b; }
 
-        return b;
-    }
-
-    bool flipY(bool b)
-    {
-        sp_skeleton.flipY = (b ? 1 : 0);
-
-        return b;
-    }
+    bool flipX() const { return sp_skeleton.flipX != 0; }
+    bool flipY() const { return sp_skeleton.flipY != 0; }
 
     Bone getBoneByIndex(int idx)
     {

@@ -203,13 +203,11 @@ class Soldier
 
         state.update(deltaTime);
         state.apply(skeleton);
+        updateSkeletonAimingDirection();
+        skeleton.updateWorldTransform();
 
         stateAK74.update(deltaTime);
         stateAK74.apply(skeletonAK74);
-
-        updateSkeletonAimingDirection();
-
-        skeleton.updateWorldTransform();
         skeletonAK74.updateWorldTransform();
     }
 
@@ -276,7 +274,7 @@ class Soldier
 
         hands.rotation = degrees;
         head.rotation = degrees;
-        holderPrimary.bone.rotation = aimingDirection.x <= 0 ? degrees : -degrees;
+        holderPrimary.bone.rotation = skeleton.flipX ? degrees : -degrees;
 
         debug(weapons) writeln("aim x=", aimingDirection.x, " y=", aimingDirection.y, " aim angle=", angle, " degrees=", degrees);
         debug(weapons) writeln("holder.bone:", *holderPrimary.bone);
