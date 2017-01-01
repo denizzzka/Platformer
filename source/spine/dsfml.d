@@ -257,6 +257,7 @@ unittest
     // attaching check
     {
         int slotIdx = sd.findSlotIndex("slot-primary");
+        Slot slot = si2.getSlotByIndex(slotIdx);
         auto att = si2.getAttachmentForSlotIndex(slotIdx, "watergun-skin");
 
         si2.setAttachment("slot-primary", "watergun-skin");
@@ -265,7 +266,7 @@ unittest
             auto ak74data = new SkeletonData("resources/animations/weapon-ak74.json", a);
             auto ak74 = new SkeletonInstanceDrawable(ak74data);
 
-            setAttachment(si2, "ak 74", slotIdx, ak74);
+            setAttachment(si2, "ak 74", slot, ak74);
         }
     }
 

@@ -40,17 +40,6 @@ private extern (C) void disposeSkeletonAttachment(spAttachment* attachment)
     _free(self);
 }
 
-private void* spineMalloc(size_t size, string fileName, int line)
-{
-    assert(size > 0);
-
-    auto ret = _malloc(size, fileName.toStringz, line);
-
-    enforce(ret !is null);
-
-    return ret;
-}
-
 private void* spineCalloc(size_t num, size_t size, string fileName, int line)
 {
     assert(size > 0);
@@ -74,28 +63,10 @@ struct spSkeletonAttachment_unofficial
 
 private:
 
-struct spAttachmentLoader
-{
-	const(char)* error1;
-	const(char)* error2;
-
-	const void* vtable;
-}
-
-struct _spAttachmentLoaderVtable
-{
-	spAttachment* function(spAttachmentLoader* self, spSkin* skin, spAttachmentType type, const(char)* name, const(char)* path) createAttachment;
-	void function(spAttachmentLoader* self, spAttachment*) configureAttachment;
-	void function(spAttachmentLoader* self, spAttachment*) disposeAttachment;
-	void function(spAttachmentLoader* self) dispose;
-}
-
-void* _malloc (size_t size, const(char)* file, int line);
 void* _calloc (size_t num, size_t size, const(char)* file, int line);
 void _free (void* ptr);
 
 void _spAttachment_init (spAttachment* self, const(char)* name, spAttachmentType type, void function(spAttachment* self) dispose);
 void _spAttachment_deinit (spAttachment* self);
 
-spAttachment* spAttachmentLoader_createAttachment (spAttachmentLoader* self, spSkin* skin, spAttachmentType type, const(char)* name, const(char)* path);
 void spSlot_setAttachment (spSlot* self, spAttachment* attachment);
