@@ -200,11 +200,9 @@ class Soldier
             updateAnimation();
         }
 
-        //~ skeleton.update(deltaTime);
         state.update(deltaTime);
         state.apply(skeleton);
 
-        //~ skeletonAK74.update(deltaTime);
         stateAK74.update(deltaTime);
         stateAK74.apply(skeletonAK74);
 
