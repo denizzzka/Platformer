@@ -256,7 +256,6 @@ class Soldier
 
         auto hands = skeleton.getBoneByIndex(spineHandsBoneIdx);
         auto head = skeleton.getBoneByIndex(spineHeadBoneIdx);
-        auto holder = skeleton.getSlotByIndex(spineSlotPrimaryIdx);
 
         // FIXME: дальнейший код зависит от направления осей графики
         auto angle = atan(aimingDirection.x / aimingDirection.y);
@@ -277,7 +276,7 @@ class Soldier
 
         hands.rotation = degrees;
         head.rotation = degrees;
-        holder.bone.rotation = degrees;
+        holderPrimary.bone.rotation = degrees;
 
         debug(weapons) writeln("aim x=", aimingDirection.x, " y=", aimingDirection.y, " aim angle=", angle, " degrees=", degrees);
         debug(weapons) writeln("holder.rotation=", holder.rotation);
