@@ -267,10 +267,21 @@ unittest
         si2.setAttachment("slot-primary", "watergun-skin");
 
         {
+            // skeleton attached to skeleton test
+
             auto ak74data = new SkeletonData("resources/animations/weapon-ak74.json", a);
             auto ak74 = new SkeletonInstanceDrawable(ak74data);
 
+            auto oldNum = attachedSkeletons.length;
+
             setAttachment(si2, "ak 74", slot, ak74);
+
+            assert(slot.attachment !is null);
+
+            setAttachment(si2, "ak 74", slot, null); // remove attach
+
+            assert(slot.attachment is null);
+            assert(oldNum == attachedSkeletons.length);
         }
     }
 

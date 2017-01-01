@@ -5,19 +5,33 @@ import std.string: toStringz;
 import std.exception: enforce;
 
 package static SkeletonInstance[size_t] attachedSkeletons;
+private static size_t skeletonsCount = 0;
 
 alias SkAtt = spSkeletonAttachment_unofficial;
 
 void setAttachment(SkeletonInstance si, string name, Slot slot, SkeletonInstance addingSkeleton)
 {
-    with(si)
+    // It is need to remove old skeleton attachment from array?
+    if(slot.attachment !is null && slot.attachment.type == spAttachmentType.SKELETON)
     {
-        const skeletonIdx = attachedSkeletons.length;
-        attachedSkeletons[skeletonIdx] = addingSkeleton;
+        SkAtt* a = cast(SkAtt*) slot.attachment;
 
-        SkAtt* attachment = createSkeletonAttachment(name, skeletonIdx);
+        attachedSkeletons.remove(a.attachedSkeletonIdx);
+    }
+
+    if(addingSkeleton is null)
+    {
+        spSlot_setAttachment(slot, null);
+    }
+    else
+    {
+        attachedSkeletons[skeletonsCount] = addingSkeleton;
+
+        SkAtt* attachment = createSkeletonAttachment(name, skeletonsCount);
 
         spSlot_setAttachment(slot, &attachment._super);
+
+        skeletonsCount++;
     }
 }
 
