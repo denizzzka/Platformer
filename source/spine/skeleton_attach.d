@@ -8,7 +8,7 @@ private static SkeletonInstance[size_t] attachedSkeletons;
 
 alias SkAtt = spSkeletonAttachment_unofficial;
 
-void setAttachment(SkeletonInstance si, size_t slotIdx, SkeletonInstance addingSkeleton)
+void setAttachment(SkeletonInstance si, string name, size_t slotIdx, SkeletonInstance addingSkeleton)
 {
     with(si)
     {
@@ -20,7 +20,7 @@ void setAttachment(SkeletonInstance si, size_t slotIdx, SkeletonInstance addingS
 
         spSlot* slot = sp_skeleton.slots[slotIdx];
 
-        SkAtt* attachment = createSkeletonAttachment("asd", skeletonIdx);
+        SkAtt* attachment = createSkeletonAttachment(name, skeletonIdx);
     }
 }
 
