@@ -82,7 +82,10 @@ class Soldier
 
     static this()
     {
+        enforceSmooth = true;
         atlas = new Atlas("resources/textures/GAME.atlas");
+        enforceSmooth = false;
+
         skeletonData = new SkeletonData("resources/animations/actor_pretty.json", atlas);
         skeletonData.defaultSkin = skeletonData.findSkin("xmas");
         spineHandsBoneIdx = skeletonData.findBoneIndex("root-hands");

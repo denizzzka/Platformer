@@ -291,6 +291,8 @@ unittest
     destroy(si2);
 }
 
+bool enforceSmooth = false;
+
 private:
 
 Color colorize(in spSkeleton* skeleton,  in spSlot* slot)
@@ -323,7 +325,7 @@ void _spAtlasPage_createTexture(spAtlasPage* self, const(char)* path)
 
     Texture t = loadTexture(path.fromStringz.to!string);
 
-	if (self.magFilter == spAtlasFilter.SP_ATLAS_LINEAR)
+	if (enforceSmooth || self.magFilter == spAtlasFilter.SP_ATLAS_LINEAR)
         t.setSmooth(true);
 
 	if (self.uWrap == spAtlasWrap.SP_ATLAS_REPEAT && self.vWrap == spAtlasWrap.SP_ATLAS_REPEAT)
