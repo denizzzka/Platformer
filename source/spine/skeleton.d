@@ -272,7 +272,8 @@ enum spAttachmentType
 	BOUNDING_BOX,
 	MESH,
 	LINKED_MESH,
-	PATH
+	PATH,
+    SKELETON = 1000 /// Unofficial type
 }
 
 struct spAttachment
