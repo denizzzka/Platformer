@@ -224,6 +224,7 @@ unittest
     import spine.atlas;
     import spine.skeleton;
     import spine.skeleton_bounds;
+    import spine.skeleton_attach: setAttachment;
 
     auto a = new Atlas("resources/textures/GAME.atlas");
     auto sd = new SkeletonData("resources/animations/actor_pretty.json", a);
@@ -244,6 +245,13 @@ unittest
         auto att = si2.getAttachmentForSlotIndex(slotIdx, "watergun-skin");
 
         si2.setAttachment("slot-primary", "watergun-skin");
+
+        {
+            auto ak74data = new SkeletonData("resources/animations/weapon-ak74.json", a);
+            auto ak74 = new SkeletonInstanceDrawable(ak74data);
+
+            setAttachment(si2, "ak 74", slotIdx, ak74);
+        }
     }
 
     destroy(a);
