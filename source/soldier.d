@@ -276,10 +276,10 @@ class Soldier
 
         hands.rotation = degrees;
         head.rotation = degrees;
-        holderPrimary.bone.rotation = degrees;
+        holderPrimary.bone.rotation = aimingDirection.x <= 0 ? degrees : -degrees;
 
         debug(weapons) writeln("aim x=", aimingDirection.x, " y=", aimingDirection.y, " aim angle=", angle, " degrees=", degrees);
-        debug(weapons) writeln("holder.rotation=", holder.rotation);
+        debug(weapons) writeln("holder.bone:", *holderPrimary.bone);
     }
 
     private vec2f renderCenter() const
