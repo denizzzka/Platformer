@@ -189,6 +189,9 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
                     break;
 
                 case spAttachmentType.SKELETON:
+                    target.draw(vertexArray, states);
+                    vertexArray.clear();
+
                     spSkeletonAttachment_unofficial* att = cast(spSkeletonAttachment_unofficial*) attachment;
                     debug(spine_dsfml_skeleton) writeln("Skeleton ", att._super.name.to!string, " draw: attachedSkeletonIdx=", att.attachedSkeletonIdx);
 
