@@ -278,8 +278,8 @@ enum spAttachmentType
 
 struct spAttachment
 {
-	const(char*) name;
-	const spAttachmentType type = spAttachmentType.REGION;
+	const(char)* name;
+	spAttachmentType type = spAttachmentType.REGION;
 	const(void*) vtable;
 	void* attachmentLoader;
 }
