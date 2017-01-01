@@ -2,6 +2,7 @@ module spine.animation;
 
 import spine.skeleton;
 import std.string: toStringz;
+import std.conv: to;
 
 class AnimationStateData
 {
@@ -89,6 +90,11 @@ class AnimationStateInstance
     {
         sp_animationState.timeScale = t;
     }
+
+    void addListener(spAnimationStateListener listener)
+    {
+        sp_animationState.listener = listener;
+    }
 }
 
 struct Animation
@@ -104,7 +110,7 @@ Animation findAnimation(SkeletonData sd, string animationName)
     return ret;
 }
 
-private extern(C):
+extern(C):
 
 enum spEventType
 {
@@ -116,7 +122,41 @@ enum spEventType
     SP_ANIMATION_EVENT
 }
 
-struct spEvent;
+private:
+
+struct spEventData
+{
+	const char* name;
+	int intValue;
+	float floatValue;
+	const(char)* stringValue;
+
+    string toString() const
+    {
+        return "name="~name.to!string~
+            " intValue="~intValue.to!string~
+            " floatValue="~floatValue.to!string~
+            " stringValue="~stringValue.to!string;
+    }
+}
+
+struct spEvent
+{
+	const(spEventData)* data;
+	const float time;
+	int intValue;
+	float floatValue;
+	const(char)* stringValue;
+
+    string toString() const
+    {
+        return "data=("~data.toString~
+            ") time="~time.to!string~
+            " intValue="~intValue.to!string~
+            " floatValue="~floatValue.to!string~
+            " stringValue="~stringValue.to!string;
+    }
+}
 
 void spAnimation_dispose (spAnimation* self);
 
