@@ -53,7 +53,7 @@ class Soldier
     private static const int spineHeadBoneIdx;
     private static const int spineSlotPrimaryIdx;
 
-    private Bone holderPrimary;
+    private Slot holderPrimary;
 
     struct AnimationProperty
     {
@@ -150,6 +150,7 @@ class Soldier
     {
         skeleton = new SkeletonInstanceDrawable(skeletonData);
         skeleton.setAttachment("slot-primary", "watergun-skin");
+        holderPrimary = skeleton.getSlotByIndex(spineSlotPrimaryIdx);
 
         state = new AnimationStateInstance(stateData);
         setAnimation(AnimationType.Stay);
@@ -163,7 +164,7 @@ class Soldier
         stateAK74 = new AnimationStateInstance(stateDataAK74);
 
         import spine.skeleton_attach;
-        setAttachment(skeleton, "ak-74 gun", spineSlotPrimaryIdx, skeletonAK74);
+        setAttachment(skeleton, "ak-74 gun", holderPrimary, skeletonAK74);
     }
 
     void update(in float deltaTime)

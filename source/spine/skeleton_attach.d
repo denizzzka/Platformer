@@ -8,17 +8,12 @@ package static SkeletonInstance[size_t] attachedSkeletons;
 
 alias SkAtt = spSkeletonAttachment_unofficial;
 
-void setAttachment(SkeletonInstance si, string name, size_t slotIdx, SkeletonInstance addingSkeleton)
+void setAttachment(SkeletonInstance si, string name, Slot slot, SkeletonInstance addingSkeleton)
 {
     with(si)
     {
-        assert(slotIdx >= 0);
-        assert(slotIdx < sp_skeleton.slotsCount);
-
         const skeletonIdx = attachedSkeletons.length;
         attachedSkeletons[skeletonIdx] = addingSkeleton;
-
-        spSlot* slot = sp_skeleton.slots[slotIdx];
 
         SkAtt* attachment = createSkeletonAttachment(name, skeletonIdx);
 
