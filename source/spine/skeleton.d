@@ -78,6 +78,12 @@ struct Bone
     alias bone this;
 }
 
+struct Slot
+{
+    spSlot* slot;
+    alias slot this;
+}
+
 class SkeletonInstance
 {
     private SkeletonData skeletonData;
@@ -133,6 +139,17 @@ class SkeletonInstance
         Bone ret;
 
         ret.bone = sp_skeleton.bones[idx];
+
+        return ret;
+    }
+
+    Slot getSlotByIndex(int idx)
+    {
+        assert(idx >= 0);
+        assert(idx < sp_skeleton.slotsCount);
+
+        Slot ret;
+        ret.slot = sp_skeleton.slots[idx];
 
         return ret;
     }
@@ -305,7 +322,7 @@ struct spSlotData
 struct spSlot
 {
 	const(spSlotData)* data;
-	const(spBone)* bone;
+	spBone* bone;
 	float r=0, g=0, b=0, a=0;
 	const(spAttachment)* attachment;
 

@@ -197,7 +197,7 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
                     auto boneStates = states;
                     boneStates.transform.translate(slot.bone.worldX, slot.bone.worldY);
                     boneStates.transform.rotate(slot.bone.rotation);
-                    debug(spine_dsfml_skeleton) writeln("rotation=", slot.bone.rotation);
+                    debug(spine_dsfml_skeleton) writeln("spBone=", *slot.bone);
 
                     si.draw(target, boneStates);
                     break;
