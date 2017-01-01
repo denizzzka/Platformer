@@ -156,6 +156,19 @@ class Soldier
         holderPrimary = skeleton.getSlotByIndex(spineSlotPrimaryIdx);
 
         state = new AnimationStateInstance(stateData);
+        state.addListener(
+            (state, type, entry, event)
+            {
+                if(type == spEventType.SP_ANIMATION_EVENT)
+                {
+                    if(event)
+                    {
+                        import std.stdio;
+                        writeln("Event! ", *event);
+                    }
+                }
+            }
+        );
         setAnimation(AnimationType.Stay);
 
         physicalObject = new PhysicalObject(map);

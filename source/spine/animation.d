@@ -133,7 +133,8 @@ struct spEventData
 
     string toString() const
     {
-        return "name="~name.to!string~
+        return
+            "name="~name.to!string~
             " intValue="~intValue.to!string~
             " floatValue="~floatValue.to!string~
             " stringValue="~stringValue.to!string;
@@ -150,7 +151,9 @@ struct spEvent
 
     string toString() const
     {
-        return "data=("~data.toString~
+        return
+            "data=(ptr="~data.to!string~
+            " "~data.toString~
             ") time="~time.to!string~
             " intValue="~intValue.to!string~
             " floatValue="~floatValue.to!string~
