@@ -190,8 +190,8 @@ class Soldier
         skeleton.flipX = !looksToRight; // FIXME: зависит от направления осей графики
         skeleton.flipY = true; // FIXME: зависит от направления осей графики
 
-        skeletonAK74.flipX = !looksToRight; // FIXME: зависит от направления осей графики
-        skeletonAK74.flipY = true; // FIXME: зависит от направления осей графики
+        skeletonAK74.flipX = skeleton.flipX;
+        skeletonAK74.flipY = skeleton.flipY;
 
         auto oldPhysicalState = movingState;
 
@@ -290,7 +290,7 @@ class Soldier
 
         hands.rotation = degrees;
         head.rotation = degrees;
-        holderPrimary.bone.rotation = skeleton.flipX ? degrees : -degrees;
+        holderPrimary.bone.rotation = skeletonAK74.flipX ? degrees : -degrees;
 
         debug(weapons) writeln("aim x=", aimingDirection.x, " y=", aimingDirection.y, " aim angle=", angle, " degrees=", degrees);
         debug(weapons) writeln("holder.bone:", *holderPrimary.bone);
