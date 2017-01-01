@@ -189,10 +189,15 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
                     break;
 
                 case spAttachmentType.SKELETON:
-                    spSkeletonAttachment_unofficial* skAttachment = cast(spSkeletonAttachment_unofficial*) attachment;
-                    SkeletonInstanceDrawable si = cast(SkeletonInstanceDrawable) attachedSkeletons[skAttachment.attachedSkeletonIdx];
-                    si.draw(target, states);
-                    debug(spine_dsfml_skeleton) writeln("Skeleton ", skAttachment._super.name.to!string, " draw: attachedSkeletonIdx=", skAttachment.attachedSkeletonIdx);
+                    spSkeletonAttachment_unofficial* att = cast(spSkeletonAttachment_unofficial*) attachment;
+                    SkeletonInstanceDrawable si = cast(SkeletonInstanceDrawable) attachedSkeletons[att.attachedSkeletonIdx];
+
+                    auto boneStates = states;
+                    boneStates.transform.translate(slot.bone.worldX, slot.bone.worldY);
+
+                    si.draw(target, boneStates);
+
+                    debug(spine_dsfml_skeleton) writeln("Skeleton ", att._super.name.to!string, " draw: attachedSkeletonIdx=", att.attachedSkeletonIdx);
                     break;
 
                 default:

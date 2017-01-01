@@ -99,6 +99,7 @@ class Soldier
         mixAnimationsWithEachOther(sitAnimations);
 
         ak74data = new SkeletonData("resources/animations/weapon-ak74.json", atlas);
+        ak74data.defaultSkin = ak74data.findSkin("weapon-black");
         stateDataAK74 = new AnimationStateData(ak74data);
     }
 
@@ -157,10 +158,16 @@ class Soldier
         skeletonAK74 = new SkeletonInstanceDrawable(ak74data);
         stateAK74 = new AnimationStateInstance(stateDataAK74);
 
+        skeletonAK74.update(0);
+        stateAK74.update(0);
+        stateAK74.apply(skeletonAK74);
+        skeletonAK74.updateWorldTransform();
+
         const primarySlotIdx = skeletonData.findSlotIndex("slot-primary");
 
         import spine.skeleton_attach;
-        setAttachment(skeleton, "ak 74", primarySlotIdx, skeletonAK74);
+        setAttachment(skeleton, "ak 74 num 0", primarySlotIdx, skeletonAK74);
+        setAttachment(skeleton, "ak 74 num 1", primarySlotIdx, skeletonAK74);
     }
 
     void update(in float deltaTime)
