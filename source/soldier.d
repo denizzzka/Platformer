@@ -158,11 +158,6 @@ class Soldier
         skeletonAK74 = new SkeletonInstanceDrawable(ak74data);
         stateAK74 = new AnimationStateInstance(stateDataAK74);
 
-        skeletonAK74.update(0);
-        stateAK74.update(0);
-        stateAK74.apply(skeletonAK74);
-        skeletonAK74.updateWorldTransform();
-
         const primarySlotIdx = skeletonData.findSlotIndex("slot-primary");
 
         import spine.skeleton_attach;
@@ -176,6 +171,9 @@ class Soldier
 
         skeleton.flipX = !looksToRight; // FIXME: зависит от направления осей графики
         skeleton.flipY = true; // FIXME: зависит от направления осей графики
+
+        skeletonAK74.flipX = !looksToRight; // FIXME: зависит от направления осей графики
+        skeletonAK74.flipY = true; // FIXME: зависит от направления осей графики
 
         auto oldPhysicalState = movingState;
 
@@ -206,6 +204,11 @@ class Soldier
         state.apply(skeleton);
         updateSkeletonAimingDirection(looksToRight);
         skeleton.updateWorldTransform();
+
+        skeletonAK74.update(0);
+        stateAK74.update(0);
+        stateAK74.apply(skeletonAK74);
+        skeletonAK74.updateWorldTransform();
     }
 
     private void updateAnimation()
