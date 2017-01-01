@@ -207,7 +207,7 @@ class Soldier
         stateAK74.update(deltaTime);
         stateAK74.apply(skeletonAK74);
 
-        updateSkeletonAimingDirection(looksToRight);
+        updateSkeletonAimingDirection();
 
         skeleton.updateWorldTransform();
         skeletonAK74.updateWorldTransform();
@@ -250,7 +250,7 @@ class Soldier
         }
     }
 
-    private void updateSkeletonAimingDirection(bool looksToRight)
+    private void updateSkeletonAimingDirection()
     {
         import std.math;
 
