@@ -26,6 +26,7 @@ void setAttachment(SkeletonInstance si, string name, size_t slotIdx, SkeletonIns
     }
 }
 
+// TODO: it is need to add ability removing of attach
 private SkAtt* createSkeletonAttachment(string name, size_t attachedSkeletonIdx)
 {
     SkAtt* sa = cast(SkAtt*) spineCalloc(SkAtt.sizeof, 1, __FILE__, __LINE__);
