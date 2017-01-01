@@ -21,6 +21,8 @@ void setAttachment(SkeletonInstance si, string name, size_t slotIdx, SkeletonIns
         spSlot* slot = sp_skeleton.slots[slotIdx];
 
         SkAtt* attachment = createSkeletonAttachment(name, skeletonIdx);
+
+        spSlot_setAttachment(slot, &attachment._super);
     }
 }
 
