@@ -302,11 +302,11 @@ class Soldier
         }
     }
 
-    void draw(RenderTarget renderTarget)
+    void draw(RenderTarget renderTarget, RenderStates renderStates = RenderStates.Default)
     {
-        RenderStates renderStates = RenderStates();
         auto tr = position - renderCenter;
         renderStates.transform.translate(tr.x, tr.y);
+
         skeleton.draw(renderTarget, renderStates);
     }
 

@@ -14,10 +14,10 @@ enum SPINE_MESH_VERTEX_COUNT_MAX = 1000;
 
 class SkeletonInstanceDrawable : SkeletonInstance, Drawable
 {
-    VertexArray vertexArray;
-    float[SPINE_MESH_VERTEX_COUNT_MAX] worldVertices;
+    private VertexArray vertexArray;
+    private float[SPINE_MESH_VERTEX_COUNT_MAX] worldVertices;
 
-    this(SkeletonData sd)
+    this(SkeletonData sd, bool smoothOverride = false)
     {
         super(sd);
 
@@ -32,7 +32,7 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
         vertexArray = new VertexArray(PrimitiveType.Triangles, sp_skeleton.bonesCount * 4);
     }
 
-    void draw(RenderTarget target, RenderStates states = RenderStates())
+    void draw(RenderTarget target, RenderStates states = RenderStates.Default)
     {
         debug(spine_dsfml) writeln("spine.dsfml.SkeletonInstanceDrawable.draw()");
         vertexArray.clear();
