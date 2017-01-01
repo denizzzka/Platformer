@@ -311,6 +311,7 @@ Color colorize(in spSkeleton* skeleton,  in spSlot* slot)
 }
 
 private static Texture[size_t] loadedTextures;
+private static size_t texturesCount = 0;
 
 extern(C):
 
@@ -319,8 +320,6 @@ void _spAtlasPage_createTexture(spAtlasPage* self, const(char)* path)
     import misc: loadTexture;
     import std.string: fromStringz;
     import std.conv: to;
-
-    size_t textureNum = loadedTextures.length;
 
     Texture t = loadTexture(path.fromStringz.to!string);
 
@@ -332,9 +331,9 @@ void _spAtlasPage_createTexture(spAtlasPage* self, const(char)* path)
 
 	self.width = t.getSize.x;
 	self.height = t.getSize.y;
-	self.rendererObject = cast(void*) textureNum;
+	self.rendererObject = cast(void*) texturesCount;
 
-    loadedTextures[textureNum] = t;
+    loadedTextures[texturesCount] = t;
 }
 
 void _spAtlasPage_disposeTexture(spAtlasPage* self)
