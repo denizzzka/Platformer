@@ -36,6 +36,12 @@ class Soldier
     private SkeletonInstanceDrawable skeleton;
     private AnimationStateInstance state;
 
+    private static SkeletonData ak74data;
+    private static AnimationStateData stateDataAK74;
+
+    private SkeletonInstanceDrawable skeletonAK74;
+    private AnimationStateInstance stateAK74;
+
     PhysicalObject physicalObject;
     alias physicalObject this;
 
@@ -91,6 +97,9 @@ class Soldier
 
         mixAnimationsWithEachOther(stayAnimations);
         mixAnimationsWithEachOther(sitAnimations);
+
+        ak74data = new SkeletonData("resources/animations/weapon-ak74.json", atlas);
+        stateDataAK74 = new AnimationStateData(ak74data);
     }
 
     private static void readAnimations()
@@ -144,6 +153,14 @@ class Soldier
         physicalObject.aabb = box2f(-15, 0, 15, 50);
 
         groundSpeedScale = 2.0;
+
+        skeletonAK74 = new SkeletonInstanceDrawable(ak74data);
+        stateAK74 = new AnimationStateInstance(stateDataAK74);
+
+        const primarySlotIdx = skeletonData.findSlotIndex("slot-primary");
+
+        import spine.skeleton_attach;
+        setAttachment(skeleton, "ak 74", primarySlotIdx, skeletonAK74);
     }
 
     void update(in float deltaTime)
