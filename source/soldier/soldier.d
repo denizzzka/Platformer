@@ -299,6 +299,9 @@ class Soldier
             if(kp(RBracket))
             {
                 weapon.nextWeapon();
+
+                import spine.skeleton_attach;
+                setAttachment(skeleton, "weapon", holderPrimary, weapon.skeleton);
             }
         }
 
