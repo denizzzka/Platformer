@@ -27,8 +27,10 @@ class HoldWeapon
         stateDataAK74 = new AnimationStateData(ak74data);
     }
 
-    this()
+    this(SoldierWeaponAnimations a)
     {
+        animations = a;
+
         skeletonAK74 = new SkeletonInstanceDrawable(ak74data);
         stateAK74 = new AnimationStateInstance(stateDataAK74);
     }
@@ -41,5 +43,10 @@ class HoldWeapon
         state.update(deltaTime);
         state.apply(skeleton);
         skeleton.updateWorldTransform();
+    }
+
+    void beginReload()
+    {
+        state.setAnimation(1, animations.reload, false);
     }
 }

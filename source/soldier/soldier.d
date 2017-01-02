@@ -37,6 +37,7 @@ class Soldier
     private AnimationStateInstance state;
 
     HoldWeapon weapon;
+    static SoldierWeaponAnimations weaponAnimations;
 
     PhysicalObject physicalObject;
     alias physicalObject this;
@@ -96,6 +97,8 @@ class Soldier
 
         mixAnimationsWithEachOther(stayAnimations);
         mixAnimationsWithEachOther(sitAnimations);
+
+        weaponAnimations.reload = skeletonData.findAnimation("reload-2hands-2");
     }
 
     private static void readAnimations()
@@ -164,7 +167,7 @@ class Soldier
 
         groundSpeedScale = 2.0;
 
-        weapon = new HoldWeapon;
+        weapon = new HoldWeapon(weaponAnimations);
         weapon.skeleton.flipY = skeleton.flipY;
 
         import spine.skeleton_attach;
