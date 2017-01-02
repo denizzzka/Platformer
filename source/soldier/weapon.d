@@ -45,8 +45,8 @@ class HoldWeapon
         skeleton.updateWorldTransform();
     }
 
-    void beginReload()
+    void beginReload(AnimationStateInstance soldierAnimationState)
     {
-        state.setAnimation(1, animations.reload, false);
+        soldierAnimationState.setAnimation(1, animations.reload, false);
     }
 }

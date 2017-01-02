@@ -98,7 +98,7 @@ class Soldier
         mixAnimationsWithEachOther(stayAnimations);
         mixAnimationsWithEachOther(sitAnimations);
 
-        weaponAnimations.reload = skeletonData.findAnimation("reload-2hands-2");
+        weaponAnimations.reload = skeletonData.findAnimation("reload-2hands-1");
     }
 
     private static void readAnimations()
@@ -383,6 +383,11 @@ class Soldier
                 {
                     movingState = PhysicalState.Sit;
                 }
+            }
+
+            if(kp(R))
+            {
+                weapon.beginReload(state);
             }
         }
 
