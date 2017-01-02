@@ -18,7 +18,7 @@ class Weapon
     private SoldierWeaponAnimations animations;
 
     private SkeletonInstanceDrawable skeletonAK74;
-    package AnimationStateInstance stateAK74;
+    private AnimationStateInstance stateAK74;
 
     static this()
     {
@@ -34,11 +34,12 @@ class Weapon
     }
 
     package SkeletonInstanceDrawable skeleton() { return skeletonAK74; }
+    package AnimationStateInstance state() { return stateAK74; }
 
     void update(float deltaTime)
     {
-        stateAK74.update(deltaTime);
-        stateAK74.apply(skeleton);
+        state.update(deltaTime);
+        state.apply(skeleton);
         skeleton.updateWorldTransform();
     }
 }
