@@ -100,4 +100,11 @@ class SoldierAnimation
         auto stateData = new AnimationStateData(skeletonData);
         state = new AnimationStateInstance(stateData);
     }
+
+    void setAnimation(AnimationType animationType, bool loop = true, int trackNum = 0)
+    {
+        foreach(ref a; availableAnimations)
+            if(a.type == animationType)
+                state.setAnimation(trackNum, a.animation, loop);
+    }
 }
