@@ -30,7 +30,7 @@ class Soldier
 {
     static public SkeletonData skeletonData;
 
-    private SkeletonInstanceDrawable skeleton;
+    package SkeletonInstanceDrawable skeleton;
     private SoldierAnimation state;
 
     HoldWeapon weapon;
@@ -46,7 +46,7 @@ class Soldier
     private static const int spineHeadBoneIdx;
     private static const int spineSlotPrimaryIdx;
 
-    private Slot holderPrimary;
+    package Slot holderPrimary;
 
     static this()
     {
@@ -72,7 +72,7 @@ class Soldier
 
         groundSpeedScale = 2.0;
 
-        weapon = new HoldWeapon(state);
+        weapon = new HoldWeapon(this, state);
         weapon.skeleton.flipY = skeleton.flipY;
 
         import spine.skeleton_attach;
@@ -299,9 +299,6 @@ class Soldier
             if(kp(RBracket))
             {
                 weapon.nextWeapon();
-
-                import spine.skeleton_attach;
-                setAttachment(skeleton, "weapon", holderPrimary, weapon.skeleton);
             }
         }
 

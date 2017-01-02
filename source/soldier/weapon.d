@@ -4,20 +4,23 @@ import spine.skeleton;
 import spine.animation;
 import spine.dsfml;
 import scene: atlas;
+import soldier.soldier: Soldier;
 import soldier.animation;
 import std.container;
 import std.range;
 
 class HoldWeapon
 {
+    private Soldier soldier;
     private SoldierAnimation soldierAnimation;
 
     private BaseWeapon weapon;
     private BaseWeapon[] availableWeapons;
     typeof(availableWeapons.cycle) weaponsRange;
 
-    this(SoldierAnimation soldierState)
+    this(Soldier soldier, SoldierAnimation soldierState)
     {
+        this.soldier = soldier;
         soldierAnimation = soldierState;
 
         foreach(ref w; weaponList)
@@ -56,6 +59,9 @@ class HoldWeapon
         changeWeapon(weaponsRange.front);
 
         weaponsRange.popFront;
+
+        import spine.skeleton_attach;
+        setAttachment(soldier.skeleton, "weapon", soldier.holderPrimary, weapon.skeleton);
     }
 }
 
