@@ -37,10 +37,6 @@ class SoldierAnimation
 
     static AvailableAnimation[] availableAnimations;
 
-    static private AnimationType[] stayAnimations;
-    static private AnimationType[] sitAnimations;
-    static private AnimationType[] holdAnimations;
-
     package AnimationStateInstance state;
 
     static void init(SkeletonData skeletonData)
@@ -52,14 +48,14 @@ class SoldierAnimation
 
         with(AnimationType)
         {
-            stayAnimations = [Stay, MoveForward, MoveBackward, Fly];
-            sitAnimations = [Sit, SitForward, SitBackward];
-            holdAnimations = [AimWeapon1Hand, AimWeapon2Hands, AimWeapon2HandsBp];
-        }
+            auto stayAnimations = [Stay, MoveForward, MoveBackward, Fly];
+            auto sitAnimations = [Sit, SitForward, SitBackward];
+            auto aimAnimations = [AimWeapon1Hand, AimWeapon2Hands, AimWeapon2HandsBp];
 
-        mixAnimationsWithEachOther(stayAnimations);
-        mixAnimationsWithEachOther(sitAnimations);
-        mixAnimationsWithEachOther(holdAnimations);
+            mixAnimationsWithEachOther(stayAnimations);
+            mixAnimationsWithEachOther(sitAnimations);
+            mixAnimationsWithEachOther(aimAnimations);
+        }
     }
 
     private static void readAnimations(SkeletonData skeletonData)
