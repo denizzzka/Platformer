@@ -3,7 +3,7 @@ module soldier.weapon;
 import spine.skeleton;
 import spine.animation;
 import spine.dsfml;
-import soldier.soldier;
+import scene: atlas;
 
 struct SoldierWeaponAnimations
 {

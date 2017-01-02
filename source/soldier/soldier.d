@@ -1,6 +1,7 @@
 module soldier.soldier;
 
-import spine.atlas;
+import scene: atlas;
+import soldier.weapon;
 import spine.skeleton;
 import spine.animation;
 import spine.dsfml;
@@ -10,15 +11,6 @@ import physics;
 import math;
 import controls_reader;
 debug(weapons) import std.stdio: writeln;
-
-static package Atlas atlas;
-
-static this()
-{
-    enforceSmooth = true;
-    atlas = new Atlas("resources/textures/GAME.atlas");
-    enforceSmooth = false;
-}
 
 enum PhysicalState
 {
@@ -44,11 +36,7 @@ class Soldier
     private SkeletonInstanceDrawable skeleton;
     private AnimationStateInstance state;
 
-    private static SkeletonData ak74data;
-    private static AnimationStateData stateDataAK74;
-
-    private SkeletonInstanceDrawable skeletonAK74;
-    private AnimationStateInstance stateAK74;
+    Weapon weapon;
 
     PhysicalObject physicalObject;
     alias physicalObject this;
@@ -90,10 +78,6 @@ class Soldier
 
     static this()
     {
-        enforceSmooth = true;
-        atlas = new Atlas("resources/textures/GAME.atlas");
-        enforceSmooth = false;
-
         skeletonData = new SkeletonData("resources/animations/actor_pretty.json", atlas);
         skeletonData.defaultSkin = skeletonData.findSkin("xmas");
         spineHandsBoneIdx = skeletonData.findBoneIndex("root-hands");
@@ -112,10 +96,6 @@ class Soldier
 
         mixAnimationsWithEachOther(stayAnimations);
         mixAnimationsWithEachOther(sitAnimations);
-
-        ak74data = new SkeletonData("resources/animations/weapon-ak74.json", atlas);
-        ak74data.defaultSkin = ak74data.findSkin("weapon-black");
-        stateDataAK74 = new AnimationStateData(ak74data);
     }
 
     private static void readAnimations()
@@ -184,11 +164,10 @@ class Soldier
 
         groundSpeedScale = 2.0;
 
-        skeletonAK74 = new SkeletonInstanceDrawable(ak74data);
-        stateAK74 = new AnimationStateInstance(stateDataAK74);
+        weapon = new Weapon;
 
         import spine.skeleton_attach;
-        setAttachment(skeleton, "ak-74 gun", holderPrimary, skeletonAK74);
+        setAttachment(skeleton, "ak-74 gun", holderPrimary, weapon.skeletonAK74);
     }
 
     void update(in float deltaTime)
@@ -198,8 +177,8 @@ class Soldier
         skeleton.flipX = !looksToRight; // FIXME: зависит от направления осей графики
         skeleton.flipY = true; // FIXME: зависит от направления осей графики
 
-        skeletonAK74.flipX = skeleton.flipX;
-        skeletonAK74.flipY = skeleton.flipY;
+        weapon.skeletonAK74.flipX = skeleton.flipX;
+        weapon.skeletonAK74.flipY = skeleton.flipY;
 
         auto oldPhysicalState = movingState;
 
@@ -230,9 +209,9 @@ class Soldier
         updateSkeletonAimingDirection();
         skeleton.updateWorldTransform();
 
-        stateAK74.update(deltaTime);
-        stateAK74.apply(skeletonAK74);
-        skeletonAK74.updateWorldTransform();
+        weapon.stateAK74.update(deltaTime);
+        weapon.stateAK74.apply(weapon.skeletonAK74);
+        weapon.skeletonAK74.updateWorldTransform();
     }
 
     private void updateAnimation()
@@ -298,7 +277,7 @@ class Soldier
 
         hands.rotation = degrees;
         head.rotation = degrees;
-        holderPrimary.bone.rotation = skeletonAK74.flipX ? degrees : -degrees;
+        holderPrimary.bone.rotation = weapon.skeletonAK74.flipX ? degrees : -degrees;
 
         debug(weapons) writeln("aim x=", aimingDirection.x, " y=", aimingDirection.y, " aim angle=", angle, " degrees=", degrees);
         debug(weapons) writeln("holder.bone:", *holderPrimary.bone);
