@@ -26,4 +26,10 @@ class Weapon
         ak74data.defaultSkin = ak74data.findSkin("weapon-black");
         stateDataAK74 = new AnimationStateData(ak74data);
     }
+
+    this()
+    {
+        skeletonAK74 = new SkeletonInstanceDrawable(ak74data);
+        stateAK74 = new AnimationStateInstance(stateDataAK74);
+    }
 }
