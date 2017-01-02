@@ -92,7 +92,6 @@ class SoldierAnimation
 
     this()
     {
-        auto stateData = new AnimationStateData(skeletonData);
         state = new AnimationStateInstance(stateData);
 
         state.addListener(
