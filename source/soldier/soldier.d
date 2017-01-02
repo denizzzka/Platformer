@@ -1,4 +1,4 @@
-module soldier;
+module soldier.soldier;
 
 import spine.atlas;
 import spine.skeleton;

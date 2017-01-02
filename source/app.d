@@ -2,7 +2,7 @@ import dsfml.graphics;
 import dlangui.platforms.dsfml.dsfmlapp : DSFMLWindow, DSFMLPlatform, initDSFMLApp, dsfmlPlatform, uninitDSFMLApp;
 import myui;
 import map;
-import soldier;
+import soldier.soldier;
 import dsfml.window;
 import dsfml.system.clock;
 import std.conv: to;
