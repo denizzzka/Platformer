@@ -70,6 +70,7 @@ static private BaseWeapon[] weaponList()
     if(_weaponList is null)
     {
         _weaponList ~= new Ak74;
+        _weaponList ~= new Colt;
         _weaponList ~= new Grenade;
     }
 
@@ -116,6 +117,11 @@ abstract class BaseWeapon
     }
 }
 
+abstract class HandGun : BaseWeapon
+{
+    override HoldType holdType() const { return HoldType.HANDGUN; }
+}
+
 abstract class Throwing : BaseWeapon
 {
     override HoldType holdType() const { return HoldType.THROWABLE; }
@@ -143,6 +149,27 @@ class Ak74 : BaseWeapon
     override HoldType holdType() const { return HoldType.TWO_HANDS; }
 }
 
+class Colt : HandGun
+{
+    this()
+    {
+        skeletonData = new SkeletonData("resources/animations/weapon-colt.json", atlas);
+        skeletonData.defaultSkin = skeletonData.findSkin("weapon-pro");
+        stateData = new AnimationStateData(skeletonData);
+
+        skeleton = new SkeletonInstanceDrawable(skeletonData);
+        skeleton.flipY = true;
+        state = new AnimationStateInstance(stateData);
+    }
+
+    override Colt createInstanceOfWeapon()
+    {
+        auto ret = new Colt;
+
+        return ret;
+    }
+}
+
 class Grenade : Throwing
 {
     this()
@@ -161,6 +188,4 @@ class Grenade : Throwing
 
         return ret;
     }
-
-    override HoldType holdType() const { return HoldType.THROWABLE; }
 }
