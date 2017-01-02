@@ -167,7 +167,7 @@ class Soldier
         weapon = new Weapon;
 
         import spine.skeleton_attach;
-        setAttachment(skeleton, "ak-74 gun", holderPrimary, weapon.skeletonAK74);
+        setAttachment(skeleton, "ak-74 gun", holderPrimary, weapon.skeleton);
     }
 
     void update(in float deltaTime)
@@ -177,8 +177,8 @@ class Soldier
         skeleton.flipX = !looksToRight; // FIXME: зависит от направления осей графики
         skeleton.flipY = true; // FIXME: зависит от направления осей графики
 
-        weapon.skeletonAK74.flipX = skeleton.flipX;
-        weapon.skeletonAK74.flipY = skeleton.flipY;
+        weapon.skeleton.flipX = skeleton.flipX;
+        weapon.skeleton.flipY = skeleton.flipY;
 
         auto oldPhysicalState = movingState;
 
@@ -210,8 +210,8 @@ class Soldier
         skeleton.updateWorldTransform();
 
         weapon.stateAK74.update(deltaTime);
-        weapon.stateAK74.apply(weapon.skeletonAK74);
-        weapon.skeletonAK74.updateWorldTransform();
+        weapon.stateAK74.apply(weapon.skeleton);
+        weapon.skeleton.updateWorldTransform();
     }
 
     private void updateAnimation()
@@ -277,7 +277,7 @@ class Soldier
 
         hands.rotation = degrees;
         head.rotation = degrees;
-        holderPrimary.bone.rotation = weapon.skeletonAK74.flipX ? degrees : -degrees;
+        holderPrimary.bone.rotation = weapon.skeleton.flipX ? degrees : -degrees;
 
         debug(weapons) writeln("aim x=", aimingDirection.x, " y=", aimingDirection.y, " aim angle=", angle, " degrees=", degrees);
         debug(weapons) writeln("holder.bone:", *holderPrimary.bone);

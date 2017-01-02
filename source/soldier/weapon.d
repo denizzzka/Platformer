@@ -17,7 +17,7 @@ class Weapon
 
     private SoldierWeaponAnimations animations;
 
-    package SkeletonInstanceDrawable skeletonAK74;
+    private SkeletonInstanceDrawable skeletonAK74;
     package AnimationStateInstance stateAK74;
 
     static this()
@@ -32,4 +32,6 @@ class Weapon
         skeletonAK74 = new SkeletonInstanceDrawable(ak74data);
         stateAK74 = new AnimationStateInstance(stateDataAK74);
     }
+
+    package SkeletonInstanceDrawable skeleton() { return skeletonAK74; }
 }
