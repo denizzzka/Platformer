@@ -93,7 +93,6 @@ class SoldierAnimation
     }
 
     package AnimationStateInstance state;
-    alias state this;
 
     this()
     {
