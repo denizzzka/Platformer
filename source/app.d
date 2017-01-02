@@ -1,13 +1,10 @@
-import dsfml.graphics;
+import dsfml.graphics: RenderWindow, RenderStates;
 import dlangui.platforms.dsfml.dsfmlapp : DSFMLWindow, DSFMLPlatform, initDSFMLApp, dsfmlPlatform, uninitDSFMLApp;
 import myui;
 import map;
 import scene;
 import soldier.soldier;
 import dsfml.window;
-import dsfml.system.clock;
-import std.conv: to;
-import core.time: to;
 import math: vec2f;
 import controls_reader;
 
