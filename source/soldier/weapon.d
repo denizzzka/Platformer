@@ -18,8 +18,8 @@ class HoldWeapon
     private static SkeletonData ak74data;
     private static AnimationStateData stateDataAK74;
 
-    private SoldierWeaponAnimations animations;
     private SoldierAnimation soldierAnimation;
+    private SoldierWeaponAnimations weaponHandleAnimations;
 
     private SkeletonInstanceDrawable skeletonAK74;
     private AnimationStateInstance stateAK74;
@@ -36,7 +36,7 @@ class HoldWeapon
     this(SoldierAnimation soldierState, SoldierWeaponAnimations a)
     {
         soldierAnimation = soldierState;
-        animations = a;
+        weaponHandleAnimations = a;
 
         skeletonAK74 = new SkeletonInstanceDrawable(ak74data);
         stateAK74 = new AnimationStateInstance(stateDataAK74);
@@ -58,7 +58,7 @@ class HoldWeapon
 
     void beginReload()
     {
-        soldierAnimation.setAnimation(animations.reload, false, 5);
+        soldierAnimation.setAnimation(weaponHandleAnimations.reload, false, 5);
     }
 
     private void changeWeapon(BaseWeapon weapon)
