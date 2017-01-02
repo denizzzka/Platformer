@@ -32,6 +32,7 @@ class Soldier
 
     static private AnimationType[] stayAnimations;
     static private AnimationType[] sitAnimations;
+    static private AnimationType[] holdAnimations;
 
     private SkeletonInstanceDrawable skeleton;
     private AnimationStateInstance state;
@@ -66,7 +67,11 @@ class Soldier
         Fly = AnimationProperty("fly", 0.6),
         Sit = AnimationProperty("sit", 0.2),
         SitForward = AnimationProperty("sit-forward", 0.2),
-        SitBackward = AnimationProperty("sit-backward", 0.2)
+        SitBackward = AnimationProperty("sit-backward", 0.2),
+
+        AimWeapon1Hand = AnimationProperty("aim-weapon-1hand", 0.2),
+        AimWeapon2Hands = AnimationProperty("aim-weapon-2hands", 0.2),
+        AimWeapon2HandsBp = AnimationProperty("aim-weapon-2hands-bp", 0.2),
     }
 
     private struct AvailableAnimation
@@ -93,10 +98,12 @@ class Soldier
         {
             stayAnimations = [Stay, MoveForward, MoveBackward, Fly];
             sitAnimations = [Sit, SitForward, SitBackward];
+            holdAnimations = [AimWeapon1Hand, AimWeapon2Hands, AimWeapon2HandsBp];
         }
 
         mixAnimationsWithEachOther(stayAnimations);
         mixAnimationsWithEachOther(sitAnimations);
+        mixAnimationsWithEachOther(holdAnimations);
 
         weaponAnimations.reload = skeletonData.findAnimation("reload-2hands-1");
     }
@@ -133,11 +140,11 @@ class Soldier
                     stateData.setMix(findAnimationByType(a1), findAnimationByType(a2), a2.mixDuration);
     }
 
-    private void setAnimation(AnimationType animationType)
+    private void setAnimation(AnimationType animationType, bool loop = true, int trackNum = 0)
     {
         foreach(ref a; availableAnimations)
             if(a.type == animationType)
-                state.setAnimation(0, a.animation, true);
+                state.setAnimation(trackNum, a.animation, loop);
     }
 
     this(Map map)
