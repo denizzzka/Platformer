@@ -4,12 +4,13 @@ import spine.skeleton;
 import spine.animation;
 import spine.dsfml;
 import scene: atlas;
+import soldier.animation;
 import std.container;
 import std.range;
 
 struct SoldierWeaponAnimations
 {
-    Animation reload;
+    AnimationType reload;
 }
 
 class HoldWeapon
@@ -18,6 +19,7 @@ class HoldWeapon
     private static AnimationStateData stateDataAK74;
 
     private SoldierWeaponAnimations animations;
+    private SoldierAnimation soldierAnimation;
 
     private SkeletonInstanceDrawable skeletonAK74;
     private AnimationStateInstance stateAK74;
@@ -29,8 +31,9 @@ class HoldWeapon
         stateDataAK74 = new AnimationStateData(ak74data);
     }
 
-    this(SoldierWeaponAnimations a)
+    this(SoldierAnimation soldierState, SoldierWeaponAnimations a)
     {
+        soldierAnimation = soldierState;
         animations = a;
 
         skeletonAK74 = new SkeletonInstanceDrawable(ak74data);
@@ -51,19 +54,19 @@ class HoldWeapon
         skeleton.updateWorldTransform();
     }
 
-    void beginReload(AnimationStateInstance soldierAnimationState)
+    void beginReload()
     {
-        soldierAnimationState.setAnimation(1, animations.reload, false);
+        soldierAnimation.setAnimation(animations.reload, false, 1);
     }
 
-    private void changeWeapon(AnimationStateInstance soldierState, BaseWeapon weapon)
+    private void changeWeapon(BaseWeapon weapon)
     {
         import std.stdio; writeln("Changing to ", weapon);
     }
 
-    void nextWeapon(AnimationStateInstance soldierState)
+    void nextWeapon()
     {
-        changeWeapon(soldierState, weaponsRange.front);
+        changeWeapon(weaponsRange.front);
 
         weaponsRange.popFront;
     }

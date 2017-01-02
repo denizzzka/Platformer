@@ -22,6 +22,8 @@ enum AnimationType : AnimationProperty
     AimWeapon1Hand = AnimationProperty("aim-weapon-1hand", 0.2),
     AimWeapon2Hands = AnimationProperty("aim-weapon-2hands", 0.2),
     AimWeapon2HandsBp = AnimationProperty("aim-weapon-2hands-bp", 0.2),
+
+    Reload2Hands1 = AnimationProperty("reload-2hands-1", 0.2),
 }
 
 private struct AvailableAnimation

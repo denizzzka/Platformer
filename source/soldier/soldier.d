@@ -59,7 +59,7 @@ class Soldier
         spineHeadBoneIdx = skeletonData.findBoneIndex("head-root");
         spineSlotPrimaryIdx = skeletonData.findSlotIndex("slot-primary");
 
-        weaponAnimations.reload = skeletonData.findAnimation("reload-2hands-1");
+        weaponAnimations.reload = AnimationType.Reload2Hands1;
     }
 
     this(Map map)
@@ -75,7 +75,7 @@ class Soldier
 
         groundSpeedScale = 2.0;
 
-        weapon = new HoldWeapon(weaponAnimations);
+        weapon = new HoldWeapon(state, weaponAnimations);
         weapon.skeleton.flipY = skeleton.flipY;
 
         import spine.skeleton_attach;
@@ -296,12 +296,12 @@ class Soldier
 
             if(kp(R))
             {
-                weapon.beginReload(state.state);
+                weapon.beginReload();
             }
 
             if(kp(RBracket))
             {
-                weapon.nextWeapon(state.state);
+                weapon.nextWeapon();
             }
         }
 
