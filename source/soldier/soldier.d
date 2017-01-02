@@ -2,6 +2,7 @@ module soldier.soldier;
 
 import scene: atlas;
 import soldier.weapon;
+import soldier.animation;
 import spine.skeleton;
 import spine.animation;
 import spine.dsfml;
@@ -36,6 +37,7 @@ class Soldier
 
     private SkeletonInstanceDrawable skeleton;
     private AnimationStateInstance state;
+    SoldierAnimation animationState;
 
     HoldWeapon weapon;
     static SoldierWeaponAnimations weaponAnimations;
@@ -152,6 +154,8 @@ class Soldier
         skeleton = new SkeletonInstanceDrawable(skeletonData);
         skeleton.flipY = true; // FIXME: зависит от направления осей графики
         holderPrimary = skeleton.getSlotByIndex(spineSlotPrimaryIdx);
+
+        animationState = new SoldierAnimation(skeletonData);
 
         state = new AnimationStateInstance(stateData);
         state.addListener(
