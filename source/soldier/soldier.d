@@ -11,6 +11,7 @@ import map;
 import physics;
 import math;
 import controls_reader;
+import scene;
 debug(weapons) import std.stdio: writeln;
 
 enum PhysicalState
@@ -26,7 +27,7 @@ enum PhysicalState
     CrawlBackwards,
 }
 
-class Soldier
+class Soldier : SceneObject
 {
     static public SkeletonData skeletonData;
 
@@ -76,7 +77,7 @@ class Soldier
         weapon.skeleton.flipY = skeleton.flipY;
     }
 
-    void update(in float deltaTime)
+    void update(float deltaTime)
     {
         const bool looksToRight = aimingDirection.isRightDirection;
 

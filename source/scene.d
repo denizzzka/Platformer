@@ -50,14 +50,15 @@ class Scene
             o.update(td.to!("seconds", float));
     }
 
-    private void drawUnitsOnMapCallback()
-    {
-        foreach(ref o; objects){}
-            //~ o.draw(renderTarget, renderStates);
-    }
-
     void draw(RenderWindow wnd, RenderStates renderStates, vec2f corner)
     {
+        void drawUnitsOnMapCallback()
+        {
+            foreach(ref o; objects)
+                o.draw(wnd, renderStates);
+        }
+
+        sceneMap.registerUnitsDrawCallback(&drawUnitsOnMapCallback);
         sceneMap.draw(wnd, corner);
     }
 }
