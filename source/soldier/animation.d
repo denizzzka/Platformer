@@ -32,7 +32,8 @@ private struct AvailableAnimation
 
 class SoldierAnimation
 {
-    private AnimationStateInstance state;
+    package AnimationStateInstance state;
+    alias state this;
 
     this(SkeletonData skeletonData)
     {
