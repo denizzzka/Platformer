@@ -140,6 +140,7 @@ class Soldier
     this(Map map)
     {
         skeleton = new SkeletonInstanceDrawable(skeletonData);
+        skeleton.flipY = true; // FIXME: зависит от направления осей графики
         holderPrimary = skeleton.getSlotByIndex(spineSlotPrimaryIdx);
 
         state = new AnimationStateInstance(stateData);
@@ -164,6 +165,7 @@ class Soldier
         groundSpeedScale = 2.0;
 
         weapon = new Weapon;
+        weapon.skeleton.flipY = skeleton.flipY;
 
         import spine.skeleton_attach;
         setAttachment(skeleton, "weapon", holderPrimary, weapon.skeleton);
@@ -174,10 +176,8 @@ class Soldier
         const bool looksToRight = aimingDirection.isRightDirection;
 
         skeleton.flipX = !looksToRight; // FIXME: зависит от направления осей графики
-        skeleton.flipY = true; // FIXME: зависит от направления осей графики
 
         weapon.skeleton.flipX = skeleton.flipX;
-        weapon.skeleton.flipY = skeleton.flipY;
 
         auto oldPhysicalState = movingState;
 
