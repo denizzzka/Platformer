@@ -310,8 +310,6 @@ class Map
     /// After render layer with option units=true this callback will be called.
     void registerUnitsDrawCallback(void delegate() callback)
     {
-        enforce(unitsDrawCallback is null);
-
         unitsDrawCallback = callback;
     }
 

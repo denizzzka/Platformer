@@ -2,6 +2,7 @@ import dsfml.graphics;
 import dlangui.platforms.dsfml.dsfmlapp : DSFMLWindow, DSFMLPlatform, initDSFMLApp, dsfmlPlatform, uninitDSFMLApp;
 import myui;
 import map;
+import scene;
 import soldier.soldier;
 import dsfml.window;
 import dsfml.system.clock;
@@ -12,8 +13,6 @@ import controls_reader;
 
 void main(string[] args)
 {
-	auto testMap = new Map("test_map/map_1");
-
     initDSFMLApp();
 
     auto window = new RenderWindow(VideoMode(800, 600, 32), "Hello DSFML!", Window.Style.Titlebar | Window.Style.Close | Window.Style.Resize);
@@ -23,21 +22,12 @@ void main(string[] args)
     // create some widget to show in window
     w.mainWidget = createMainWidget();
 
-	vec2f currViewPosition = vec2f(0, 0);
-
-    Clock frameClock = new Clock();
-
+    auto testMap = new Map("test_map/map_1");
+    auto testScene = new Scene(testMap);
     auto soldier = new Soldier(testMap);
     soldier.position = vec2f(300, 300);
 
-    void soldierDrawCallback()
-    {
-        TickDuration td = frameClock.restart.to!TickDuration;
-        soldier.update(td.to!("seconds", float));
-        soldier.draw(w.wnd);
-    }
-
-    testMap.registerUnitsDrawCallback(&soldierDrawCallback);
+    testScene.add(soldier);
 
     while (window.isOpen())
     {
@@ -59,6 +49,7 @@ void main(string[] args)
         enum increment = 15;
 
         with(Keyboard.Key)
+        with(testScene)
         {
             alias kp = Keyboard.isKeyPressed;
 
@@ -71,19 +62,12 @@ void main(string[] args)
         if (!window.isOpen())
             break;
 
-        controls.update(currViewPosition, window);
+        controls.update(testScene.currViewPosition, window);
+        testScene.update();
 
         window.clear();
-        
-        //~ window.draw(head);
-        //~ window.draw(leftEye);
-        //~ window.draw(rightEye);
-        //~ window.draw(smile);
-        //~ window.draw(smileCover);
 
-		testMap.draw(w.wnd, currViewPosition);
-
-        //~ w.draw();
+		testScene.draw(w.wnd, RenderStates.Default);
 
         window.display();
     }

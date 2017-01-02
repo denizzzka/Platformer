@@ -36,10 +36,15 @@ class Scene
     private Clock frameClock;
     vec2f currViewPosition = vec2f(0, 0);
 
-    this(string mapFilePath)
+    this(Map m)
     {
-        sceneMap = new Map(mapFilePath);
+        sceneMap = m;
         frameClock = new Clock();
+    }
+
+    void add(SceneObject obj)
+    {
+        objects ~= obj;
     }
 
     void update()
@@ -50,7 +55,7 @@ class Scene
             o.update(td.to!("seconds", float));
     }
 
-    void draw(RenderWindow wnd, RenderStates renderStates, vec2f corner)
+    void draw(RenderWindow wnd, RenderStates renderStates)
     {
         void drawUnitsOnMapCallback()
         {
@@ -59,6 +64,6 @@ class Scene
         }
 
         sceneMap.registerUnitsDrawCallback(&drawUnitsOnMapCallback);
-        sceneMap.draw(wnd, corner);
+        sceneMap.draw(wnd, currViewPosition);
     }
 }
