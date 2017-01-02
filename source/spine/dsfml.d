@@ -336,6 +336,8 @@ void _spAtlasPage_createTexture(spAtlasPage* self, const(char)* path)
 	self.rendererObject = cast(void*) texturesCount;
 
     loadedTextures[texturesCount] = t;
+
+    texturesCount++;
 }
 
 void _spAtlasPage_disposeTexture(spAtlasPage* self)
