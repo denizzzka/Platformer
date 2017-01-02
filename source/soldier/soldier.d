@@ -60,7 +60,7 @@ class Soldier : SceneObject
         spineSlotPrimaryIdx = skeletonData.findSlotIndex("slot-primary");
     }
 
-    this(Map map)
+    this(in Map map)
     {
         skeleton = new SkeletonInstanceDrawable(skeletonData);
         skeleton.flipY = true; // FIXME: зависит от направления осей графики

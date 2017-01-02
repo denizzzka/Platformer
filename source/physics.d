@@ -43,7 +43,7 @@ class PhysicalObject
     debug vec2f oldSpeed;
     alias states this;
 
-    this(Map m)
+    this(in Map m)
     {
         _map = m;
     }
