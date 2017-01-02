@@ -34,7 +34,6 @@ class Soldier
     private SoldierAnimation state;
 
     HoldWeapon weapon;
-    static SoldierWeaponAnimations weaponAnimations;
 
     PhysicalObject physicalObject;
     alias physicalObject this;
@@ -58,8 +57,6 @@ class Soldier
         spineHandsBoneIdx = skeletonData.findBoneIndex("root-hands");
         spineHeadBoneIdx = skeletonData.findBoneIndex("head-root");
         spineSlotPrimaryIdx = skeletonData.findSlotIndex("slot-primary");
-
-        weaponAnimations.reload = AnimationType.Reload2Hands1;
     }
 
     this(Map map)
@@ -75,7 +72,7 @@ class Soldier
 
         groundSpeedScale = 2.0;
 
-        weapon = new HoldWeapon(state, weaponAnimations);
+        weapon = new HoldWeapon(state);
         weapon.skeleton.flipY = skeleton.flipY;
 
         import spine.skeleton_attach;

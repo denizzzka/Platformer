@@ -8,18 +8,12 @@ import soldier.animation;
 import std.container;
 import std.range;
 
-struct SoldierWeaponAnimations
-{
-    AnimationType reload;
-}
-
 class HoldWeapon
 {
     private static SkeletonData ak74data;
     private static AnimationStateData stateDataAK74;
 
     private SoldierAnimation soldierAnimation;
-    private SoldierWeaponAnimations weaponHandleAnimations;
 
     private SkeletonInstanceDrawable skeletonAK74;
     private AnimationStateInstance stateAK74;
@@ -33,10 +27,9 @@ class HoldWeapon
         stateDataAK74 = new AnimationStateData(ak74data);
     }
 
-    this(SoldierAnimation soldierState, SoldierWeaponAnimations a)
+    this(SoldierAnimation soldierState)
     {
         soldierAnimation = soldierState;
-        weaponHandleAnimations = a;
 
         skeletonAK74 = new SkeletonInstanceDrawable(ak74data);
         stateAK74 = new AnimationStateInstance(stateDataAK74);
@@ -58,7 +51,7 @@ class HoldWeapon
 
     void beginReload()
     {
-        soldierAnimation.setAnimation(weaponHandleAnimations.reload, false, 5);
+        soldierAnimation.setAnimation(AnimationType.Reload2Hands1, false, 1);
     }
 
     private void changeWeapon(BaseWeapon weapon)
