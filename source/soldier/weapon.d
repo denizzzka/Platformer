@@ -34,4 +34,11 @@ class Weapon
     }
 
     package SkeletonInstanceDrawable skeleton() { return skeletonAK74; }
+
+    void update(float deltaTime)
+    {
+        stateAK74.update(deltaTime);
+        stateAK74.apply(skeleton);
+        skeleton.updateWorldTransform();
+    }
 }

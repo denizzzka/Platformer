@@ -208,9 +208,7 @@ class Soldier
         updateSkeletonAimingDirection();
         skeleton.updateWorldTransform();
 
-        weapon.stateAK74.update(deltaTime);
-        weapon.stateAK74.apply(weapon.skeleton);
-        weapon.skeleton.updateWorldTransform();
+        weapon.update(deltaTime);
     }
 
     private void updateAnimation()
