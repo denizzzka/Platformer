@@ -29,11 +29,6 @@ enum PhysicalState
 class Soldier
 {
     static public SkeletonData skeletonData;
-    static private AnimationStateData stateData;
-
-    static private AnimationType[] stayAnimations;
-    static private AnimationType[] sitAnimations;
-    static private AnimationType[] holdAnimations;
 
     private SkeletonInstanceDrawable skeleton;
     private SoldierAnimation state;
@@ -54,20 +49,6 @@ class Soldier
 
     private Slot holderPrimary;
 
-    struct AnimationProperty
-    {
-        string spineName;
-        float mixDuration;
-    }
-
-    private struct AvailableAnimation
-    {
-        AnimationType type;
-        Animation animation;
-    }
-
-    static AvailableAnimation[] availableAnimations;
-
     static this()
     {
         skeletonData = new SkeletonData("resources/animations/actor_pretty.json", atlas);
@@ -78,54 +59,7 @@ class Soldier
         spineHeadBoneIdx = skeletonData.findBoneIndex("head-root");
         spineSlotPrimaryIdx = skeletonData.findSlotIndex("slot-primary");
 
-        stateData = new AnimationStateData(skeletonData);
-
-        readAnimations();
-
-        with(AnimationType)
-        {
-            stayAnimations = [Stay, MoveForward, MoveBackward, Fly];
-            sitAnimations = [Sit, SitForward, SitBackward];
-            holdAnimations = [AimWeapon1Hand, AimWeapon2Hands, AimWeapon2HandsBp];
-        }
-
-        mixAnimationsWithEachOther(stayAnimations);
-        mixAnimationsWithEachOther(sitAnimations);
-        mixAnimationsWithEachOther(holdAnimations);
-
         weaponAnimations.reload = skeletonData.findAnimation("reload-2hands-1");
-    }
-
-    private static void readAnimations()
-    {
-        import std.traits: EnumMembers;
-
-        foreach(type; EnumMembers!AnimationType)
-        {
-            AvailableAnimation a;
-
-            a.type = type;
-            a.animation = skeletonData.findAnimation(type.spineName);
-
-            availableAnimations ~= a;
-        }
-    }
-
-    private static ref Animation findAnimationByType(AnimationType type)
-    {
-        foreach(ref a; availableAnimations)
-            if(a.type == type)
-                return a.animation;
-
-        assert(0);
-    }
-
-    private static void mixAnimationsWithEachOther(AnimationType[] animations)
-    {
-        foreach(ref a1; animations)
-            foreach(ref a2; animations)
-                if(a1 != a2)
-                    stateData.setMix(findAnimationByType(a1), findAnimationByType(a2), a2.mixDuration);
     }
 
     this(Map map)
