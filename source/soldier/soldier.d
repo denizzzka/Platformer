@@ -31,7 +31,7 @@ class Soldier
     static public SkeletonData skeletonData;
 
     package SkeletonInstanceDrawable skeleton;
-    private SoldierAnimation state;
+    package SoldierAnimation state;
 
     HoldWeapon weapon;
 
@@ -72,7 +72,7 @@ class Soldier
 
         groundSpeedScale = 2.0;
 
-        weapon = new HoldWeapon(this, state);
+        weapon = new HoldWeapon(this);
         weapon.skeleton.flipY = skeleton.flipY;
 
         import spine.skeleton_attach;

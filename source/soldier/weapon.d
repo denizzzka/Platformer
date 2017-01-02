@@ -12,16 +12,14 @@ import std.range;
 class HoldWeapon
 {
     private Soldier soldier;
-    private SoldierAnimation soldierAnimation;
 
     private BaseWeapon weapon;
     private BaseWeapon[] availableWeapons;
     typeof(availableWeapons.cycle) weaponsRange;
 
-    this(Soldier soldier, SoldierAnimation soldierState)
+    this(Soldier soldier)
     {
         this.soldier = soldier;
-        soldierAnimation = soldierState;
 
         foreach(ref w; weaponList)
             availableWeapons ~= w.createInstanceOfWeapon;
@@ -42,7 +40,7 @@ class HoldWeapon
 
     void beginReload()
     {
-        soldierAnimation.setAnimation(AnimationType.Reload2Hands1, false, 1);
+        soldier.state.setAnimation(AnimationType.Reload2Hands1, false, 1);
     }
 
     private void changeWeapon(BaseWeapon weapon)
@@ -51,7 +49,7 @@ class HoldWeapon
 
         this.weapon = weapon;
 
-        soldierAnimation.setAnimation(weapon.holdingAnimation, false, 1);
+        soldier.state.setAnimation(weapon.holdingAnimation, false, 1);
     }
 
     void nextWeapon()
