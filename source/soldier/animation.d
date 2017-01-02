@@ -41,6 +41,8 @@ class SoldierAnimation
     static private AnimationType[] sitAnimations;
     static private AnimationType[] holdAnimations;
 
+    package AnimationStateInstance state;
+
     static void init(SkeletonData skeletonData)
     {
         this.skeletonData = skeletonData;
@@ -92,12 +94,26 @@ class SoldierAnimation
         assert(0);
     }
 
-    package AnimationStateInstance state;
-
     this()
     {
         auto stateData = new AnimationStateData(skeletonData);
         state = new AnimationStateInstance(stateData);
+
+        state.addListener(
+            (state, type, entry, event)
+            {
+                if(type == spEventType.SP_ANIMATION_EVENT)
+                {
+                    if(event)
+                    {
+                        import std.stdio;
+                        writeln("Event! ", *event);
+                    }
+                }
+            }
+        );
+
+        setAnimation(AnimationType.Stay);
     }
 
     void setAnimation(AnimationType animationType, bool loop = true, int trackNum = 0)

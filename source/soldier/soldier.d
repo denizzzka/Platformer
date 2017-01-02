@@ -36,8 +36,7 @@ class Soldier
     static private AnimationType[] holdAnimations;
 
     private SkeletonInstanceDrawable skeleton;
-    private AnimationStateInstance state;
-    SoldierAnimation animationState;
+    private SoldierAnimation state;
 
     HoldWeapon weapon;
     static SoldierWeaponAnimations weaponAnimations;
@@ -61,21 +60,6 @@ class Soldier
         float mixDuration;
     }
 
-    enum AnimationType : AnimationProperty
-    {
-        Stay = AnimationProperty("stay", 0.2),
-        MoveForward = AnimationProperty("move-forward", 0.2),
-        MoveBackward = AnimationProperty("move-backward", 0.2),
-        Fly = AnimationProperty("fly", 0.6),
-        Sit = AnimationProperty("sit", 0.2),
-        SitForward = AnimationProperty("sit-forward", 0.2),
-        SitBackward = AnimationProperty("sit-backward", 0.2),
-
-        AimWeapon1Hand = AnimationProperty("aim-weapon-1hand", 0.2),
-        AimWeapon2Hands = AnimationProperty("aim-weapon-2hands", 0.2),
-        AimWeapon2HandsBp = AnimationProperty("aim-weapon-2hands-bp", 0.2),
-    }
-
     private struct AvailableAnimation
     {
         AnimationType type;
@@ -87,6 +71,8 @@ class Soldier
     static this()
     {
         skeletonData = new SkeletonData("resources/animations/actor_pretty.json", atlas);
+        SoldierAnimation.init(skeletonData);
+
         skeletonData.defaultSkin = skeletonData.findSkin("xmas");
         spineHandsBoneIdx = skeletonData.findBoneIndex("root-hands");
         spineHeadBoneIdx = skeletonData.findBoneIndex("head-root");
@@ -142,37 +128,13 @@ class Soldier
                     stateData.setMix(findAnimationByType(a1), findAnimationByType(a2), a2.mixDuration);
     }
 
-    private void setAnimation(AnimationType animationType, bool loop = true, int trackNum = 0)
-    {
-        foreach(ref a; availableAnimations)
-            if(a.type == animationType)
-                state.setAnimation(trackNum, a.animation, loop);
-    }
-
     this(Map map)
     {
         skeleton = new SkeletonInstanceDrawable(skeletonData);
         skeleton.flipY = true; // FIXME: зависит от направления осей графики
         holderPrimary = skeleton.getSlotByIndex(spineSlotPrimaryIdx);
 
-        SoldierAnimation.init(skeletonData);
-        animationState = new SoldierAnimation();
-
-        state = new AnimationStateInstance(stateData);
-        state.addListener(
-            (state, type, entry, event)
-            {
-                if(type == spEventType.SP_ANIMATION_EVENT)
-                {
-                    if(event)
-                    {
-                        import std.stdio;
-                        writeln("Event! ", *event);
-                    }
-                }
-            }
-        );
-        setAnimation(AnimationType.Stay);
+        state = new SoldierAnimation();
 
         physicalObject = new PhysicalObject(map);
         physicalObject.aabb = box2f(-15, 0, 15, 50);
@@ -214,12 +176,12 @@ class Soldier
 
         if(movingState != oldPhysicalState)
         {
-            state.timeScale = groundSpeedScale;
+            state.state.timeScale = groundSpeedScale;
             updateAnimation();
         }
 
-        state.update(deltaTime);
-        state.apply(skeleton);
+        state.state.update(deltaTime);
+        state.state.apply(skeleton);
         updateSkeletonAimingDirection();
         skeleton.updateWorldTransform();
 
@@ -229,6 +191,7 @@ class Soldier
     private void updateAnimation()
     {
         with(PhysicalState)
+        with(state)
         final switch(movingState)
         {
             case Stay:
@@ -399,12 +362,12 @@ class Soldier
 
             if(kp(R))
             {
-                weapon.beginReload(state);
+                weapon.beginReload(state.state);
             }
 
             if(kp(RBracket))
             {
-                weapon.nextWeapon(state);
+                weapon.nextWeapon(state.state);
             }
         }
 
