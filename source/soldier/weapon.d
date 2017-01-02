@@ -11,18 +11,22 @@ import std.range;
 class HoldWeapon
 {
     private SoldierAnimation soldierAnimation;
+
     private BaseWeapon weapon;
+    private BaseWeapon[] availableWeapons;
+    typeof(availableWeapons.cycle) weaponsRange;
 
     this(SoldierAnimation soldierState)
     {
         soldierAnimation = soldierState;
 
-        weaponsRange = weaponList.cycle;
+        foreach(ref w; weaponList)
+            availableWeapons ~= w.createInstanceOfWeapon;
 
-        weapon = weaponList[0];
+        weaponsRange = availableWeapons.cycle;
+
+        weapon = weaponsRange.front;
     }
-
-    typeof(weaponList.cycle) weaponsRange;
 
     package SkeletonInstanceDrawable skeleton() { return weapon.skeleton; }
 
@@ -86,6 +90,8 @@ abstract class BaseWeapon
     private SkeletonInstanceDrawable skeleton;
     private AnimationStateInstance state;
 
+    BaseWeapon createInstanceOfWeapon();
+
     HoldType holdType() const;
 
     AnimationType holdingAnimation() const
@@ -123,6 +129,13 @@ class Ak74 : BaseWeapon
         state = new AnimationStateInstance(stateData);
     }
 
+    override Ak74 createInstanceOfWeapon()
+    {
+        auto ret = new Ak74;
+
+        return ret;
+    }
+
     override HoldType holdType() const { return HoldType.TWO_HANDS; }
 }
 
@@ -136,6 +149,13 @@ class Grenade : Throwing
 
         skeleton = new SkeletonInstanceDrawable(skeletonData);
         state = new AnimationStateInstance(stateData);
+    }
+
+    override Grenade createInstanceOfWeapon()
+    {
+        auto ret = new Grenade;
+
+        return ret;
     }
 
     override HoldType holdType() const { return HoldType.THROWABLE; }
