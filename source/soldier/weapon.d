@@ -61,8 +61,8 @@ static private BaseWeapon[] weaponList()
 
     if(_weaponList is null)
     {
-        _weaponList ~= (new Ak74);
-        _weaponList ~= (new Grenade);
+        _weaponList ~= new Ak74;
+        _weaponList ~= new Grenade;
     }
 
     return _weaponList;
@@ -85,16 +85,6 @@ abstract class BaseWeapon
 
     private SkeletonInstanceDrawable skeleton;
     private AnimationStateInstance state;
-
-    this()
-    {
-        skeletonData = new SkeletonData("resources/animations/weapon-ak74.json", atlas);
-        skeletonData.defaultSkin = skeletonData.findSkin("weapon-black");
-        stateData = new AnimationStateData(skeletonData);
-
-        skeleton = new SkeletonInstanceDrawable(skeletonData);
-        state = new AnimationStateInstance(stateData);
-    }
 
     HoldType holdType() const;
 
@@ -123,10 +113,30 @@ abstract class Throwing : BaseWeapon
 
 class Ak74 : BaseWeapon
 {
+    this()
+    {
+        skeletonData = new SkeletonData("resources/animations/weapon-ak74.json", atlas);
+        skeletonData.defaultSkin = skeletonData.findSkin("weapon-black");
+        stateData = new AnimationStateData(skeletonData);
+
+        skeleton = new SkeletonInstanceDrawable(skeletonData);
+        state = new AnimationStateInstance(stateData);
+    }
+
     override HoldType holdType() const { return HoldType.TWO_HANDS; }
 }
 
 class Grenade : Throwing
 {
+    this()
+    {
+        skeletonData = new SkeletonData("resources/animations/grenade-he.json", atlas);
+        skeletonData.defaultSkin = skeletonData.findSkin("throwable-default");
+        stateData = new AnimationStateData(skeletonData);
+
+        skeleton = new SkeletonInstanceDrawable(skeletonData);
+        state = new AnimationStateInstance(stateData);
+    }
+
     override HoldType holdType() const { return HoldType.THROWABLE; }
 }
