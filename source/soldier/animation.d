@@ -32,6 +32,32 @@ private struct AvailableAnimation
 
 class SoldierAnimation
 {
+    static AvailableAnimation[] availableAnimations;
+
+    static private AnimationType[] stayAnimations;
+    static private AnimationType[] sitAnimations;
+    static private AnimationType[] holdAnimations;
+
+    static this()
+    {
+        readAnimations();
+    }
+
+    private static void readAnimations()
+    {
+        import std.traits: EnumMembers;
+
+        foreach(type; EnumMembers!AnimationType)
+        {
+            AvailableAnimation a;
+
+            a.type = type;
+            //~ a.animation = skeletonData.findAnimation(type.spineName);
+
+            availableAnimations ~= a;
+        }
+    }
+
     package AnimationStateInstance state;
     alias state this;
 
