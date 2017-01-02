@@ -33,6 +33,8 @@ private struct AvailableAnimation
 class SoldierAnimation
 {
     static package SkeletonData skeletonData;
+    static private AnimationStateData stateData;
+
     static AvailableAnimation[] availableAnimations;
 
     static private AnimationType[] stayAnimations;
@@ -41,12 +43,24 @@ class SoldierAnimation
 
     static void init(SkeletonData skeletonData)
     {
-        SoldierAnimation.skeletonData = skeletonData;
+        this.skeletonData = skeletonData;
 
-        SoldierAnimation.readAnimations();
+        readAnimations(skeletonData);
+        stateData = new AnimationStateData(skeletonData);
+
+        with(AnimationType)
+        {
+            stayAnimations = [Stay, MoveForward, MoveBackward, Fly];
+            sitAnimations = [Sit, SitForward, SitBackward];
+            holdAnimations = [AimWeapon1Hand, AimWeapon2Hands, AimWeapon2HandsBp];
+        }
+
+        mixAnimationsWithEachOther(stayAnimations);
+        mixAnimationsWithEachOther(sitAnimations);
+        mixAnimationsWithEachOther(holdAnimations);
     }
 
-    private static void readAnimations()
+    private static void readAnimations(SkeletonData skeletonData)
     {
         import std.traits: EnumMembers;
 
@@ -59,6 +73,23 @@ class SoldierAnimation
 
             availableAnimations ~= a;
         }
+    }
+
+    private static void mixAnimationsWithEachOther(AnimationType[] animations)
+    {
+        foreach(ref a1; animations)
+            foreach(ref a2; animations)
+                if(a1 != a2)
+                    stateData.setMix(findAnimationByType(a1), findAnimationByType(a2), a2.mixDuration);
+    }
+
+    private static ref Animation findAnimationByType(AnimationType type)
+    {
+        foreach(ref a; availableAnimations)
+            if(a.type == type)
+                return a.animation;
+
+        assert(0);
     }
 
     package AnimationStateInstance state;
