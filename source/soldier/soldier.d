@@ -155,7 +155,8 @@ class Soldier
         skeleton.flipY = true; // FIXME: зависит от направления осей графики
         holderPrimary = skeleton.getSlotByIndex(spineSlotPrimaryIdx);
 
-        animationState = new SoldierAnimation(skeletonData);
+        SoldierAnimation.init(skeletonData);
+        animationState = new SoldierAnimation();
 
         state = new AnimationStateInstance(stateData);
         state.addListener(

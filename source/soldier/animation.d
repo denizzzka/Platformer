@@ -32,15 +32,18 @@ private struct AvailableAnimation
 
 class SoldierAnimation
 {
+    static package SkeletonData skeletonData;
     static AvailableAnimation[] availableAnimations;
 
     static private AnimationType[] stayAnimations;
     static private AnimationType[] sitAnimations;
     static private AnimationType[] holdAnimations;
 
-    static this()
+    static void init(SkeletonData skeletonData)
     {
-        readAnimations();
+        SoldierAnimation.skeletonData = skeletonData;
+
+        SoldierAnimation.readAnimations();
     }
 
     private static void readAnimations()
@@ -52,7 +55,7 @@ class SoldierAnimation
             AvailableAnimation a;
 
             a.type = type;
-            //~ a.animation = skeletonData.findAnimation(type.spineName);
+            a.animation = skeletonData.findAnimation(type.spineName);
 
             availableAnimations ~= a;
         }
@@ -61,7 +64,7 @@ class SoldierAnimation
     package AnimationStateInstance state;
     alias state this;
 
-    this(SkeletonData skeletonData)
+    this()
     {
         auto stateData = new AnimationStateData(skeletonData);
         state = new AnimationStateInstance(stateData);
