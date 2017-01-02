@@ -74,9 +74,6 @@ class Soldier
 
         weapon = new HoldWeapon(this);
         weapon.skeleton.flipY = skeleton.flipY;
-
-        import spine.skeleton_attach;
-        setAttachment(skeleton, "weapon", holderPrimary, weapon.skeleton);
     }
 
     void update(in float deltaTime)

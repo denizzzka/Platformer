@@ -26,7 +26,7 @@ class HoldWeapon
 
         weaponsRange = availableWeapons.cycle;
 
-        weapon = weaponsRange.front;
+        changeWeapon(weaponsRange.front);
     }
 
     package SkeletonInstanceDrawable skeleton() { return weapon.skeleton; }
@@ -45,9 +45,12 @@ class HoldWeapon
 
     private void changeWeapon(BaseWeapon weapon)
     {
+        import spine.skeleton_attach;
         import std.stdio; writeln("Changing to ", weapon);
 
         this.weapon = weapon;
+
+        setAttachment(soldier.skeleton, "weapon", soldier.holderPrimary, weapon.skeleton);
 
         soldier.state.setAnimation(weapon.holdingAnimation, false, 1);
     }
@@ -57,9 +60,6 @@ class HoldWeapon
         changeWeapon(weaponsRange.front);
 
         weaponsRange.popFront;
-
-        import spine.skeleton_attach;
-        setAttachment(soldier.skeleton, "weapon", soldier.holderPrimary, weapon.skeleton);
     }
 }
 
