@@ -140,7 +140,6 @@ class Soldier
     this(Map map)
     {
         skeleton = new SkeletonInstanceDrawable(skeletonData);
-        skeleton.setAttachment("slot-primary", "watergun-skin");
         holderPrimary = skeleton.getSlotByIndex(spineSlotPrimaryIdx);
 
         state = new AnimationStateInstance(stateData);
@@ -167,7 +166,7 @@ class Soldier
         weapon = new Weapon;
 
         import spine.skeleton_attach;
-        setAttachment(skeleton, "ak-74 gun", holderPrimary, weapon.skeleton);
+        setAttachment(skeleton, "weapon", holderPrimary, weapon.skeleton);
     }
 
     void update(in float deltaTime)
