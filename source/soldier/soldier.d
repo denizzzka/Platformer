@@ -36,7 +36,7 @@ class Soldier
     private SkeletonInstanceDrawable skeleton;
     private AnimationStateInstance state;
 
-    Weapon weapon;
+    HoldWeapon weapon;
 
     PhysicalObject physicalObject;
     alias physicalObject this;
@@ -164,7 +164,7 @@ class Soldier
 
         groundSpeedScale = 2.0;
 
-        weapon = new Weapon;
+        weapon = new HoldWeapon;
         weapon.skeleton.flipY = skeleton.flipY;
 
         import spine.skeleton_attach;

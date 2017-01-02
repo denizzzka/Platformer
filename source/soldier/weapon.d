@@ -10,7 +10,7 @@ struct SoldierWeaponAnimations
     Animation reload;
 }
 
-class Weapon
+class HoldWeapon
 {
     private static SkeletonData ak74data;
     private static AnimationStateData stateDataAK74;
