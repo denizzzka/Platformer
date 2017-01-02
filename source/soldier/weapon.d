@@ -10,43 +10,27 @@ import std.range;
 
 class HoldWeapon
 {
-    private static SkeletonData ak74data;
-    private static AnimationStateData stateDataAK74;
-
     private SoldierAnimation soldierAnimation;
-
-    private SkeletonInstanceDrawable skeletonAK74;
-    private AnimationStateInstance stateAK74;
-
     private BaseWeapon weapon;
-
-    static this()
-    {
-        ak74data = new SkeletonData("resources/animations/weapon-ak74.json", atlas);
-        ak74data.defaultSkin = ak74data.findSkin("weapon-black");
-        stateDataAK74 = new AnimationStateData(ak74data);
-    }
 
     this(SoldierAnimation soldierState)
     {
         soldierAnimation = soldierState;
 
-        skeletonAK74 = new SkeletonInstanceDrawable(ak74data);
-        stateAK74 = new AnimationStateInstance(stateDataAK74);
-
         weaponsRange = weaponList.cycle;
+
+        weapon = weaponList[0];
     }
 
     typeof(weaponList.cycle) weaponsRange;
 
-    package SkeletonInstanceDrawable skeleton() { return skeletonAK74; }
-    package AnimationStateInstance state() { return stateAK74; }
+    package SkeletonInstanceDrawable skeleton() { return weapon.skeleton; }
 
     void update(float deltaTime)
     {
-        state.update(deltaTime);
-        state.apply(skeleton);
-        skeleton.updateWorldTransform();
+        weapon.state.update(deltaTime);
+        weapon.state.apply(weapon.skeleton);
+        weapon.skeleton.updateWorldTransform();
     }
 
     void beginReload()
@@ -71,12 +55,17 @@ class HoldWeapon
     }
 }
 
-static private BaseWeapon[] weaponList;
-
-static this()
+static private BaseWeapon[] weaponList()
 {
-    weaponList ~= (new Ak74);
-    weaponList ~= (new Grenade);
+    static BaseWeapon[] _weaponList;
+
+    if(_weaponList is null)
+    {
+        _weaponList ~= (new Ak74);
+        _weaponList ~= (new Grenade);
+    }
+
+    return _weaponList;
 }
 
 enum HoldType
@@ -91,6 +80,22 @@ enum HoldType
 
 abstract class BaseWeapon
 {
+    private SkeletonData skeletonData;
+    private AnimationStateData stateData;
+
+    private SkeletonInstanceDrawable skeleton;
+    private AnimationStateInstance state;
+
+    this()
+    {
+        skeletonData = new SkeletonData("resources/animations/weapon-ak74.json", atlas);
+        skeletonData.defaultSkin = skeletonData.findSkin("weapon-black");
+        stateData = new AnimationStateData(skeletonData);
+
+        skeleton = new SkeletonInstanceDrawable(skeletonData);
+        state = new AnimationStateInstance(stateData);
+    }
+
     HoldType holdType() const;
 
     AnimationType holdingAnimation() const
