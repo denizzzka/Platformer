@@ -3,11 +3,16 @@ module scene;
 import spine.atlas;
 import spine.dsfml;
 
-static package Atlas atlas;
-
-static this()
+static Atlas atlas()
 {
-    enforceSmooth = true;
-    atlas = new Atlas("resources/textures/GAME.atlas");
-    enforceSmooth = false;
+    static Atlas atlas;
+
+    if(atlas is null)
+    {
+        enforceSmooth = true;
+        atlas = new Atlas("resources/textures/GAME.atlas");
+        enforceSmooth = false;
+    }
+
+    return atlas;
 }

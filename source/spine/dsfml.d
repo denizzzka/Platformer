@@ -17,7 +17,7 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
     private VertexArray vertexArray;
     private float[SPINE_MESH_VERTEX_COUNT_MAX] worldVertices;
 
-    this(SkeletonData sd, bool smoothOverride = false)
+    this(SkeletonData sd)
     {
         super(sd);
 
