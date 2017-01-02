@@ -389,6 +389,11 @@ class Soldier
             {
                 weapon.beginReload(state);
             }
+
+            if(kp(RBracket))
+            {
+                weapon.nextWeapon(state);
+            }
         }
 
         return acceleration;
