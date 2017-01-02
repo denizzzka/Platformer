@@ -11,6 +11,15 @@ import math;
 import controls_reader;
 debug(weapons) import std.stdio: writeln;
 
+static package Atlas atlas;
+
+static this()
+{
+    enforceSmooth = true;
+    atlas = new Atlas("resources/textures/GAME.atlas");
+    enforceSmooth = false;
+}
+
 enum PhysicalState
 {
     Stay,
@@ -26,7 +35,6 @@ enum PhysicalState
 
 class Soldier
 {
-    static private Atlas atlas;
     static public SkeletonData skeletonData;
     static private AnimationStateData stateData;
 
