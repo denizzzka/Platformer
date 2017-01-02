@@ -24,6 +24,8 @@ class HoldWeapon
     private SkeletonInstanceDrawable skeletonAK74;
     private AnimationStateInstance stateAK74;
 
+    private BaseWeapon weapon;
+
     static this()
     {
         ak74data = new SkeletonData("resources/animations/weapon-ak74.json", atlas);
@@ -56,12 +58,16 @@ class HoldWeapon
 
     void beginReload()
     {
-        soldierAnimation.setAnimation(animations.reload, false, 1);
+        soldierAnimation.setAnimation(animations.reload, false, 5);
     }
 
     private void changeWeapon(BaseWeapon weapon)
     {
         import std.stdio; writeln("Changing to ", weapon);
+
+        this.weapon = weapon;
+
+        soldierAnimation.setAnimation(weapon.holdingAnimation, false, 1);
     }
 
     void nextWeapon()
@@ -85,6 +91,7 @@ enum HoldType
     ONE_HAND,
     TWO_HANDS,
     TWO_HANDS_BP,
+    HANDGUN,
     THROWABLE,
     KNIFE
 }
@@ -92,6 +99,28 @@ enum HoldType
 abstract class BaseWeapon
 {
     HoldType holdType() const;
+
+    AnimationType holdingAnimation() const
+    {
+        with(HoldType)
+        with(AnimationType)
+        switch(holdType)
+        {
+            case THROWABLE:
+                return HoldThrowable;
+
+            case HANDGUN:
+                return AimWeapon1Hand;
+
+            default:
+                return AimWeapon2Hands;
+        }
+    }
+}
+
+abstract class Throwing : BaseWeapon
+{
+    override HoldType holdType() const { return HoldType.THROWABLE; }
 }
 
 class Ak74 : BaseWeapon
@@ -99,7 +128,7 @@ class Ak74 : BaseWeapon
     override HoldType holdType() const { return HoldType.TWO_HANDS; }
 }
 
-class Grenade : BaseWeapon
+class Grenade : Throwing
 {
     override HoldType holdType() const { return HoldType.THROWABLE; }
 }

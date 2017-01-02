@@ -22,6 +22,7 @@ enum AnimationType : AnimationProperty
     AimWeapon1Hand = AnimationProperty("aim-weapon-1hand", 0.2),
     AimWeapon2Hands = AnimationProperty("aim-weapon-2hands", 0.2),
     AimWeapon2HandsBp = AnimationProperty("aim-weapon-2hands-bp", 0.2),
+    HoldThrowable = AnimationProperty("hold-throwable", 0.2),
 
     Reload2Hands1 = AnimationProperty("reload-2hands-1", 0.2),
 }
@@ -52,7 +53,7 @@ class SoldierAnimation
         {
             auto stayAnimations = [Stay, MoveForward, MoveBackward, Fly];
             auto sitAnimations = [Sit, SitForward, SitBackward];
-            auto aimAnimations = [AimWeapon1Hand, AimWeapon2Hands, AimWeapon2HandsBp];
+            auto aimAnimations = [AimWeapon1Hand, AimWeapon2Hands, AimWeapon2HandsBp, HoldThrowable];
 
             mixAnimationsWithEachOther(stayAnimations);
             mixAnimationsWithEachOther(sitAnimations);
