@@ -50,7 +50,7 @@ class HoldWeapon
 
         this.weapon = weapon;
 
-        weapon.skeleton.flipY = soldier.skeleton.flipY; // FIXME: зависит от направления осей графики
+        weapon.skeleton.flipY = soldier.skeleton.flipY;
 
         setAttachment(soldier.skeleton, "weapon", soldier.holderPrimary, weapon.skeleton);
 
