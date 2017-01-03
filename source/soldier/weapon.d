@@ -17,6 +17,7 @@ class HoldWeapon
     private BaseWeapon weapon;
     private BaseWeapon[] availableWeapons;
     typeof(availableWeapons.cycle) weaponsRange;
+    private Bone fireBone;
 
     this(Soldier soldier)
     {
@@ -56,6 +57,11 @@ class HoldWeapon
         setAttachment(soldier.skeleton, "weapon", soldier.holderPrimary, weapon.skeleton);
 
         soldier.state.setAnimation(weapon.holdingAnimation, false, 1);
+
+        {
+            auto fireBoneIdx = weapon.skeletonData.findBoneIndex("fire-bone");
+            fireBone = weapon.skeleton.getBoneByIndex(fireBoneIdx);
+        }
     }
 
     void nextWeapon()
@@ -71,11 +77,14 @@ class HoldWeapon
 
         Bullet b;
 
+        b.speed = soldier.aimingDirection.normalized * 1000;
         b.position = soldier.position - soldier.renderCenter + vec2f( // FIXME: зависит от направления осей графики
                 soldier.holderPrimary.bone.worldX,
                 soldier.holderPrimary.bone.worldY
+            ) + vec2f(
+                fireBone.worldX,
+                fireBone.worldY
             );
-        b.speed = soldier.aimingDirection.normalized * 1000;
 
         soldier._scene.bullets.add(b);
     }
