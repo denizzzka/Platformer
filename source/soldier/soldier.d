@@ -319,5 +319,6 @@ class Soldier : SceneObject
 unittest
 {
     auto m = new Map("test_map/map_1");
-    auto s = new Soldier(m);
+    auto sc = new Scene(m);
+    auto s = new Soldier(sc);
 }
