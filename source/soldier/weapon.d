@@ -71,7 +71,10 @@ class HoldWeapon
 
         Bullet b;
 
-        b.position = soldier.position;
+        b.position = soldier.position - soldier.renderCenter + vec2f( // FIXME: зависит от направления осей графики
+                soldier.holderPrimary.bone.worldX,
+                soldier.holderPrimary.bone.worldY
+            );
         b.speed = soldier.aimingDirection.normalized * 1000;
 
         soldier._scene.bullets.add(b);

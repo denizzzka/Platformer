@@ -189,7 +189,7 @@ class Soldier : SceneObject
         debug(weapons) writeln("holder.bone:", *holderPrimary.bone);
     }
 
-    private vec2f renderCenter() const
+    package vec2f renderCenter() const
     {
         with(PhysicalState)
         final switch(movingState)
