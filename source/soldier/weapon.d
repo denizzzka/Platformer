@@ -10,6 +10,7 @@ import std.container;
 import std.range;
 import bullets;
 debug(weapons) import std.stdio: writeln;
+import math: vec2f;
 
 class HoldWeapon
 {
@@ -72,20 +73,34 @@ class HoldWeapon
         weaponsRange.popFront;
     }
 
+    private vec2f fireSourcePoint() const
+    {
+        import std.math;
+
+        // need to rotate fireBone coords because attached sceletons aren't calculates its world coords
+        auto angle = atan(soldier.aimingDirection.y / soldier.aimingDirection.x);
+
+        const sn = sin(angle);
+        const cs = cos(angle);
+
+        auto ret = vec2f(
+                fireBone.worldX * cs - fireBone.worldY * sn,
+                fireBone.worldX * sn + fireBone.worldY * cs
+            );
+
+        return ret;
+    }
+
     void fire()
     {
-        import math: vec2f;
-
         Bullet b;
 
         b.speed = soldier.aimingDirection.normalized * 1000;
-        b.position = soldier.position - soldier.renderCenter + vec2f( // FIXME: зависит от направления осей графики
+        b.position = soldier.position - soldier.renderCenter + // FIXME: зависит от направления осей графики
+            vec2f( // holder coords
                 soldier.holderPrimary.bone.worldX,
                 soldier.holderPrimary.bone.worldY
-            ) + vec2f(
-                fireBone.worldX,
-                fireBone.worldY
-            );
+            ) + fireSourcePoint;
 
         soldier._scene.bullets.add(b);
 
