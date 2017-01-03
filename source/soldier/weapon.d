@@ -9,7 +9,7 @@ import soldier.animation;
 import std.container;
 import std.range;
 import bullets;
-debug(weapons) import std.stdio: writeln;
+debug import std.stdio: writeln;
 import math: vec2f;
 
 class HoldWeapon
@@ -104,7 +104,7 @@ class HoldWeapon
 
         soldier._scene.bullets.add(b);
 
-        debug(weapons) writeln("fireBone:", fireBone);
+        debug(weapons_fire) writeln("fireBone:", fireBone);
     }
 }
 
