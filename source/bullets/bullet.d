@@ -10,9 +10,10 @@ struct Bullet
     vec2f position = vec2f(0, 0);
     vec2f speed = vec2f(1, 1);
     float windage = 1;
+    float timeToLive = 10;
 }
 
-void doMotion(ref Bullet b, in Map m, in float dt, in float g_force)
+void doMotion(ref Bullet b, in float dt, in float g_force)
 {
     with(b)
     {
