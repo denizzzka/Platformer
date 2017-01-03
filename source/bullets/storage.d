@@ -9,8 +9,7 @@ class Bullets: SceneObject
 {
     private Map _map;
 
-    private Bullet[size_t] bullets;
-    private size_t count;
+    private Bullet[] bullets;
 
     this(Map m)
     {
@@ -19,28 +18,26 @@ class Bullets: SceneObject
 
     void add(Bullet b)
     {
-        bullets[count] = b;
-        count++;
-    }
-
-    private void remove(size_t num)
-    {
-        bullets.remove(num);
+        bullets ~= b;
     }
 
     void update(float dt)
     {
         const float g_force = 1200.0f; // FIXME: это нужно хранить в сцене
 
-        foreach(size_t i, ref b; bullets)
+        Bullet[] buf;
+
+        foreach(ref b; bullets)
         {
             b.doMotion(dt, g_force);
 
             b.timeToLive -= dt;
 
-            if(b.timeToLive <= 0)
-                remove(i);
+            if(b.timeToLive > 0)
+                buf ~= b;
         }
+
+        bullets = buf;
     }
 
     void draw(RenderTarget renderTarget, RenderStates renderStates)
