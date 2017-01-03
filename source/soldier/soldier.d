@@ -221,7 +221,7 @@ class Soldier : SceneObject
     private vec2f readKeys(const float g_force)
     {
         import std.math: sqrt;
-        import dsfml.window: Keyboard;
+        import dsfml.window: Keyboard, Mouse;
 
         const float jumpHeight = 50.0;
         const float jumpForce = sqrt(2.0 * g_force * jumpHeight);
@@ -299,6 +299,11 @@ class Soldier : SceneObject
             if(kp(RBracket))
             {
                 weapon.nextWeapon();
+            }
+
+            if(Mouse.isButtonPressed(Mouse.Button.Left))
+            {
+                weapon.fire();
             }
         }
 
