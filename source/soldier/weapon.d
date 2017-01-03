@@ -8,6 +8,7 @@ import soldier.soldier: Soldier;
 import soldier.animation;
 import std.container;
 import std.range;
+import bullet;
 
 class HoldWeapon
 {
@@ -117,6 +118,8 @@ abstract class BaseWeapon
                 return AimWeapon2Hands;
         }
     }
+
+    void fire();
 }
 
 abstract class HandGun : BaseWeapon
@@ -149,6 +152,7 @@ class Ak74 : BaseWeapon
     }
 
     override HoldType holdType() const { return HoldType.TWO_HANDS; }
+    override void fire(){ return; }
 }
 
 class Colt : HandGun
@@ -169,6 +173,8 @@ class Colt : HandGun
 
         return ret;
     }
+
+    override void fire(){ return; }
 }
 
 class Grenade : Throwing
@@ -189,4 +195,6 @@ class Grenade : Throwing
 
         return ret;
     }
+
+    override void fire(){ return; }
 }
