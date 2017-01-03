@@ -74,7 +74,6 @@ class Soldier : SceneObject
         groundSpeedScale = 2.0;
 
         weapon = new HoldWeapon(this);
-        weapon.skeleton.flipY = skeleton.flipY;
     }
 
     void update(float deltaTime)

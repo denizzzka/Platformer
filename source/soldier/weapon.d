@@ -50,6 +50,8 @@ class HoldWeapon
 
         this.weapon = weapon;
 
+        weapon.skeleton.flipY = soldier.skeleton.flipY; // FIXME: зависит от направления осей графики
+
         setAttachment(soldier.skeleton, "weapon", soldier.holderPrimary, weapon.skeleton);
 
         soldier.state.setAnimation(weapon.holdingAnimation, false, 1);
@@ -158,7 +160,6 @@ class Colt : HandGun
         stateData = new AnimationStateData(skeletonData);
 
         skeleton = new SkeletonInstanceDrawable(skeletonData);
-        skeleton.flipY = true;
         state = new AnimationStateInstance(stateData);
     }
 
