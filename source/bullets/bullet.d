@@ -1,4 +1,4 @@
-module bullet;
+module bullets.bullet;
 
 import math;
 import map;

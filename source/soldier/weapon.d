@@ -8,7 +8,6 @@ import soldier.soldier: Soldier;
 import soldier.animation;
 import std.container;
 import std.range;
-import bullet;
 
 class HoldWeapon
 {
