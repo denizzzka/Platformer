@@ -31,16 +31,18 @@ interface SceneObject
 
 class Scene
 {
-    private Map sceneMap;
+    private Map _sceneMap;
     private SceneObject[] objects;
     private Clock frameClock;
     vec2f currViewPosition = vec2f(0, 0);
 
     this(Map m)
     {
-        sceneMap = m;
+        _sceneMap = m;
         frameClock = new Clock();
     }
+
+    Map sceneMap(){ return _sceneMap; }
 
     void add(SceneObject obj)
     {

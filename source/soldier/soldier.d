@@ -31,6 +31,8 @@ class Soldier : SceneObject
 {
     static public SkeletonData skeletonData;
 
+    private Scene _scene;
+
     package SkeletonInstanceDrawable skeleton;
     package SoldierAnimation state;
 
@@ -60,15 +62,16 @@ class Soldier : SceneObject
         spineSlotPrimaryIdx = skeletonData.findSlotIndex("slot-primary");
     }
 
-    this(in Map map)
+    this(Scene placeToScene)
     {
+        _scene = placeToScene;
         skeleton = new SkeletonInstanceDrawable(skeletonData);
         skeleton.flipY = true; // FIXME: зависит от направления осей графики
         holderPrimary = skeleton.getSlotByIndex(spineSlotPrimaryIdx);
 
         state = new SoldierAnimation();
 
-        physicalObject = new PhysicalObject(map);
+        physicalObject = new PhysicalObject(_scene.sceneMap);
         physicalObject.aabb = box2f(-15, 0, 15, 50);
 
         groundSpeedScale = 2.0;
