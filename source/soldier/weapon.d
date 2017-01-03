@@ -71,7 +71,7 @@ class HoldWeapon
 
         Bullet b;
 
-        b.position = vec2f(0, 0);
+        b.position = soldier.position;
         b.speed = vec2f(1, 0);
 
         soldier._scene.bullets.add(b);
