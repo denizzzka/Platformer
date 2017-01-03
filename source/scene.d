@@ -68,10 +68,10 @@ class Scene
     {
         void drawUnitsOnMapCallback()
         {
+            bullets.draw(wnd, renderStates);
+
             foreach(ref o; objects)
                 o.draw(wnd, renderStates);
-
-            bullets.draw(wnd, renderStates);
         }
 
         sceneMap.registerUnitsDrawCallback(&drawUnitsOnMapCallback);
