@@ -8,6 +8,7 @@ import soldier.soldier: Soldier;
 import soldier.animation;
 import std.container;
 import std.range;
+import bullets;
 
 class HoldWeapon
 {
@@ -151,7 +152,18 @@ class Ak74 : BaseWeapon
     }
 
     override HoldType holdType() const { return HoldType.TWO_HANDS; }
-    override void fire(){ return; }
+
+    override void fire()
+    {
+        import math;
+
+        Bullet b;
+
+        b.position = vec2f(0, 0);
+        b.speed = vec2f(1, 0);
+
+        //~ this.soldier._scene; //.bullets.bullets ~= b;
+    }
 }
 
 class Colt : HandGun

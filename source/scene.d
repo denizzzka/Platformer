@@ -8,7 +8,7 @@ import map;
 import math: vec2f;
 import core.time: to;
 import std.conv: to;
-import bullets.storage;
+import bullets: Bullets;
 
 static Atlas atlas()
 {
@@ -33,13 +33,16 @@ interface SceneObject
 class Scene
 {
     private Map _sceneMap;
-    private SceneObject[] objects;
+    public SceneObject[] objects;
+    private SceneObject bullets;
     private Clock frameClock;
     vec2f currViewPosition = vec2f(0, 0);
 
     this(Map m)
     {
         _sceneMap = m;
+
+        bullets = new Bullets(_sceneMap);
         frameClock = new Clock();
     }
 
@@ -57,10 +60,14 @@ class Scene
 
         foreach(ref o; objects)
             o.update(seconds);
+
+        bullets.update(seconds);
     }
 
     void draw(RenderWindow wnd, RenderStates renderStates)
     {
+        bullets.draw(wnd, renderStates);
+
         void drawUnitsOnMapCallback()
         {
             foreach(ref o; objects)

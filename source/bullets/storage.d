@@ -9,7 +9,7 @@ class Bullets: SceneObject
 {
     private Map _map;
 
-    Bullet[] bullets;
+    public Bullet[] bullets;
 
     this(Map m)
     {
