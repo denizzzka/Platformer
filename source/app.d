@@ -7,9 +7,13 @@ import soldier.soldier;
 import dsfml.window;
 import math: vec2f;
 import controls_reader;
+import ver.packageVersion;
+import std.stdio: writeln;
 
 void main(string[] args)
 {
+    writeln("Version ", packageVersion ," built ", packageTimestamp);
+
     initDSFMLApp();
 
     auto window = new RenderWindow(VideoMode(800, 600, 32), "Hello DSFML!", Window.Style.Titlebar | Window.Style.Close | Window.Style.Resize);
