@@ -9,6 +9,7 @@ import soldier.animation;
 import std.container;
 import std.range;
 import bullets;
+debug(weapons) import std.stdio: writeln;
 
 class HoldWeapon
 {
@@ -87,6 +88,8 @@ class HoldWeapon
             );
 
         soldier._scene.bullets.add(b);
+
+        debug(weapons) writeln("fireBone:", fireBone);
     }
 }
 
