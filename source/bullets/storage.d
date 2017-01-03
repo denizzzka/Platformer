@@ -9,11 +9,16 @@ class Bullets: SceneObject
 {
     private Map _map;
 
-    public Bullet[] bullets;
+    private Bullet[] bullets;
 
     this(Map m)
     {
         _map = m;
+    }
+
+    void add(Bullet b)
+    {
+        bullets ~= b;
     }
 
     void update(float dt)

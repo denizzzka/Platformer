@@ -64,6 +64,18 @@ class HoldWeapon
 
         weaponsRange.popFront;
     }
+
+    void fire()
+    {
+        import math: vec2f;
+
+        Bullet b;
+
+        b.position = vec2f(0, 0);
+        b.speed = vec2f(1, 0);
+
+        soldier._scene.bullets.add(b);
+    }
 }
 
 static private BaseWeapon[] weaponList()
@@ -118,8 +130,6 @@ abstract class BaseWeapon
                 return AimWeapon2Hands;
         }
     }
-
-    void fire();
 }
 
 abstract class HandGun : BaseWeapon
@@ -152,18 +162,6 @@ class Ak74 : BaseWeapon
     }
 
     override HoldType holdType() const { return HoldType.TWO_HANDS; }
-
-    override void fire()
-    {
-        import math;
-
-        Bullet b;
-
-        b.position = vec2f(0, 0);
-        b.speed = vec2f(1, 0);
-
-        //~ this.soldier._scene; //.bullets.bullets ~= b;
-    }
 }
 
 class Colt : HandGun
@@ -184,8 +182,6 @@ class Colt : HandGun
 
         return ret;
     }
-
-    override void fire(){ return; }
 }
 
 class Grenade : Throwing
@@ -206,6 +202,4 @@ class Grenade : Throwing
 
         return ret;
     }
-
-    override void fire(){ return; }
 }

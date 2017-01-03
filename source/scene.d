@@ -34,7 +34,7 @@ class Scene
 {
     private Map _sceneMap;
     public SceneObject[] objects;
-    private SceneObject bullets;
+    public Bullets bullets;
     private Clock frameClock;
     vec2f currViewPosition = vec2f(0, 0);
 

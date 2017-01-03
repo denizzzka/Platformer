@@ -31,7 +31,7 @@ class Soldier : SceneObject
 {
     static public SkeletonData skeletonData;
 
-    private Scene _scene;
+    package Scene _scene;
 
     package SkeletonInstanceDrawable skeleton;
     package SoldierAnimation state;
