@@ -8,7 +8,6 @@ struct Bullet
 {
     vec2f position = vec2f(0, 0);
     vec2f speed = vec2f(1, 1);
-    float lengthProportion = 1;
     float windage = 1;
 }
 
