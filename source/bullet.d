@@ -12,7 +12,7 @@ struct Bullet
     float windage = 1;
 }
 
-void doMotion(Map m, Bullet b, float dt, float g_force)
+void doMotion(in Map m, ref Bullet b, in float dt, in float g_force)
 {
     with(b)
     {
@@ -23,7 +23,7 @@ void doMotion(Map m, Bullet b, float dt, float g_force)
     }
 }
 
-void draw(Bullet b, RenderTarget renderTarget, RenderStates renderStates)
+void draw(ref Bullet b, RenderTarget renderTarget, RenderStates renderStates)
 {
     with(b)
     {
