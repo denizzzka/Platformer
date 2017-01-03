@@ -8,6 +8,7 @@ import map;
 import math: vec2f;
 import core.time: to;
 import std.conv: to;
+import bullet;
 
 static Atlas atlas()
 {
@@ -33,6 +34,7 @@ class Scene
 {
     private Map _sceneMap;
     private SceneObject[] objects;
+    public Bullet[] bullets;
     private Clock frameClock;
     vec2f currViewPosition = vec2f(0, 0);
 
@@ -52,13 +54,17 @@ class Scene
     void update()
     {
         TickDuration td = frameClock.restart.to!TickDuration;
+        float seconds = td.to!("seconds", float);
 
         foreach(ref o; objects)
-            o.update(td.to!("seconds", float));
+            o.update(seconds);
     }
 
     void draw(RenderWindow wnd, RenderStates renderStates)
     {
+        foreach(ref b; bullets)
+            b.draw(wnd, renderStates);
+
         void drawUnitsOnMapCallback()
         {
             foreach(ref o; objects)

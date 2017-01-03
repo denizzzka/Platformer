@@ -12,7 +12,7 @@ struct Bullet
     float windage = 1;
 }
 
-void doMotion(in Map m, ref Bullet b, in float dt, in float g_force)
+void doMotion(ref Bullet b, in Map m, in float dt, in float g_force)
 {
     with(b)
     {
