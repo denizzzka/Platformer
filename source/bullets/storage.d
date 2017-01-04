@@ -41,7 +41,6 @@ class Bullets: SceneObject
                 if(!coll.isNull)
                 {
                     b.position = coll;
-                    b.speed = vec2f(0, 0);
                     b.timeToLive = 0;
                 }
 
