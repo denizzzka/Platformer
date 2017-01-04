@@ -38,6 +38,14 @@ if(is(T == Layer) || is(T == PhysLayer))
     return ret;
 }
 
+auto getTileByCoords(T)(inout T s, vec2i coords)
+if(is(T == Layer) || is(T == PhysLayer))
+{
+    size_t idx = s.coords2index(coords);
+
+    return s.spriteNumbers[idx];
+}
+
 struct PhysLayer
 {
     enum TileType : ubyte
