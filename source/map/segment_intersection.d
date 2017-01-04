@@ -1,10 +1,10 @@
-module segment.tile_intersection;
+module map.segment_intersection;
 
 import map;
 import math;
 import std.typecons: Nullable;
 
-Nullable!vec2f checkBlockCollision(vec2f from, vec2f to)
+Nullable!vec2f checkBlockCollision(in Map m, vec2f from, vec2f to)
 {
     Nullable!vec2f ret;
 

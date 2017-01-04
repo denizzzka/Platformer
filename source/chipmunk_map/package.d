@@ -1,9 +1,9 @@
 module chipmunk_map;
 
 import map;
+import map.segment_intersection: isBulletproof;
 import math;
 import dchip.all;
-import segment.tile_intersection: isBulletproof;
 private import chipmunk_map.gfm_interaction;
 
 // FIXME: many memory leaks
