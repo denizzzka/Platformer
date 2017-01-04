@@ -4,13 +4,13 @@ import map;
 import math;
 import std.typecons: Nullable;
 
-Nullable!vec2f checkBlockCollision(in Map m, vec2f from, vec2f to)
+Nullable!vec2f checkBlockCollision(in Map m, in vec2f from, in vec2f to)
 {
     const vec2f dir = to - from;
     const int minTileSize = m.tileSize.x < m.tileSize.y ? m.tileSize.x : m.tileSize.y;
-    const vec2f increment = dir.normalized * minTileSize - 1;
+    const vec2f increment = dir.normalized; // * minTileSize - 1;
 
-    auto curr = from;
+    vec2f curr = from;
 
     while
     (
@@ -18,12 +18,12 @@ Nullable!vec2f checkBlockCollision(in Map m, vec2f from, vec2f to)
         (dir.x < 0 && curr.x >= to.x)
     )
     {
-        Nullable!vec2f ret = curr;
-
         {
             curr.x += increment.x;
+            Nullable!vec2f ret = curr;
 
             vec2i tileCoords = m.worldCoordsToTileCoords(curr);
+            tileCoords.x += (dir.x >= 0 ? -1 : 0);
             auto t = m.tileTypeByTileCoords(tileCoords);
 
             if(t.isBulletproof)
@@ -39,19 +39,20 @@ Nullable!vec2f checkBlockCollision(in Map m, vec2f from, vec2f to)
 
         {
             curr.y += increment.y;
+            Nullable!vec2f ret = curr;
 
-            vec2i tileCoords = m.worldCoordsToTileCoords(curr);
-            auto t = m.tileTypeByTileCoords(tileCoords);
+            //~ vec2i tileCoords = m.worldCoordsToTileCoords(curr);
+            //~ auto t = m.tileTypeByTileCoords(tileCoords);
 
-            if(t.isBulletproof)
-            {
-                if(dir.y >= 0)
-                    ret.y = tileCoords.y * m.tileSize.y;
-                else
-                    ret.y = (tileCoords.y + 3) * m.tileSize.y;
+            //~ if(t.isBulletproof)
+            //~ {
+                //~ if(dir.y >= 0)
+                    //~ ret.y = tileCoords.y * m.tileSize.y;
+                //~ else
+                    //~ ret.y = (tileCoords.y + 3) * m.tileSize.y;
 
-                return ret;
-            }
+                //~ return ret;
+            //~ }
         }
     }
 

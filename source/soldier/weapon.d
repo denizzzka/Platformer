@@ -97,7 +97,7 @@ class HoldWeapon
 
         b.timeToLive = 0.5;
         b.windage = 0.90;
-        b.speed = soldier.aimingDirection.normalized * 3000;
+        b.speed = soldier.aimingDirection.normalized * 5000;
         b.position = soldier.position - soldier.renderCenter + // FIXME: зависит от направления осей графики
             vec2f( // holder coords
                 soldier.holderPrimary.bone.worldX,
