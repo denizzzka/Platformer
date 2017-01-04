@@ -3,14 +3,18 @@ module chipmunk_map;
 import map;
 import math;
 import dchip.all;
+import std.typecons: Nullable;
+
+// FIXME: many memory leaks
 
 class ChipmunkMap
 {
-    private cpSpace space;
+    private cpSpace* space;
 
     this(Map m)
     {
-        space.staticBody = cpBodyNewStatic;
+        space = cpSpaceNew();
+        space.staticBody = cpBodyNewStatic();
 
         auto l = m.physLayer;
 
@@ -31,7 +35,7 @@ class ChipmunkMap
                     v[2] = cpVect(wE.x, wE.y);
                     v[3] = cpVect(wE.x, wS.y);
 
-                    cpShape* shape = cpPolyShapeNew(space.staticBody, 4, v.ptr, cpVect(0, 0));
+                    cpShape* shape = cpPolyShapeNew(space.staticBody, 4, v.ptr, cpvzero);
 
                     space.staticBody.cpBodyAddShape(shape);
                 }
@@ -41,6 +45,19 @@ class ChipmunkMap
 
     ~this()
     {
+        cpSpaceFree(space);
+    }
+
+    void update(float dt)
+    {
+        cpSpaceStep(space, dt);
+    }
+
+    Nullable!vec2f checkCollision(vec2f from, vec2f to)
+    {
+        Nullable!vec2f ret;
+
+        return ret;
     }
 }
 
