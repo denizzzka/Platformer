@@ -19,13 +19,13 @@ Nullable!vec2f checkBlockCollision(in Map m, in vec2f from, in vec2f to)
     while
     (
         (
-            (dir.x > 0 && curr.x <= to.x) ||
-            (dir.x < 0 && curr.x >= to.x)
+            (dir.x >= 0 && curr.x <= to.x) ||
+            (dir.x < 0  && curr.x >= to.x)
         )
         &&
         (
-            (dir.y > 0 && curr.y <= to.y) ||
-            (dir.y < 0 && curr.y >= to.y)
+            (dir.y >= 0 && curr.y <= to.y) ||
+            (dir.y < 0  && curr.y >= to.y)
         )
     )
     {
