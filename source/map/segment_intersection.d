@@ -8,7 +8,7 @@ Nullable!vec2f checkBlockCollision(in Map m, in vec2f from, in vec2f to)
 {
     const vec2f dir = to - from;
     const int minTileSize = m.tileSize.x < m.tileSize.y ? m.tileSize.x : m.tileSize.y;
-    const vec2f increment = dir.normalized * minTileSize - 1;
+    const vec2f increment = dir.normalized * (minTileSize - 1);
 
     vec2f curr = from;
 
@@ -18,7 +18,7 @@ Nullable!vec2f checkBlockCollision(in Map m, in vec2f from, in vec2f to)
             (dir.x > 0 && curr.x <= to.x) ||
             (dir.x < 0 && curr.x >= to.x)
         )
-        ||
+        &&
         (
             (dir.y > 0 && curr.y <= to.y) ||
             (dir.y < 0 && curr.y >= to.y)
