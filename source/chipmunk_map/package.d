@@ -3,7 +3,7 @@ module chipmunk_map;
 import map;
 import math;
 import dchip.all;
-import std.typecons: Nullable;
+import segment.tile_intersection: isBulletproof;
 private import chipmunk_map.gfm_interaction;
 
 // FIXME: many memory leaks
@@ -49,28 +49,8 @@ class ChipmunkMap
         cpSpaceFree(space);
     }
 
-    //~ private static collisionCallback
-
     void update(float dt)
     {
         cpSpaceStep(space, dt);
     }
-
-    Nullable!vec2f checkCollision(vec2f from, vec2f to)
-    {
-        cpVect cFrom = from.gfm_chip;
-        cpVect cTo = to.gfm_chip;
-
-        Nullable!vec2f ret;
-
-        return ret;
-    }
-}
-
-private bool isBulletproof(PhysLayer.TileType t) pure
-{
-    return  t == PhysLayer.TileType.OneWay ||
-            t == PhysLayer.TileType.Block ||
-            t == PhysLayer.TileType.SlopeLeft ||
-            t == PhysLayer.TileType.SlopeRight;
 }
