@@ -48,6 +48,8 @@ class ChipmunkMap
         cpSpaceFree(space);
     }
 
+    //~ private static collisionCallback
+
     void update(float dt)
     {
         cpSpaceStep(space, dt);
@@ -55,6 +57,9 @@ class ChipmunkMap
 
     Nullable!vec2f checkCollision(vec2f from, vec2f to)
     {
+        cpVect cFrom = from.gfm_chip;
+        cpVect cTo = to.gfm_chip;
+
         Nullable!vec2f ret;
 
         return ret;
@@ -67,4 +72,36 @@ private bool isBulletproof(PhysLayer.TileType t) pure
             t == PhysLayer.TileType.Block ||
             t == PhysLayer.TileType.SlopeLeft ||
             t == PhysLayer.TileType.SlopeRight;
+}
+
+import std.traits;
+
+/// gfm and chipmunk interaction
+/// params:
+/// Vs - source vector
+/// Vr - result vector
+private auto gfm_chip(Vs)(Vs s)
+if(
+    is(Vs == cpVect) ||
+    (isInstanceOf!(gfm.math.Vector, Vs) && Vs.v.length == 2)
+)
+{
+    alias T = Unqual!(typeof(Vs.x));
+
+    static if(is(Vs == cpVect))
+    {
+        alias Vdest = Vector!(T, 2);
+    }
+    else static if(isInstanceOf!(gfm.math.Vector, Vs) && Vs.v.length == 2)
+    {
+        alias Vdest = cpVect;
+    }
+    else
+    {
+        static assert(0);
+    }
+
+    alias R = CopyConstness!(Vs, Vdest);
+
+    return R(s.x, s.y);
 }
