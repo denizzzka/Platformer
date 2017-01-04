@@ -29,7 +29,7 @@ void doMotion(ref Bullet b, in float dt, in float g_force)
 
 Nullable!vec2f getBlockCollisionCoords(in Bullet b, in Map m)
 {
-    return checkBlockCollision(m, b.prevPosition, b.position);
+    return checkSegmentCollision(m, b.prevPosition, b.position);
 }
 
 void draw(ref Bullet b, RenderTarget renderTarget, RenderStates renderStates)
