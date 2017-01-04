@@ -30,23 +30,23 @@ class Bullets: SceneObject
 
         foreach(ref b; bullets)
         {
-            b.doMotion(dt, g_force);
-
-            b.timeToLive -= dt;
-
-            auto coll = b.getBlockCollisionCoords(_map);
-
-            if(!coll.isNull)
-            {
-                b.position = coll;
-                b.timeToLive = 0;
-
-                //~ import std.stdio;
-                //~ writeln(b);
-            }
-
             if(b.timeToLive > 0)
+            {
+                b.doMotion(dt, g_force);
+
+                b.timeToLive -= dt;
+
+                auto coll = b.getBlockCollisionCoords(_map);
+
+                if(!coll.isNull)
+                {
+                    b.position = coll;
+                    b.speed = vec2f(0, 0);
+                    b.timeToLive = 0;
+                }
+
                 buf ~= b;
+            }
         }
 
         bullets = buf;
