@@ -313,7 +313,7 @@ class Map
         unitsDrawCallback = callback;
     }
 
-    vec2i worldCoordsToTileCoords(vec2f w) const
+    vec2i worldCoordsToTileCoords(vec2f w) const pure
     {
         import std.math: floor;
         import std.conv: to;
@@ -321,12 +321,12 @@ class Map
         return vec2i(w.x.floor.to!int / tileSize.x, w.y.floor.to!int / tileSize.y);
     }
 
-    vec2f tileCoordsToWorldCoords(vec2i t) const
+    vec2f tileCoordsToWorldCoords(vec2i t) const pure
     {
         return vec2f(t.x * tileSize.x, t.y * tileSize.y);
     }
 
-    PhysLayer.TileType tileTypeByTileCoords(vec2i tileCoords) const
+    PhysLayer.TileType tileTypeByTileCoords(vec2i tileCoords) const pure
     {
         if(
             tileCoords.x >= 0 &&
@@ -339,7 +339,7 @@ class Map
             return PhysLayer.TileType.Empty;
     }
 
-    PhysLayer.TileType tileTypeByWorldCoords(vec2f worldCoords) const
+    PhysLayer.TileType tileTypeByWorldCoords(vec2f worldCoords) const pure
     {
         return tileTypeByTileCoords(worldCoordsToTileCoords(worldCoords));
     }

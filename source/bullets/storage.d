@@ -1,6 +1,7 @@
 module bullets.storage;
 
 import scene: SceneObject;
+import math;
 import map: Map;
 import bullets.bullet;
 import dsfml.graphics;
@@ -32,6 +33,17 @@ class Bullets: SceneObject
             b.doMotion(dt, g_force);
 
             b.timeToLive -= dt;
+
+            auto coll = b.getBlockCollisionCoords(_map);
+
+            if(!coll.isNull)
+            {
+                b.position = coll;
+                b.timeToLive = 0;
+
+                //~ import std.stdio;
+                //~ writeln(b);
+            }
 
             if(b.timeToLive > 0)
                 buf ~= b;

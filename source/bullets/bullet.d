@@ -2,7 +2,9 @@ module bullets.bullet;
 
 import math;
 import map;
+import map.segment_intersection;
 import dsfml.graphics;
+import std.typecons: Nullable;
 
 struct Bullet
 {
@@ -23,6 +25,11 @@ void doMotion(ref Bullet b, in float dt, in float g_force)
 
         speed.y += g_force * dt;
     }
+}
+
+Nullable!vec2f getBlockCollisionCoords(in Bullet b, in Map m)
+{
+    return checkBlockCollision(m, b.prevPosition, b.position);
 }
 
 void draw(ref Bullet b, RenderTarget renderTarget, RenderStates renderStates)
