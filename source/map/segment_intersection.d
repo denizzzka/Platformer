@@ -16,8 +16,15 @@ Nullable!vec2f checkBlockCollision(in Map m, in vec2f from, in vec2f to)
 
     while
     (
-        (dir.x >= 0 && curr.x <= to.x) ||
-        (dir.x < 0 && curr.x >= to.x)
+        (
+            (dir.x >= 0 && curr.x <= to.x) ||
+            (dir.x < 0 && curr.x >= to.x)
+        )
+        ||
+        (
+            (dir.y >= 0 && curr.y <= to.y) ||
+            (dir.y < 0 && curr.y >= to.y)
+        )
     )
     {
         {
@@ -46,20 +53,26 @@ Nullable!vec2f checkBlockCollision(in Map m, in vec2f from, in vec2f to)
 
         {
             curr.y += increment.y;
-            //~ Nullable!vec2f ret = curr;
 
-            //~ vec2i tileCoords = m.worldCoordsToTileCoords(curr);
-            //~ auto t = m.tileTypeByTileCoords(tileCoords);
+            vec2i tileCoords = m.worldCoordsToTileCoords(curr);
+            tileCoords.y += (dir.y >= 0 ? 0 : -1);
+            auto t = m.tileTypeByTileCoords(tileCoords);
 
-            //~ if(t.isBulletproof)
-            //~ {
-                //~ if(dir.y >= 0)
-                    //~ ret.y = tileCoords.y * m.tileSize.y;
-                //~ else
-                    //~ ret.y = (tileCoords.y + 3) * m.tileSize.y;
+            if(t.isBulletproof)
+            {
+                Nullable!vec2f ret = curr;
 
-                //~ return ret;
-            //~ }
+                if(dir.y >= 0)
+                    ret.y = tileCoords.y * m.tileSize.y;
+                else
+                    ret.y = (tileCoords.y + 1) * m.tileSize.y;
+
+                float newDirY = ret.y - from.y;
+                float ratio = dir.y / newDirY;
+                ret.x = from.x + dir.x / ratio;
+
+                return ret;
+            }
         }
     }
 
