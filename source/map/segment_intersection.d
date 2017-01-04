@@ -6,28 +6,25 @@ import std.typecons: Nullable;
 
 Nullable!vec2f checkBlockCollision(in Map m, vec2f from, vec2f to)
 {
-    vec2f dir = to - from;
-    int minTileSize = m.tileSize.x < m.tileSize.y ? m.tileSize.x : m.tileSize.y;
-    int increment = minTileSize * (dir.x >= 0 ? 1 : -1);
-    float ratio = dir.y / dir.x;
+    const vec2f dir = to - from;
+    const int minTileSize = m.tileSize.x < m.tileSize.y ? m.tileSize.x : m.tileSize.y;
+    const vec2f increment = dir.normalized * minTileSize - 1;
 
     for(
-        float x = from.x;
-        (dir.x >= 0 && x <= to.x) ||
-        (dir.x < 0 && x >= to.x);
-        x += increment
+        auto curr = from;
+        (dir.x >= 0 && curr.x <= to.x) ||
+        (dir.x < 0 && curr.x >= to.x);
+        curr += increment
     )
     {
-        float y = from.y + x * ratio;
-
-        vec2f coords = vec2f(x, y);
+        vec2f coords = curr;
 
         auto t = m.tileTypeByWorldCoords(coords);
 
         if(t.isBulletproof)
         {
             import std.stdio;
-            writeln("found collision with ", t, " coords=", coords, " dir=", dir, " ratio=", ratio);
+            writeln("found collision with ", t, " coords=", coords, " dir=", dir);
 
             return Nullable!vec2f(coords);
         }
