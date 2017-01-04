@@ -95,7 +95,7 @@ class HoldWeapon
     {
         Bullet b;
 
-        b.timeToLive = 1;
+        b.timeToLive = 0.5;
         b.windage = 0.90;
         b.speed = soldier.aimingDirection.normalized * 3000;
         b.position = soldier.position - soldier.renderCenter + // FIXME: зависит от направления осей графики

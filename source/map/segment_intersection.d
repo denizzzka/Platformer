@@ -7,7 +7,8 @@ import std.typecons: Nullable;
 Nullable!vec2f checkBlockCollision(in Map m, vec2f from, vec2f to)
 {
     vec2f dir = to - from;
-    float increment = m.tileSize.x * dir.normalized.x;
+    int minTileSize = m.tileSize.x < m.tileSize.y ? m.tileSize.x : m.tileSize.y;
+    int increment = minTileSize * (dir.x >= 0 ? 1 : -1);
     float ratio = dir.y / dir.x;
 
     for(
@@ -17,14 +18,16 @@ Nullable!vec2f checkBlockCollision(in Map m, vec2f from, vec2f to)
         x += increment
     )
     {
-        float y = x * ratio;
+        float y = from.y + x * ratio;
 
         vec2f coords = vec2f(x, y);
 
-        if(m.tileTypeByWorldCoords(coords).isBulletproof)
+        auto t = m.tileTypeByWorldCoords(coords);
+
+        if(t.isBulletproof)
         {
             import std.stdio;
-            writeln("find collision", coords);
+            writeln("found collision with ", t, " coords=", coords, " dir=", dir, " ratio=", ratio);
 
             return Nullable!vec2f(coords);
         }
