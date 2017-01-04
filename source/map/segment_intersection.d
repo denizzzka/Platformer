@@ -10,6 +10,10 @@ Nullable!vec2f checkBlockCollision(in Map m, in vec2f from, in vec2f to)
     const int minTileSize = m.tileSize.x < m.tileSize.y ? m.tileSize.x : m.tileSize.y;
     const vec2f increment = dir.normalized * (minTileSize - 1);
 
+    /// one pixel forward direction
+    const dirNormX = vec2f(dir.x >= 0 ? 1 : -1, 0);
+    const dirNormY = vec2f(0, dir.y >= 0 ? 1 : -1); /// ditto
+
     vec2f curr = from;
 
     while
@@ -28,7 +32,7 @@ Nullable!vec2f checkBlockCollision(in Map m, in vec2f from, in vec2f to)
         {
             curr.x += increment.x;
 
-            vec2i tileCoords = m.worldCoordsToTileCoords(curr);
+            vec2i tileCoords = m.worldCoordsToTileCoords(curr + dirNormX);
             auto t = m.tileTypeByTileCoords(tileCoords);
 
             if(t.isBulletproof)
@@ -51,7 +55,7 @@ Nullable!vec2f checkBlockCollision(in Map m, in vec2f from, in vec2f to)
         {
             curr.y += increment.y;
 
-            vec2i tileCoords = m.worldCoordsToTileCoords(curr);
+            vec2i tileCoords = m.worldCoordsToTileCoords(curr + dirNormY);
             auto t = m.tileTypeByTileCoords(tileCoords);
 
             if(t.isBulletproof)
