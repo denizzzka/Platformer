@@ -4,6 +4,7 @@ import map;
 import math;
 import dchip.all;
 import std.typecons: Nullable;
+private import chipmunk_map.gfm_interaction;
 
 // FIXME: many memory leaks
 
@@ -72,36 +73,4 @@ private bool isBulletproof(PhysLayer.TileType t) pure
             t == PhysLayer.TileType.Block ||
             t == PhysLayer.TileType.SlopeLeft ||
             t == PhysLayer.TileType.SlopeRight;
-}
-
-import std.traits;
-
-/// gfm and chipmunk interaction
-/// params:
-/// Vs - source vector
-/// Vr - result vector
-private auto gfm_chip(Vs)(Vs s)
-if(
-    is(Vs == cpVect) ||
-    (isInstanceOf!(gfm.math.Vector, Vs) && Vs.v.length == 2)
-)
-{
-    alias T = Unqual!(typeof(Vs.x));
-
-    static if(is(Vs == cpVect))
-    {
-        alias Vdest = Vector!(T, 2);
-    }
-    else static if(isInstanceOf!(gfm.math.Vector, Vs) && Vs.v.length == 2)
-    {
-        alias Vdest = cpVect;
-    }
-    else
-    {
-        static assert(0);
-    }
-
-    alias R = CopyConstness!(Vs, Vdest);
-
-    return R(s.x, s.y);
 }
