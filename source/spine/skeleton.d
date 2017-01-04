@@ -2,6 +2,7 @@ module spine.skeleton;
 
 import spine.atlas;
 import std.string: toStringz;
+import std.exception: enforce;
 
 class SkeletonData
 {
@@ -20,6 +21,11 @@ class SkeletonData
         spSkeletonData_dispose(sp_skeletonData);
     }
 
+    const (spSkeletonData)* getSpSkeletonData() const
+    {
+        return sp_skeletonData;
+    }
+
     Skin findSkin(string name)
     {
         Skin ret;
@@ -33,11 +39,49 @@ class SkeletonData
     {
         sp_skeletonData.defaultSkin = s.skin;
     }
+
+    int findBoneIndex(string boneName) const
+    {
+        int idx = spSkeletonData_findBoneIndex(sp_skeletonData, boneName.toStringz);
+
+        enforce(idx >= 0, "Bone not found");
+
+        return idx;
+    }
+
+    int findSlotIndex(string slotName) const
+    {
+        int idx = spSkeletonData_findSlotIndex(sp_skeletonData, slotName.toStringz);
+
+        enforce(idx >= 0, "Slot not found");
+
+        return idx;
+    }
+
+    package spSlotData* findSlotByIndex(int idx)
+    {
+        assert(idx >= 0);
+        assert(idx < sp_skeletonData.slotsCount);
+
+        return sp_skeletonData.slots[idx];
+    }
 }
 
 struct Skin
 {
     spSkin* skin;
+}
+
+struct Bone
+{
+    spBone* bone;
+    alias bone this;
+}
+
+struct Slot
+{
+    spSlot* slot;
+    alias slot this;
 }
 
 class SkeletonInstance
@@ -73,18 +117,51 @@ class SkeletonInstance
         spSkeleton_setToSetupPose(sp_skeleton);
     }
 
-    bool flipX(bool b)
-    {
-        sp_skeleton.flipX = (b ? 1 : 0);
+    bool flipX(bool b){ sp_skeleton.flipX = b; return b; }
+    bool flipY(bool b){ sp_skeleton.flipY = b; return b; }
 
-        return b;
+    bool flipX() const { return sp_skeleton.flipX != 0; }
+    bool flipY() const { return sp_skeleton.flipY != 0; }
+
+    Bone getBoneByIndex(int idx)
+    {
+        assert(idx >= 0);
+        assert(idx < sp_skeleton.bonesCount);
+
+        Bone ret;
+
+        ret.bone = sp_skeleton.bones[idx];
+
+        return ret;
     }
 
-    bool flipY(bool b)
+    Slot getSlotByIndex(int idx)
     {
-        sp_skeleton.flipY = (b ? 1 : 0);
+        assert(idx >= 0);
+        assert(idx < sp_skeleton.slotsCount);
 
-        return b;
+        Slot ret;
+        ret.slot = sp_skeleton.slots[idx];
+
+        return ret;
+    }
+
+    /// @param attachmentName May be null
+    package spAttachment* getAttachmentForSlotIndex(int slotIdx, string attachmentName)
+    {
+        spAttachment* ret = spSkeleton_getAttachmentForSlotIndex(sp_skeleton, slotIdx, attachmentName.toStringz);
+
+        enforce(ret !is null, "Slot or attachment is not found");
+
+        return ret;
+    }
+
+    /// @param attachmentName May be null
+    void setAttachment(string slotName, string attachmentName)
+    {
+        auto ret = spSkeleton_setAttachment(sp_skeleton, slotName.toStringz, attachmentName.toStringz);
+
+        enforce(ret != 0, "Slot or attachment is not found");
     }
 }
 
@@ -204,14 +281,15 @@ enum spAttachmentType
 	BOUNDING_BOX,
 	MESH,
 	LINKED_MESH,
-	PATH
+	PATH,
+    SKELETON = 1000 /// Unofficial type
 }
 
 struct spAttachment
 {
-	const(char*) name;
-	const spAttachmentType type = spAttachmentType.REGION;
-	const(void*) vtable;
+	const(char)* name;
+	spAttachmentType type = spAttachmentType.REGION;
+	void* vtable;
 	void* attachmentLoader;
 }
 
@@ -236,7 +314,7 @@ struct spSlotData
 struct spSlot
 {
 	const(spSlotData)* data;
-	const(spBone)* bone;
+	spBone* bone;
 	float r=0, g=0, b=0, a=0;
 	const(spAttachment)* attachment;
 
@@ -287,9 +365,13 @@ void spSkeletonJson_dispose(spSkeletonJson* json);
 spSkeletonData* spSkeletonJson_readSkeletonDataFile(spSkeletonJson*, const(char)* path);
 void spSkeletonData_dispose (spSkeletonData* self);
 spSkin* spSkeletonData_findSkin (const(spSkeletonData)* self, const(char)* skinName);
+int spSkeletonData_findBoneIndex (const(spSkeletonData)* self, const(char)* boneName);
+int spSkeletonData_findSlotIndex (const(spSkeletonData)* self, const(char)* slotName);
 
 spSkeleton* spSkeleton_create (spSkeletonData* data);
 
 void spSkeleton_dispose (spSkeleton* self);
 
 void spSkeleton_setToSetupPose (const(spSkeleton)* self);
+spAttachment* spSkeleton_getAttachmentForSlotIndex (const(spSkeleton)* self, int slotIndex, const(char)* attachmentName);
+int spSkeleton_setAttachment (spSkeleton* self, const(char)* slotName, const(char)* attachmentName);

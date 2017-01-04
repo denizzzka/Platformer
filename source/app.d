@@ -1,16 +1,18 @@
-import dsfml.graphics;
+import dsfml.graphics: RenderWindow, RenderStates;
 import dlangui.platforms.dsfml.dsfmlapp : DSFMLWindow, DSFMLPlatform, initDSFMLApp, dsfmlPlatform, uninitDSFMLApp;
 import myui;
 import map;
-import soldier;
-import dsfml.window.keyboard;
-import dsfml.system.clock;
-import std.conv: to;
-import core.time: to;
+import scene;
+import soldier.soldier;
+import dsfml.window;
+import math: vec2f;
+import controls_reader;
+import ver.packageVersion;
+import std.stdio: writeln;
 
 void main(string[] args)
 {
-	auto testMap = new Map("test_map/map_1");
+    writeln("Version ", packageVersion ," built ", packageTimestamp);
 
     initDSFMLApp();
 
@@ -21,42 +23,12 @@ void main(string[] args)
     // create some widget to show in window
     w.mainWidget = createMainWidget();
 
-    
-    auto head = new CircleShape(100);
-    head.fillColor = Color.Green;
-    head.position = Vector2f(300,100);
-    
-    auto leftEye = new CircleShape(10);
-    leftEye.fillColor = Color.Blue;
-    leftEye.position = Vector2f(350,150);
-    
-    auto rightEye = new CircleShape(10);
-    rightEye.fillColor = Color.Blue;
-    rightEye.position = Vector2f(430,150);
-    
-    auto smile = new CircleShape(30);
-    smile.fillColor = Color.Red;
-    smile.position = Vector2f(368,200);
-    
-    auto smileCover = new RectangleShape(Vector2f(60,30));
-    smileCover.fillColor = Color.Green;
-    smileCover.position = Vector2f(368,200);
+    auto testMap = new Map("test_map/map_1");
+    auto testScene = new Scene(testMap);
+    auto soldier = new Soldier(testScene);
+    soldier.position = vec2f(300, 300);
 
-	Vector2f currViewPosition = Vector2f(0, 0);
-
-    Clock frameClock = new Clock();
-
-    auto soldier = new Soldier();
-    soldier.position = Vector2f(300, 300);
-
-    void soldierDrawCallback()
-    {
-        TickDuration td = frameClock.restart.to!TickDuration;
-        soldier.update(td.to!("seconds", float));
-        soldier.draw(w.wnd);
-    }
-
-    testMap.registerUnitsDrawCallback(&soldierDrawCallback);
+    testScene.add(soldier);
 
     while (window.isOpen())
     {
@@ -78,6 +50,7 @@ void main(string[] args)
         enum increment = 15;
 
         with(Keyboard.Key)
+        with(testScene)
         {
             alias kp = Keyboard.isKeyPressed;
 
@@ -89,18 +62,13 @@ void main(string[] args)
 
         if (!window.isOpen())
             break;
-        
+
+        controls.update(testScene.currViewPosition, window);
+        testScene.update();
+
         window.clear();
-        
-        //~ window.draw(head);
-        //~ window.draw(leftEye);
-        //~ window.draw(rightEye);
-        //~ window.draw(smile);
-        //~ window.draw(smileCover);
 
-		testMap.draw(w.wnd, currViewPosition);
-
-        //~ w.draw();
+		testScene.draw(w.wnd, RenderStates.Default);
 
         window.display();
     }

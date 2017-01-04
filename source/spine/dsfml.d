@@ -2,19 +2,20 @@ module spine.dsfml;
 
 import spine.atlas;
 import spine.skeleton;
+import spine.skeleton_attach;
 import spine.animation;
 import dsfml.graphics;
 import dsfml.graphics.drawable;
 debug import std.math: isNaN;
 debug import std.conv: to;
-debug(spine_dsfml) import std.stdio;
+debug import std.stdio;
 
 enum SPINE_MESH_VERTEX_COUNT_MAX = 1000;
 
 class SkeletonInstanceDrawable : SkeletonInstance, Drawable
 {
-    VertexArray vertexArray;
-    float[SPINE_MESH_VERTEX_COUNT_MAX] worldVertices;
+    private VertexArray vertexArray;
+    private float[SPINE_MESH_VERTEX_COUNT_MAX] worldVertices;
 
     this(SkeletonData sd)
     {
@@ -31,7 +32,7 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
         vertexArray = new VertexArray(PrimitiveType.Triangles, sp_skeleton.bonesCount * 4);
     }
 
-    void draw(RenderTarget target, RenderStates states = RenderStates())
+    void draw(RenderTarget target, RenderStates states = RenderStates.Default)
     {
         debug(spine_dsfml) writeln("spine.dsfml.SkeletonInstanceDrawable.draw()");
         vertexArray.clear();
@@ -187,6 +188,24 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
                 case spAttachmentType.BOUNDING_BOX:
                     break;
 
+                case spAttachmentType.SKELETON:
+                    target.draw(vertexArray, states);
+                    vertexArray.clear();
+
+                    spSkeletonAttachment_unofficial* att = cast(spSkeletonAttachment_unofficial*) attachment;
+                    debug(spine_dsfml_skeleton) writeln("Skeleton ", att._super.name.to!string, " draw: attachedSkeletonIdx=", att.attachedSkeletonIdx);
+
+                    SkeletonInstanceDrawable si = cast(SkeletonInstanceDrawable) attachedSkeletons[att.attachedSkeletonIdx];
+
+                    auto boneStates = states;
+                    boneStates.transform.translate(slot.bone.worldX, slot.bone.worldY);
+                    boneStates.transform.rotate(slot.bone.rotation);
+
+                    debug(spine_dsfml_skeleton) writeln("spBone=", *slot.bone);
+
+                    si.draw(target, boneStates);
+                    break;
+
                 default:
                         assert(0, "Attachment type "~attachment.type.to!string~" isn't implementded");
             }
@@ -223,17 +242,56 @@ unittest
 {
     import spine.atlas;
     import spine.skeleton;
+    import spine.skeleton_bounds;
+    import spine.skeleton_attach: setAttachment;
 
     auto a = new Atlas("resources/textures/GAME.atlas");
     auto sd = new SkeletonData("resources/animations/actor_pretty.json", a);
+    sd.defaultSkin = sd.findSkin("default");
+
     auto si1 = new SkeletonInstance(sd);
     auto si2 = new SkeletonInstanceDrawable(sd);
+
+    auto bounds = new SkeletonBounds;
+    bounds.update(si2, true);
+
+    int boneIdx = sd.findBoneIndex("root-hands");
+    auto bone = si1.getBoneByIndex(boneIdx);
+
+    // attaching check
+    {
+        int slotIdx = sd.findSlotIndex("slot-primary");
+        Slot slot = si2.getSlotByIndex(slotIdx);
+        auto att = si2.getAttachmentForSlotIndex(slotIdx, "watergun-skin");
+
+        si2.setAttachment("slot-primary", "watergun-skin");
+
+        {
+            // skeleton attached to skeleton test
+
+            auto ak74data = new SkeletonData("resources/animations/weapon-ak74.json", a);
+            auto ak74 = new SkeletonInstanceDrawable(ak74data);
+
+            auto oldNum = attachedSkeletons.length;
+
+            setAttachment(si2, "ak 74", slot, ak74);
+
+            assert(slot.attachment !is null);
+
+            setAttachment(si2, "ak 74", slot, null); // remove attach
+
+            assert(slot.attachment is null);
+            assert(oldNum == attachedSkeletons.length);
+        }
+    }
 
     destroy(a);
     destroy(sd);
     destroy(si1);
     destroy(si2);
 }
+
+bool enforceSmooth = false;
 
 private:
 
@@ -255,6 +313,7 @@ Color colorize(in spSkeleton* skeleton,  in spSlot* slot)
 }
 
 private static Texture[size_t] loadedTextures;
+private static size_t texturesCount = 0;
 
 extern(C):
 
@@ -264,15 +323,21 @@ void _spAtlasPage_createTexture(spAtlasPage* self, const(char)* path)
     import std.string: fromStringz;
     import std.conv: to;
 
-    size_t textureNum = loadedTextures.length;
-
     Texture t = loadTexture(path.fromStringz.to!string);
+
+	if (enforceSmooth || self.magFilter == spAtlasFilter.SP_ATLAS_LINEAR)
+        t.setSmooth(true);
+
+	if (self.uWrap == spAtlasWrap.SP_ATLAS_REPEAT && self.vWrap == spAtlasWrap.SP_ATLAS_REPEAT)
+        t.setRepeated = true;
 
 	self.width = t.getSize.x;
 	self.height = t.getSize.y;
-	self.rendererObject = cast(void*) textureNum;
+	self.rendererObject = cast(void*) texturesCount;
 
-    loadedTextures[textureNum] = t;
+    loadedTextures[texturesCount] = t;
+
+    texturesCount++;
 }
 
 void _spAtlasPage_disposeTexture(spAtlasPage* self)

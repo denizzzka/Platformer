@@ -1,9 +1,9 @@
 module map;
 
-import dsfml.graphics;
+import dsfml.graphics: Sprite, Texture, RenderWindow, View, IntRect, FloatRect, Color;
 import std.exception: enforce;
 import std.conv: to;
-import gfm.math: box2f;
+import math;
 import misc: loadTexture;
 import vibe.data.json;
 
@@ -17,8 +17,8 @@ struct Layer
 
     Type type;
     string name;
-    Vector2f offset = Vector2f(0, 0);
-    Vector2i layerSize; //TODO: it is equal for all tiles layers, need to move it to Map
+    vec2f offset = vec2f(0, 0);
+    vec2i layerSize; //TODO: it is equal for all tiles layers, need to move it to Map
     float opacity = 1;
     float scale = 1; /// scale factor
     ushort[] spriteNumbers; // for tile layers only
@@ -27,11 +27,12 @@ struct Layer
     bool drawUnits;
 }
 
-private size_t coords2index(T)(T s, Vector2i coords)
+private size_t coords2index(T)(inout T s, vec2i coords)
 if(is(T == Layer) || is(T == PhysLayer))
 {
     auto ret = s.layerSize.x * coords.y + coords.x;
 
+    assert(ret >= 0);
     assert(ret < s.spriteNumbers.length);
 
     return ret;
@@ -42,22 +43,22 @@ struct PhysLayer
     enum TileType : ubyte
     {
         Empty,
-        Block,
         OneWay,
-        Stair,
+        Ladder,
         SlopeLeft,
-        SlopeRight
+        SlopeRight,
+        Block,
     }
 
     TileType[] tiles;
     alias spriteNumbers = tiles;
-    Vector2i layerSize;
+    vec2i layerSize;
 }
 
 class Map
 {
     const string fileName;
-    const Vector2i tileSize;
+    const vec2i tileSize;
     Layer[] layers;
     Texture[] tilesets;
     Sprite[] tileSprites;
@@ -72,7 +73,7 @@ class Map
 
         enforce(j["version"].get!int == 1, "Map file version mismatch");
 
-        tileSize = Vector2i(
+        tileSize = vec2i(
                 j["tilewidth"].get!int,
                 j["tileheight"].get!int
             );
@@ -112,10 +113,11 @@ class Map
             }
         }
 
+        PhysLayer.TileType[ushort] physTilesMapping;
+
         foreach(l; j["layers"])
         {
             Layer layer;
-            PhysLayer.TileType[ushort] physTilesMapping;
             bool isPhysLayer = false;
 
             layer.name = l["name"].get!string;
@@ -157,28 +159,28 @@ class Map
 
                 layer.spriteNumbers.length = l["data"].length;
 
+                if(isPhysLayer)
+                {
+                    physLayer.tiles.length = layer.spriteNumbers.length;
+                    physLayer.layerSize = layer.layerSize;
+                }
+
                 foreach(size_t n, d; l["data"])
                 {
-                    layer.spriteNumbers[n] = d.get!ushort;
+                    auto spriteNum = d.get!ushort;
 
-                    if(isPhysLayer)
+                    if(spriteNum != 0)
                     {
-                        physLayer.tiles.length = layer.spriteNumbers.length;
-                        physLayer.layerSize = layer.layerSize;
+                        layer.spriteNumbers[n] = spriteNum;
 
-                        foreach(i, ref tile; physLayer.tiles)
+                        if(isPhysLayer)
                         {
-                            auto spriteNum = layer.spriteNumbers[i];
+                            PhysLayer.TileType* foundType = (spriteNum in physTilesMapping);
 
-                            if(spriteNum != 0)
-                            {
-                                PhysLayer.TileType* foundType = (spriteNum in physTilesMapping);
-
-                                if(foundType)
-                                    tile = *foundType;
-                                else
-                                    tile = PhysLayer.TileType.Block;
-                            }
+                            if(foundType)
+                                physLayer.tiles[n] = *foundType;
+                            else
+                                physLayer.tiles[n] = PhysLayer.TileType.Block;
                         }
                     }
                 }
@@ -190,13 +192,13 @@ class Map
 
                 auto img = loadTexture("resources/maps/test_map/"~l["image"].get!string);
                 layer.image = new Sprite(img);
-                layer.image.position = layer.offset;
-                layer.image.scale = Vector2f(layer.scale, layer.scale);
+                layer.image.position = layer.offset.gfm_dsfml;
+                layer.image.scale = vec2f(layer.scale, layer.scale).gfm_dsfml;
                 layer.image.color = Color(255, 255, 255, (255 * layer.opacity).to!ubyte);
             }
             else assert(0);
 
-            // Search special types of tiles (slopes, stairs, etc). Used for physics.
+            // Parse special layer type with slopes, ladders, etc tile elements. Used for physics.
             if(layer.name == "__solid")
             {
                 enforce(layer.layerSize.y >= 5, "__solid layer is too small");
@@ -205,19 +207,20 @@ class Map
                 {
                     foreach(x; 0 .. layer.layerSize.x)
                     {
-                        size_t tileIdx = layer.coords2index(Vector2i(x, lineNumber));
+                        size_t tileIdx = layer.coords2index(vec2i(x, lineNumber));
                         ushort spriteNum = layer.spriteNumbers[tileIdx];
-                        physTilesMapping[spriteNum] = type;
+
+                        if(spriteNum != 0)
+                            physTilesMapping[spriteNum] = type;
                     }
                 }
 
                 with(PhysLayer.TileType)
                 {
                     mapType(OneWay, 0);
-                    mapType(Stair, 1);
+                    mapType(Ladder, 1);
                     mapType(SlopeLeft, 2);
                     mapType(SlopeRight, 3);
-                    mapType(SlopeRight, 4);
                 }
             }
             else
@@ -228,11 +231,13 @@ class Map
     }
 
     /// corner - top left corner of scene
-    void draw(RenderWindow window, Vector2f corner)
+    void draw(RenderWindow window, vec2f corner)
     {
+        import dsfml.graphics: Vector2f;
+
         foreach(lay; layers)
         {
-            window.view = new View(FloatRect(corner * lay.parallax, Vector2f(window.size)));
+            window.view = new View(FloatRect(corner.gfm_dsfml * lay.parallax, Vector2f(window.size)));
 
             if(lay.type == Layer.Type.TILES)
             {
@@ -267,11 +272,13 @@ class Map
     }
 
     /// corner - top left corner of scene
-    private void renderTilesLayer(Layer lay, RenderWindow window, Vector2f corner, void delegate(Vector2i coords) renderer)
+    private void renderTilesLayer(Layer lay, RenderWindow window, vec2f corner, void delegate(vec2i coords) renderer)
     {
+        import dsfml.graphics;
+
         assert(lay.type == Layer.Type.TILES);
 
-        window.view = new View(FloatRect(corner * lay.parallax, Vector2f(window.size)));
+        window.view = new View(FloatRect(corner.gfm_dsfml * lay.parallax, Vector2f(window.size)));
 
         Vector2i cornerTile = Vector2i(
                 corner.x.to!int / tileSize.x,
@@ -296,43 +303,58 @@ class Map
                     y >= 0 && y < lay.layerSize.y
                 )
                 {
-                    renderer(Vector2i(x, y));
+                    renderer(vec2i(x, y));
                 }
     }
 
     /// After render layer with option units=true this callback will be called.
     void registerUnitsDrawCallback(void delegate() callback)
     {
-        enforce(unitsDrawCallback is null);
-
         unitsDrawCallback = callback;
     }
 
-    private Vector2i worldCoordsToTileCoords(Vector2f w) @property
+    vec2i worldCoordsToTileCoords(vec2f w) const
     {
         import std.math: floor;
         import std.conv: to;
 
-        return Vector2i(w.x.floor.to!int / tileSize.x, w.y.floor.to!int / tileSize.y);
+        return vec2i(w.x.floor.to!int / tileSize.x, w.y.floor.to!int / tileSize.y);
     }
 
-    PhysLayer.TileType tileTypeByWorldCoords(Vector2f worldCoords)
+    vec2f tileCoordsToWorldCoords(vec2i t) const
     {
-        Vector2i tileCoords = worldCoordsToTileCoords(worldCoords);
-        return physLayer.tiles[physLayer.coords2index(tileCoords)];
+        return vec2f(t.x * tileSize.x, t.y * tileSize.y);
+    }
+
+    PhysLayer.TileType tileTypeByTileCoords(vec2i tileCoords) const
+    {
+        if(
+            tileCoords.x >= 0 &&
+            tileCoords.y >= 0 &&
+            tileCoords.x < physLayer.layerSize.x &&
+            tileCoords.y < physLayer.layerSize.y
+        )
+            return physLayer.tiles[physLayer.coords2index(tileCoords)];
+        else
+            return PhysLayer.TileType.Empty;
+    }
+
+    PhysLayer.TileType tileTypeByWorldCoords(vec2f worldCoords) const
+    {
+        return tileTypeByTileCoords(worldCoordsToTileCoords(worldCoords));
     }
 }
 
 unittest
 {
     auto m = new Map("test_map/map_1");
-    assert(m.tileTypeByWorldCoords(Vector2f(0, 0)) == PhysLayer.TileType.Empty);
-    assert(m.tileTypeByWorldCoords(Vector2f(50, 50)) == PhysLayer.TileType.Empty);
-    assert(m.tileTypeByWorldCoords(Vector2f(20, 25 * 18)) == PhysLayer.TileType.Block);
+    assert(m.tileTypeByWorldCoords(vec2f(0, 0)) == PhysLayer.TileType.Empty);
+    assert(m.tileTypeByWorldCoords(vec2f(50, 50)) == PhysLayer.TileType.Empty);
+    assert(m.tileTypeByWorldCoords(vec2f(60 * 18, 30 * 18)) == PhysLayer.TileType.Block);
 
     //~ import std.stdio;
-    //~ writeln(m.tileTypeByWorldCoords(Vector2f(17 * 18, 21 * 18)));
-    //~ assert(m.tileTypeByWorldCoords(Vector2f(17 * 18, 21 * 18)) == PhysLayer.TileType.SlopeLeft);
+    //~ writeln(m.tileTypeByWorldCoords(vec2f(17 * 18, 21 * 18)));
+    //~ assert(m.tileTypeByWorldCoords(vec2f(17 * 18, 21 * 18)) == PhysLayer.TileType.SlopeLeft);
 }
 
 private Json loadJsonDocument(string fileName)
