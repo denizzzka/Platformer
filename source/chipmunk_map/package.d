@@ -18,11 +18,29 @@ class ChipmunkMap
         {
             foreach(x; 0 .. l.layerSize.x)
             {
-                if(l.getTileByCoords(vec2i(x, y)).isBulletproof)
+                auto tileCoords = vec2i(x, y);
+
+                if(m.tileTypeByTileCoords(tileCoords).isBulletproof)
                 {
+                    vec2f wS = m.tileCoordsToWorldCoords(tileCoords);
+                    vec2f wE = wS + m.tileSize;
+
+                    cpVect[4] v;
+                    v[0] = cpVect(wS.x, wS.y);
+                    v[1] = cpVect(wS.x, wE.y);
+                    v[2] = cpVect(wE.x, wE.y);
+                    v[3] = cpVect(wE.x, wS.y);
+
+                    cpShape* shape = cpPolyShapeNew(space.staticBody, 4, v.ptr, cpVect(0, 0));
+
+                    space.staticBody.cpBodyAddShape(shape);
                 }
             }
         }
+    }
+
+    ~this()
+    {
     }
 }
 

@@ -38,14 +38,6 @@ if(is(T == Layer) || is(T == PhysLayer))
     return ret;
 }
 
-auto getTileByCoords(T)(inout T s, vec2i coords)
-if(is(T == Layer) || is(T == PhysLayer))
-{
-    size_t idx = s.coords2index(coords);
-
-    return s.spriteNumbers[idx];
-}
-
 struct PhysLayer
 {
     enum TileType : ubyte
@@ -327,6 +319,11 @@ class Map
         import std.conv: to;
 
         return vec2i(w.x.floor.to!int / tileSize.x, w.y.floor.to!int / tileSize.y);
+    }
+
+    vec2f tileCoordsToWorldCoords(vec2i t) const
+    {
+        return vec2f(t.x * tileSize.x, t.y * tileSize.y);
     }
 
     PhysLayer.TileType tileTypeByTileCoords(vec2i tileCoords) const
