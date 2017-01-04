@@ -29,7 +29,6 @@ Nullable!vec2f checkBlockCollision(in Map m, in vec2f from, in vec2f to)
             curr.x += increment.x;
 
             vec2i tileCoords = m.worldCoordsToTileCoords(curr);
-            tileCoords.x += (dir.x >= 0 ? 0 : -1);
             auto t = m.tileTypeByTileCoords(tileCoords);
 
             if(t.isBulletproof)
@@ -53,7 +52,6 @@ Nullable!vec2f checkBlockCollision(in Map m, in vec2f from, in vec2f to)
             curr.y += increment.y;
 
             vec2i tileCoords = m.worldCoordsToTileCoords(curr);
-            tileCoords.y += (dir.y >= 0 ? 0 : -1);
             auto t = m.tileTypeByTileCoords(tileCoords);
 
             if(t.isBulletproof)
