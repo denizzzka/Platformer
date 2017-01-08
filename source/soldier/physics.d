@@ -30,11 +30,6 @@ class PhysicalObject : PhysicalObjectBase
         return box2f(aabb.translate(position));
     }
 
-    override box2i worldAabbTiled() const
-    {
-        return fBox2tiledBox(worldAabb);
-    }
-
     private box2i fBox2tiledBox(box2f b) const
     {
         box2i ret;
