@@ -38,8 +38,8 @@ class Soldier : SceneObject
 
     HoldWeapon weapon;
 
-    PhysicalPerson physicalObject;
-    alias physicalObject this;
+    PhysicalPerson physicalPerson;
+    alias physicalPerson this;
 
     PhysicalState movingState;
     const float groundSpeedScale = 1.0;
@@ -71,8 +71,8 @@ class Soldier : SceneObject
 
         state = new SoldierAnimation();
 
-        physicalObject = new PhysicalPerson(_scene.sceneMap);
-        physicalObject.aabb = box2f(-15, 0, 15, 50);
+        physicalPerson = new PhysicalPerson(_scene.sceneMap);
+        physicalPerson.aabb = box2f(-15, 0, 15, 50);
 
         groundSpeedScale = 2.0;
 
@@ -242,10 +242,10 @@ class Soldier : SceneObject
         {
             void horisontalMove(bool toRight)
             {
-                physicalObject.states.rightDirection = toRight;
-                acceleration.x += groundSpeed * (physicalObject.states.rightDirection ? rightVec.x : leftVec.x);
+                physicalPerson.states.rightDirection = toRight;
+                acceleration.x += groundSpeed * (physicalPerson.states.rightDirection ? rightVec.x : leftVec.x);
 
-                if(!physicalObject.unitState == UnitState.OnFly)
+                if(!physicalPerson.unitState == UnitState.OnFly)
                     movingState = PhysicalState.Run;
                 else
                     movingState = PhysicalState.Jump;
@@ -263,7 +263,7 @@ class Soldier : SceneObject
 
             if(kp(W))
             {
-                if(physicalObject.unitState == UnitState.OnLadder)
+                if(physicalPerson.unitState == UnitState.OnLadder)
                 {
                     acceleration.y -= groundSpeed;
                 }
