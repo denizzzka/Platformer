@@ -23,6 +23,8 @@ class Grenade : PhysicalObjectBase, SceneObject
         scene.add(this);
     }
 
+    override float friction() const { return 0.4; }
+
     override box2f aabb() const
     {
         return box2f(-4.5, -4.5, 4.5, 4.5); // FIXME: зависит от направления осей графики

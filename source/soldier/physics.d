@@ -13,6 +13,8 @@ class PhysicalPerson : PhysicalObjectBase
         super(m, true);
     }
 
+    override float friction() const { return 0; }
+
     void aabb(box2f b)
     {
         if(upVec.y < 0)
