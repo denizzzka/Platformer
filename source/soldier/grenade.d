@@ -9,7 +9,7 @@ class Grenade : PhysicalObjectBase, SceneObject
 {
     private Scene scene;
 
-    private float timeCounter = 20;
+    private float timeCounter = 2;
 
     this(Scene sc, vec2f startPosition, vec2f launcherSpeed, vec2f direction)
     {
@@ -23,8 +23,8 @@ class Grenade : PhysicalObjectBase, SceneObject
         scene.add(this);
     }
 
-    override float rebound() const { return 0.4; }
-    override float friction() const { return 0.3; }
+    override float rebound() const { return 0.45; }
+    override float friction() const { return 0.15; }
 
     override box2f aabb() const
     {
