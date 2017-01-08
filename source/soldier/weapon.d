@@ -3,7 +3,7 @@ module soldier.weapon;
 import spine.skeleton;
 import spine.animation;
 import spine.dsfml;
-import scene: atlas;
+import scene: atlas, Scene;
 import soldier.soldier: Soldier;
 import soldier.animation;
 import std.container;
@@ -93,18 +93,13 @@ class HoldWeapon
 
     void fire()
     {
-        Bullet b;
-
-        b.timeToLive = 10;
-        b.windage = 0.90;
-        b.speed = soldier.aimingDirection.normalized * 5000;
-        b.position = soldier.position - soldier.renderCenter + // FIXME: зависит от направления осей графики
+        vec2f pos = soldier.position - soldier.renderCenter + // FIXME: зависит от направления осей графики
             vec2f( // holder coords
                 soldier.holderPrimary.bone.worldX,
                 soldier.holderPrimary.bone.worldY
             ) + fireSourcePoint;
 
-        soldier._scene.bullets.add(b);
+        weapon.fire(soldier._scene, pos, soldier.aimingDirection);
 
         debug(weapons_fire) writeln("fireBone:", fireBone);
     }
@@ -161,6 +156,18 @@ abstract class BaseWeapon
             default:
                 return AimWeapon2Hands;
         }
+    }
+
+    void fire(Scene sc, vec2f pos, vec2f dir)
+    {
+        Bullet b;
+
+        b.timeToLive = 10;
+        b.windage = 0.90;
+        b.speed = dir.normalized * 5000;
+        b.position = pos;
+
+        sc.bullets.add(b);
     }
 }
 
