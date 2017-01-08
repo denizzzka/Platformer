@@ -38,7 +38,7 @@ class Soldier : SceneObject
 
     HoldWeapon weapon;
 
-    PhysicalObject physicalObject;
+    PhysicalPerson physicalObject;
     alias physicalObject this;
 
     PhysicalState movingState;
@@ -71,7 +71,7 @@ class Soldier : SceneObject
 
         state = new SoldierAnimation();
 
-        physicalObject = new PhysicalObject(_scene.sceneMap);
+        physicalObject = new PhysicalPerson(_scene.sceneMap);
         physicalObject.aabb = box2f(-15, 0, 15, 50);
 
         groundSpeedScale = 2.0;

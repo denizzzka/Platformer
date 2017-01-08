@@ -4,7 +4,7 @@ import map;
 import math;
 public import physics;
 
-class PhysicalObject : PhysicalObjectBase
+class PhysicalPerson : PhysicalObjectBase
 {
     private box2f _aabb;
 
