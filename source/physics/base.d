@@ -125,9 +125,9 @@ abstract class PhysicalObjectBase
         updateUnitState();
 
         if(unitState == UnitState.OnFly)
-            speed.y += g_force * dt;
+            speed.y += g_force * dt; // FIXME: зависит от направления осей графики
         else if(unitState == UnitState.OnGround)
-            speed.x *= friction;
+            speed.x -= speed.x * (1.0f - friction) * dt;
     }
 
     private void motionRoutineX(float dt)
