@@ -25,21 +25,6 @@ class PhysicalObject : PhysicalObjectBase
 
     override box2f aabb() const { return _aabb; }
 
-    private box2i fBox2tiledBox(box2f b) const
-    {
-        box2i ret;
-
-        ret.min = _map.worldCoordsToTileCoords(b.min);
-        ret.max = _map.worldCoordsToTileCoords(b.max);
-
-        return ret;
-    }
-
-    override vec2i tileCoords() const
-    {
-        return _map.worldCoordsToTileCoords(position);
-    }
-
     override void doMotion(in vec2f appendSpeed, const float dt, const float g_force)
     {
         debug oldStates = states;
