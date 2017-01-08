@@ -30,13 +30,12 @@ struct States
     CollisionState collisionStateY;
 }
 
-class PhysicalObjectBase
+abstract class PhysicalObjectBase
 {
     const Map _map;
 
     vec2f position;
     vec2f speed = vec2f(0, 0);
-    private box2f _aabb;
 
     States states;
     debug States oldStates;
@@ -57,15 +56,7 @@ class PhysicalObjectBase
         _map = m;
     }
 
-    void aabb(box2f b)
-    {
-        if(upVec.y < 0)
-            _aabb = b.flipY.sort;
-        else
-            _aabb = b;
-    }
-
-    box2f aabb() const { return _aabb; }
+    box2f aabb() const;
 
     box2f worldAabb() const
     {

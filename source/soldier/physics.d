@@ -15,7 +15,7 @@ class PhysicalObject : PhysicalObjectBase
         super(m);
     }
 
-    override void aabb(box2f b)
+    void aabb(box2f b)
     {
         if(upVec.y < 0)
             _aabb = b.flipY.sort;
@@ -24,11 +24,6 @@ class PhysicalObject : PhysicalObjectBase
     }
 
     override box2f aabb() const { return _aabb; }
-
-    override box2f worldAabb() const
-    {
-        return box2f(aabb.translate(position));
-    }
 
     private box2i fBox2tiledBox(box2f b) const
     {
