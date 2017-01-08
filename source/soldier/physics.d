@@ -40,13 +40,6 @@ class PhysicalObject : PhysicalObjectBase
         return _map.worldCoordsToTileCoords(position);
     }
 
-    override bool isTouchesLadder() const
-    {
-        return
-            unitState == UnitState.OnLadder ||
-            collisionStateY == CollisionState.TouchesLadder;
-    }
-
     override void doMotion(in vec2f appendSpeed, const float dt, const float g_force)
     {
         debug oldStates = states;
