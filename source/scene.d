@@ -33,7 +33,10 @@ interface SceneObject
 class Scene
 {
     private Map _sceneMap;
-    public SceneObject[] objects;
+
+    private size_t[SceneObject] objects;
+    private size_t objectCounter;
+
     public Bullets bullets;
     private Clock frameClock;
     vec2f currViewPosition = vec2f(0, 0);
@@ -50,7 +53,13 @@ class Scene
 
     void add(SceneObject obj)
     {
-        objects ~= obj;
+        objects[obj] = objectCounter;
+        objectCounter++;
+    }
+
+    void remove(SceneObject obj)
+    {
+        objects.remove(obj);
     }
 
     void update()
@@ -58,7 +67,7 @@ class Scene
         TickDuration td = frameClock.restart.to!TickDuration;
         float seconds = td.to!("seconds", float);
 
-        foreach(ref o; objects)
+        foreach(ref o; objects.byKey)
             o.update(seconds);
 
         bullets.update(seconds);
@@ -70,7 +79,7 @@ class Scene
         {
             bullets.draw(wnd, renderStates);
 
-            foreach(ref o; objects)
+            foreach(ref o; objects.byKey)
                 o.draw(wnd, renderStates);
         }
 

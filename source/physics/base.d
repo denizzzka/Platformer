@@ -71,7 +71,7 @@ abstract class PhysicalObjectBase
         return fBox2tiledBox(worldAabb);
     }
 
-    protected box2i fBox2tiledBox(box2f b) const // FIXME: remove 'protected' here
+    private box2i fBox2tiledBox(box2f b) const
     {
         box2i ret;
 
