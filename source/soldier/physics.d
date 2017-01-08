@@ -1,7 +1,8 @@
-module physics;
+module soldier.physics;
 
 import map;
 import math;
+import physics;
 debug(physics) import std.stdio;
 debug(physics) import std.conv: to;
 

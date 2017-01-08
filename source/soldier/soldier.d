@@ -1,6 +1,7 @@
 module soldier.soldier;
 
 import scene: atlas;
+import soldier.physics;
 import soldier.weapon;
 import soldier.animation;
 import spine.skeleton;
@@ -8,7 +9,6 @@ import spine.animation;
 import spine.dsfml;
 import dsfml.graphics: RenderTarget, RenderStates;
 import map;
-import physics;
 import math;
 import controls_reader;
 import scene;
