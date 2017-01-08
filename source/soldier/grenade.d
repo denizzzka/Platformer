@@ -37,7 +37,7 @@ class Grenade : PhysicalObjectBase, SceneObject
         if(timeCounter <= 0)
             beginExplosion();
         else
-            super.applyMotion(vec2f(0, 0), dt, 1200.0f); // FIXME: это нужно хранить в сцене
+            super.update(dt, 1200.0f); // FIXME: это нужно хранить в сцене
     }
 
     void beginExplosion()
