@@ -16,7 +16,7 @@ class Grenade : PhysicalObjectBase, SceneObject
         scene = sc;
 
         position = startPosition;
-        speed = launcherSpeed + direction.normalized * 300;
+        speed = launcherSpeed + direction.normalized * 500;
 
         super(scene.sceneMap, false);
 
