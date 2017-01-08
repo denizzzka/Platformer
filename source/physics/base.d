@@ -95,12 +95,19 @@ abstract class PhysicalObjectBase
 
     void doMotion(in vec2f appendSpeed, const float dt, const float g_force)
     {
-        debug oldStates = states;
-        debug oldSpeed = speed;
-
         // FIXME: special ladder case (dirty hack)
         if(isTouchesLadder && appendSpeed.isDownDirection)
             unitState = UnitState.OnLadder;
+
+        update(dt, g_force);
+
+        motionAppendSpeed(appendSpeed, dt, g_force);
+    }
+
+    void update(const float dt, const float g_force)
+    {
+        debug oldStates = states;
+        debug oldSpeed = speed;
 
         motionRoutineX(dt);
         motionRoutineY(dt);
@@ -112,7 +119,6 @@ abstract class PhysicalObjectBase
         }
 
         updateUnitState();
-        motionAppendSpeed(appendSpeed, dt, g_force);
     }
 
     private void motionRoutineX(float dt)
