@@ -99,7 +99,7 @@ class HoldWeapon
                 soldier.holderPrimary.bone.worldY
             ) + fireSourcePoint;
 
-        weapon.fire(soldier._scene, pos, soldier.aimingDirection);
+        weapon.fire(soldier._scene, pos, soldier.speed, soldier.aimingDirection);
 
         debug(weapons_fire) writeln("fireBone:", fireBone);
     }
@@ -158,7 +158,7 @@ abstract class BaseWeapon
         }
     }
 
-    void fire(Scene sc, vec2f pos, vec2f dir)
+    void fire(Scene sc, vec2f pos, vec2f launcherSpeed, vec2f dir)
     {
         Bullet b;
 
@@ -180,11 +180,11 @@ abstract class Throwing : BaseWeapon
 {
     override HoldType holdType() const { return HoldType.THROWABLE; }
 
-    override void fire(Scene sc, vec2f pos, vec2f dir)
+    override void fire(Scene sc, vec2f pos, vec2f speed, vec2f dir)
     {
         import soldier.grenade: Grenade;
 
-        auto g = new Grenade(sc.sceneMap, pos, dir);
+        auto g = new Grenade(sc.sceneMap, pos, speed, dir);
 
         sc.add(g);
     }

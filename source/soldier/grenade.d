@@ -10,10 +10,10 @@ class Grenade : PhysicalObjectBase, SceneObject
 {
     private box2f _aabb;
 
-    this(in Map m, vec2f startPosition, vec2f direction)
+    this(in Map m, vec2f startPosition, vec2f launcherSpeed, vec2f direction)
     {
         position = startPosition;
-        speed = direction.normalized * 100;
+        speed = launcherSpeed + direction.normalized * 300;
 
         super(m, false);
     }
@@ -25,16 +25,15 @@ class Grenade : PhysicalObjectBase, SceneObject
 
     void update(float dt)
     {
-        super.update(dt, 1200.0f); // FIXME: это нужно хранить в сцене
+        super.doMotion(vec2f(0, 0), dt, 1200.0f); // FIXME: это нужно хранить в сцене
     }
 
     void draw(RenderTarget renderTarget, RenderStates renderStates)
     {
         auto circle = new CircleShape(3, 10);
 
-        circle.fillColor = Color.Blue;
-
-        renderStates.transform.translate(position.x, position.y);
+        circle.position = position.gfm_dsfml;
+        circle.fillColor = Color(139, 69, 19);
 
         renderTarget.draw(circle);
     }
