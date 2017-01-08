@@ -179,6 +179,18 @@ abstract class HandGun : BaseWeapon
 abstract class Throwing : BaseWeapon
 {
     override HoldType holdType() const { return HoldType.THROWABLE; }
+
+    override void fire(Scene sc, vec2f pos, vec2f dir)
+    {
+        import soldier.grenade: Grenade;
+
+        auto g = new Grenade(sc.sceneMap);
+
+        g.position = pos;
+        g.speed = dir.normalized * 50;
+
+        sc.add(g);
+    }
 }
 
 class Ak74 : BaseWeapon

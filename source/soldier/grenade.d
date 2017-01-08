@@ -6,7 +6,7 @@ public import physics;
 import scene;
 import dsfml.graphics;
 
-class PhysicalPerson : PhysicalObjectBase, SceneObject
+class Grenade : PhysicalObjectBase, SceneObject
 {
     private box2f _aabb;
 
