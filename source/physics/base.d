@@ -356,7 +356,10 @@ abstract class PhysicalObjectBase
             final switch(ret)
             {
                 case Ladder:
-                    return TouchesLadder;
+                    if(laddersSupportEnabled)
+                        return TouchesLadder;
+                    else
+                        return Default;
 
                 case Block:
                     return PushesBlock;
