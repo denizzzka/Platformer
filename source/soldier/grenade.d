@@ -10,8 +10,11 @@ class Grenade : PhysicalObjectBase, SceneObject
 {
     private box2f _aabb;
 
-    this(in Map m)
+    this(in Map m, vec2f startPosition, vec2f direction)
     {
+        position = startPosition;
+        speed = direction.normalized * 100;
+
         super(m, false);
     }
 
