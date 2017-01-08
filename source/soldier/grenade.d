@@ -42,8 +42,6 @@ class Grenade : PhysicalObjectBase, SceneObject
     {
         scene.removeBeforeNextDraw(this);
 
-        float r = 100; // radius
-
         enum splintersNum = 50;
 
         for(float a = 0; a < 2 * PI; a += 2 * PI / splintersNum)
@@ -52,14 +50,14 @@ class Grenade : PhysicalObjectBase, SceneObject
 
             vec2f dir;
 
-            dir.x = cos(a) * r;
-            dir.y = - sin(a) * r;
+            dir.x = cos(a);
+            dir.y = -sin(a);
 
             Bullet b;
 
             b.timeToLive = 2;
             b.windage = 0.90;
-            b.speed = dir * 50;
+            b.speed = dir * 1000;
             b.position = position;
 
             scene.bullets.add(b);
