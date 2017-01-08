@@ -20,12 +20,7 @@ class Grenade : PhysicalObjectBase, SceneObject
 
     override box2f aabb() const
     {
-        box2f ret;
-
-        ret.min = vec2f(-4.5, -4.5);
-        ret.max = vec2f(4.5, 4.5);
-
-        return _aabb;
+        return box2f(-4.5, 0, 4.5, 9).flipY.sort; // FIXME: зависит от направления осей графики
     }
 
     void update(float dt)
