@@ -10,7 +10,7 @@ class PhysicalObject : PhysicalObjectBase
 
     this(in Map m)
     {
-        super(m);
+        super(m, true);
     }
 
     void aabb(box2f b)

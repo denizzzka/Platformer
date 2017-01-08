@@ -42,6 +42,8 @@ abstract class PhysicalObjectBase
     debug vec2f oldSpeed;
     alias states this;
 
+    private bool laddersSupportEnabled;
+
     void unitState(UnitState u){ states.unitState = u; }
     UnitState unitState() const { return states.unitState; }
 
@@ -51,9 +53,10 @@ abstract class PhysicalObjectBase
     CollisionState collisionStateX() const { return states.collisionStateX; }
     CollisionState collisionStateY() const { return states.collisionStateY; }
 
-    this(in Map m)
+    this(in Map m, bool laddersSupportEnabled)
     {
         _map = m;
+        this.laddersSupportEnabled = laddersSupportEnabled;
     }
 
     box2f aabb() const;
