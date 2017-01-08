@@ -33,9 +33,37 @@ class Grenade : PhysicalObjectBase, SceneObject
         timeCounter -= dt;
 
         if(timeCounter <= 0)
-            scene.removeBeforeNextDraw(this);
+            beginExplosion();
         else
             super.doMotion(vec2f(0, 0), dt, 1200.0f); // FIXME: это нужно хранить в сцене
+    }
+
+    void beginExplosion()
+    {
+        scene.removeBeforeNextDraw(this);
+
+        float r = 100; // radius
+
+        enum splintersNum = 50;
+
+        for(float a = 0; a < 2 * PI; a += 2 * PI / splintersNum)
+        {
+            import bullets;
+
+            vec2f dir;
+
+            dir.x = cos(a) * r;
+            dir.y = - sin(a) * r;
+
+            Bullet b;
+
+            b.timeToLive = 2;
+            b.windage = 0.90;
+            b.speed = dir * 50;
+            b.position = position;
+
+            scene.bullets.add(b);
+        }
     }
 
     void draw(RenderTarget renderTarget, RenderStates renderStates)
