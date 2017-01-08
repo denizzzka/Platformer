@@ -25,7 +25,7 @@ class Grenade : PhysicalObjectBase, SceneObject
 
     override box2f aabb() const
     {
-        return box2f(-4.5, 0, 4.5, 9).flipY.sort; // FIXME: зависит от направления осей графики
+        return box2f(-4.5, -4.5, 4.5, 4.5); // FIXME: зависит от направления осей графики
     }
 
     void update(float dt)
