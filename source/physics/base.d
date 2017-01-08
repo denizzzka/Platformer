@@ -96,7 +96,7 @@ abstract class PhysicalObjectBase
             collisionStateY == CollisionState.TouchesLadder;
     }
 
-    void doMotion(in vec2f appendSpeed, const float dt, const float g_force)
+    void applyMotion(in vec2f appendSpeed, const float dt, const float g_force)
     {
         // FIXME: special ladder case (dirty hack)
         if(isTouchesLadder && appendSpeed.isDownDirection)
@@ -105,6 +105,9 @@ abstract class PhysicalObjectBase
         update(dt, g_force);
 
         motionAppendSpeed(appendSpeed, dt, g_force);
+
+        if(unitState == UnitState.OnFly)
+            speed.y += g_force * dt;
     }
 
     void update(const float dt, const float g_force)
@@ -272,8 +275,6 @@ abstract class PhysicalObjectBase
         else
         {
             speed.x += appendSpeed.x * 0.01; // tiny opportunity to turning in the flight
-
-            speed.y += g_force * dt;
         }
     }
 

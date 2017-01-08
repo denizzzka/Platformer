@@ -9,7 +9,7 @@ class Grenade : PhysicalObjectBase, SceneObject
 {
     private Scene scene;
 
-    private float timeCounter = 2;
+    private float timeCounter = 20;
 
     this(Scene sc, vec2f startPosition, vec2f launcherSpeed, vec2f direction)
     {
@@ -23,7 +23,7 @@ class Grenade : PhysicalObjectBase, SceneObject
         scene.add(this);
     }
 
-    override float friction() const { return 0.4; }
+    override float friction() const { return 0.9; }
 
     override box2f aabb() const
     {
@@ -37,7 +37,7 @@ class Grenade : PhysicalObjectBase, SceneObject
         if(timeCounter <= 0)
             beginExplosion();
         else
-            super.doMotion(vec2f(0, 0), dt, 1200.0f); // FIXME: это нужно хранить в сцене
+            super.applyMotion(vec2f(0, 0), dt, 1200.0f); // FIXME: это нужно хранить в сцене
     }
 
     void beginExplosion()

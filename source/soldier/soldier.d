@@ -103,7 +103,7 @@ class Soldier : SceneObject
                 movingState = PhysicalState.CrawlBackwards;
         }
 
-        doMotion(acceleration, deltaTime, g_force);
+        applyMotion(acceleration, deltaTime, g_force);
 
         if(movingState != oldPhysicalState)
         {
