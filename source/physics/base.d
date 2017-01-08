@@ -102,12 +102,9 @@ abstract class PhysicalObjectBase
         if(isTouchesLadder && appendSpeed.isDownDirection)
             unitState = UnitState.OnLadder;
 
-        update(dt, g_force);
-
         motionAppendSpeed(appendSpeed, dt, g_force);
 
-        if(unitState == UnitState.OnFly)
-            speed.y += g_force * dt;
+        update(dt, g_force);
     }
 
     void update(const float dt, const float g_force)
@@ -125,6 +122,9 @@ abstract class PhysicalObjectBase
         }
 
         updateUnitState();
+
+        if(unitState == UnitState.OnFly)
+            speed.y += g_force * dt;
     }
 
     private void motionRoutineX(float dt)
