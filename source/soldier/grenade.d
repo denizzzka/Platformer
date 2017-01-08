@@ -26,9 +26,11 @@ class Grenade : PhysicalObjectBase, SceneObject
     override float rebound() const { return 0.45; }
     override float friction() const { return 0.15; }
 
+    immutable float radius = 5;
+
     override box2f aabb() const
     {
-        return box2f(-4.5, -4.5, 4.5, 4.5); // FIXME: зависит от направления осей графики
+        return box2f(-radius, -radius, radius, radius); // FIXME: зависит от направления осей графики
     }
 
     void update(float dt)
@@ -69,10 +71,10 @@ class Grenade : PhysicalObjectBase, SceneObject
 
     void draw(RenderTarget renderTarget, RenderStates renderStates)
     {
-        auto circle = new CircleShape(3, 10);
+        auto circle = new CircleShape(radius, 10);
 
-        circle.position = position.gfm_dsfml;
-        circle.fillColor = Color(139, 69, 19);
+        circle.position = (position - vec2f(radius, radius)).gfm_dsfml;
+        circle.fillColor = Color.Black;
 
         renderTarget.draw(circle);
     }
