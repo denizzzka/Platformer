@@ -43,6 +43,15 @@ class PhysicalObjectBase
     debug vec2f oldSpeed;
     alias states this;
 
+    void unitState(UnitState u){ states.unitState = u; }
+    UnitState unitState() const { return states.unitState; }
+
+    void collisionStateX(CollisionState cs){ states.collisionStateX = cs; }
+    void collisionStateY(CollisionState cs){ states.collisionStateY = cs; }
+
+    CollisionState collisionStateX() const { return states.collisionStateX; }
+    CollisionState collisionStateY() const { return states.collisionStateY; }
+
     this(in Map m)
     {
         _map = m;

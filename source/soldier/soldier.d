@@ -242,8 +242,8 @@ class Soldier : SceneObject
         {
             void horisontalMove(bool toRight)
             {
-                physicalObject.rightDirection = toRight;
-                acceleration.x += groundSpeed * (physicalObject.rightDirection ? rightVec.x : leftVec.x);
+                physicalObject.states.rightDirection = toRight;
+                acceleration.x += groundSpeed * (physicalObject.states.rightDirection ? rightVec.x : leftVec.x);
 
                 if(!physicalObject.unitState == UnitState.OnFly)
                     movingState = PhysicalState.Run;

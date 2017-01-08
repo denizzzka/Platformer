@@ -2,54 +2,20 @@ module soldier.physics;
 
 import map;
 import math;
-import physics;
+public import physics;
 debug(physics) import std.stdio;
 debug(physics) import std.conv: to;
 
-enum CollisionState // TODO: remove it?
+class PhysicalObject : PhysicalObjectBase
 {
-    Default,
-    TouchesOneWay,
-    PushesLeftSlope,
-    PushesRightSlope,
-    PushesBlock,
-    TouchesLadder
-}
-
-enum UnitState
-{
-    OnFly,
-    OnLadder,
-    OnGround
-}
-
-struct States
-{
-    UnitState unitState;
-    bool rightDirection = false;
-    CollisionState collisionStateX;
-    CollisionState collisionStateY;
-}
-
-class PhysicalObject
-{
-    const Map _map;
-
-    vec2f position;
-    vec2f speed = vec2f(0, 0);
     private box2f _aabb;
-
-    States states;
-    debug States oldStates;
-    debug vec2f oldSpeed;
-    alias states this;
 
     this(in Map m)
     {
-        _map = m;
+        super(m);
     }
 
-    void aabb(box2f b)
+    override void aabb(box2f b)
     {
         if(upVec.y < 0)
             _aabb = b.flipY.sort;
@@ -57,14 +23,14 @@ class PhysicalObject
             _aabb = b;
     }
 
-    box2f aabb() const { return _aabb; }
+    override box2f aabb() const { return _aabb; }
 
-    box2f worldAabb() const
+    override box2f worldAabb() const
     {
         return box2f(aabb.translate(position));
     }
 
-    box2i worldAabbTiled() const
+    override box2i worldAabbTiled() const
     {
         return fBox2tiledBox(worldAabb);
     }
@@ -79,19 +45,19 @@ class PhysicalObject
         return ret;
     }
 
-    vec2i tileCoords() const
+    override vec2i tileCoords() const
     {
         return _map.worldCoordsToTileCoords(position);
     }
 
-    bool isTouchesLadder() const
+    override bool isTouchesLadder() const
     {
         return
             unitState == UnitState.OnLadder ||
             collisionStateY == CollisionState.TouchesLadder;
     }
 
-    void doMotion(in vec2f appendSpeed, const float dt, const float g_force)
+    override void doMotion(in vec2f appendSpeed, const float dt, const float g_force)
     {
         debug oldStates = states;
         debug oldSpeed = speed;
