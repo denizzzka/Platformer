@@ -4,6 +4,7 @@ import map;
 import math;
 debug(physics) import std.stdio;
 debug(physics) import std.conv: to;
+import std.math: abs;
 
 enum CollisionState // TODO: remove it?
 {
@@ -178,6 +179,14 @@ abstract class PhysicalObjectBase
                     )
                     {
                         position.y = blameTileCoords.y * _map.tileSize.y - aabb.max.y - 1 /*"1" is "do not touch bottom tiles"*/; // FIXME: зависит от направления осей графики
+
+                        if(abs(speed.y) <= 100)
+                        {
+                            debug(physics) writeln("y stopped");
+
+                            speed.y = 0;
+                            speed.x *= friction * dt;
+                        }
 
                         unitState = UnitState.OnGround;
 
