@@ -125,6 +125,8 @@ abstract class PhysicalObjectBase
 
         if(unitState == UnitState.OnFly)
             speed.y += g_force * dt;
+        else if(unitState == UnitState.OnGround)
+            speed.x *= friction;
     }
 
     private void motionRoutineX(float dt)
@@ -183,12 +185,11 @@ abstract class PhysicalObjectBase
                     {
                         position.y = blameTileCoords.y * _map.tileSize.y - aabb.max.y - 1 /*"1" is "do not touch bottom tiles"*/; // FIXME: зависит от направления осей графики
 
-                        if(abs(speed.y) <= 100)
+                        if(abs(speed.y) <= 50)
                         {
                             debug(physics) writeln("y stopped");
 
                             speed.y = 0;
-                            speed.x *= friction * dt;
                         }
 
                         unitState = UnitState.OnGround;

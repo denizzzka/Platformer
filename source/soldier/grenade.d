@@ -23,7 +23,7 @@ class Grenade : PhysicalObjectBase, SceneObject
         scene.add(this);
     }
 
-    override float friction() const { return 0.9; }
+    override float friction() const { return 0.4; }
 
     override box2f aabb() const
     {
