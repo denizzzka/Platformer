@@ -60,6 +60,7 @@ abstract class PhysicalObjectBase
         this.laddersSupportEnabled = laddersSupportEnabled;
     }
 
+    float rebound() const;
     float friction() const;
 
     box2f aabb() const;
@@ -145,7 +146,7 @@ abstract class PhysicalObjectBase
                 else
                     position.x = (blameTileCoords.x + 1) * _map.tileSize.x - aabb.min.x; // FIXME: зависит от направления осей графики
 
-                speed.x *= -friction;
+                speed.x *= -rebound;
 
                 debug(physics) writeln("Push into block on X coord");
             }
@@ -174,7 +175,7 @@ abstract class PhysicalObjectBase
             {
                 if(collisionStateY.canStanding)
                 {
-                    speed.y *= -friction;
+                    speed.y *= -rebound;
 
                     // need to place unit on top of the tile?
                     if
@@ -204,7 +205,7 @@ abstract class PhysicalObjectBase
             {
                 if(!collisionStateY.isOneWay)
                 {
-                    speed.y *= -friction; // speed damping due to bumping by head
+                    speed.y *= -rebound; // speed damping due to bumping by head
 
                     if(collisionStateY != CollisionState.TouchesLadder)
                     {

@@ -14,6 +14,7 @@ class PhysicalPerson : PhysicalObjectBase
     }
 
     override float friction() const { return 0; }
+    override float rebound() const { return 0; }
 
     void aabb(box2f b)
     {
