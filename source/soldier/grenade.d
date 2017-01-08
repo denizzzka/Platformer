@@ -1,6 +1,5 @@
 module soldier.grenade;
 
-import map;
 import math;
 public import physics;
 import scene;
@@ -8,14 +7,20 @@ import dsfml.graphics;
 
 class Grenade : PhysicalObjectBase, SceneObject
 {
-    private box2f _aabb;
+    private Scene scene;
 
-    this(in Map m, vec2f startPosition, vec2f launcherSpeed, vec2f direction)
+    private float timeCounter = 2;
+
+    this(Scene sc, vec2f startPosition, vec2f launcherSpeed, vec2f direction)
     {
+        scene = sc;
+
         position = startPosition;
         speed = launcherSpeed + direction.normalized * 300;
 
-        super(m, false);
+        super(scene.sceneMap, false);
+
+        scene.add(this);
     }
 
     override box2f aabb() const
@@ -25,7 +30,12 @@ class Grenade : PhysicalObjectBase, SceneObject
 
     void update(float dt)
     {
-        super.doMotion(vec2f(0, 0), dt, 1200.0f); // FIXME: это нужно хранить в сцене
+        timeCounter -= dt;
+
+        if(timeCounter <= 0)
+            scene.removeBeforeNextDraw(this);
+        else
+            super.doMotion(vec2f(0, 0), dt, 1200.0f); // FIXME: это нужно хранить в сцене
     }
 
     void draw(RenderTarget renderTarget, RenderStates renderStates)

@@ -184,9 +184,7 @@ abstract class Throwing : BaseWeapon
     {
         import soldier.grenade: Grenade;
 
-        auto g = new Grenade(sc.sceneMap, pos, speed, dir);
-
-        sc.add(g);
+        auto g = new Grenade(sc, pos, speed, dir);
     }
 }
 
