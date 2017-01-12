@@ -69,10 +69,9 @@ class Grenade : PhysicalObjectBase, SceneObject
             if(states.unitState == UnitState.OnGround)
             {
                 rotationSpeed = abs(speed.x / 4.0);
-                rotationSpeed *= (speed.x > 0 ? 1 : -1);
             }
 
-            skeleton.getBoneByIndex(0).rotation += rotationSpeed;
+            skeleton.getBoneByIndex(0).rotation += rotationSpeed * (speed.x > 0 ? 1 : -1);
         }
 
         {
