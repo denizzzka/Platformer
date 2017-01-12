@@ -60,7 +60,19 @@ class SoldierAnimation
         {
             auto stayAnimations = [Stay, MoveForward, MoveBackward, Fly];
             auto sitAnimations = [Sit, SitForward, SitBackward];
-            auto aimAnimations = [AimWeapon1Hand, AimWeapon2Hands, AimWeapon2HandsBp, HoldThrowable];
+            auto aimAnimations = [
+                    HoldWeapon2Hands,
+                    HoldWeapon1Hand,
+                    HoldThrowable,
+
+                    AimWeapon1Hand,
+                    AimWeapon2Hands,
+                    AimWeapon2HandsBp,
+
+                    ShotHoldWeapon2Hands,
+                    ShotHoldWeapon1Hand,
+                    HitThrowable,
+                ];
 
             mixAnimationsWithEachOther(stayAnimations);
             mixAnimationsWithEachOther(sitAnimations);
