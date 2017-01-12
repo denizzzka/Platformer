@@ -20,7 +20,7 @@ class Grenade : PhysicalObjectBase, SceneObject
     private AnimationStateData stateData;
     private AnimationStateInstance state;
 
-    private float angle = 0;
+    private float rotationSpeed;
 
     this(Scene sc, vec2f startPosition, vec2f launcherSpeed, vec2f direction)
     {
@@ -28,6 +28,7 @@ class Grenade : PhysicalObjectBase, SceneObject
 
         position = startPosition;
         speed = launcherSpeed + direction.normalized * 500;
+        rotationSpeed = speed.length / 70 * (speed.x >= 0 ? 1 : -1);
 
         super(scene.sceneMap, false);
 
@@ -64,7 +65,14 @@ class Grenade : PhysicalObjectBase, SceneObject
         else
         {
             super.update(dt, 1200.0f); // FIXME: это нужно хранить в сцене
-            skeleton.getBoneByIndex(0).rotation += speed.length / 4.0 * (speed.x > 0 ? 1 : -1);
+
+            if(states.unitState == UnitState.OnGround)
+            {
+                rotationSpeed = abs(speed.x / 4.0);
+                rotationSpeed *= (speed.x > 0 ? 1 : -1);
+            }
+
+            skeleton.getBoneByIndex(0).rotation += rotationSpeed;
         }
 
         {
