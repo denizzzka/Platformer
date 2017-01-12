@@ -144,22 +144,7 @@ abstract class BaseWeapon
 
     HoldType holdType() const;
 
-    AnimationType holdingAnimation() const // FIXME: временно. Тело этой функции должно быть удалено
-    {
-        with(HoldType)
-        with(AnimationType)
-        switch(holdType)
-        {
-            case THROWABLE:
-                return HoldThrowable;
-
-            case HANDGUN:
-                return AimWeapon1Hand;
-
-            default:
-                return AimWeapon2Hands;
-        }
-    }
+    AnimationType holdingAnimation() const;
 
     AnimationType fireAnimation() const
     {
@@ -182,11 +167,13 @@ abstract class BaseWeapon
 abstract class HandGun : BaseWeapon
 {
     override HoldType holdType() const { return HoldType.HANDGUN; }
+    override AnimationType holdingAnimation() const { return AnimationType.HoldWeapon1Hand; }
 }
 
 abstract class Throwing : BaseWeapon
 {
     override HoldType holdType() const { return HoldType.THROWABLE; }
+    override AnimationType holdingAnimation() const { return AnimationType.HoldThrowable; }
 
     override void fire(Scene sc, vec2f pos, vec2f speed, vec2f dir)
     {

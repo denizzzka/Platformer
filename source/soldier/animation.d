@@ -20,6 +20,7 @@ enum AnimationType : AnimationProperty
     SitBackward = AnimationProperty("sit-backward", 0.2),
 
     HoldWeapon2Hands = AnimationProperty("hold-weapon-2hands", 0.2),
+    HoldWeapon1Hand = AnimationProperty("hold-weapon-1hand", 0.2),
     HoldThrowable = AnimationProperty("hold-throwable", 0.2),
 
     AimWeapon1Hand = AnimationProperty("aim-weapon-1hand", 0.2),
