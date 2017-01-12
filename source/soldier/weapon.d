@@ -58,7 +58,7 @@ class HoldWeapon
 
         setAttachment(soldier.skeleton, "weapon", soldier.holderPrimary, weapon.skeleton);
 
-        soldier.state.setAnimation(weapon.holdingAnimation, false, 1);
+        soldier.state.setAnimation(weapon.holdingAnimation, true, 1);
 
         {
             auto fireBoneIdx = weapon.skeletonData.findBoneIndex("fire-bone");
@@ -100,6 +100,18 @@ class HoldWeapon
             ) + fireSourcePoint;
 
         weapon.fire(soldier._scene, pos, soldier.speed, soldier.aimingDirection);
+
+        with(HoldType)
+        switch(weapon.holdType)
+        {
+            case THROWABLE:
+                soldier.state.setAnimation(AnimationType.HitThrowable, false, 1);
+                soldier.state.addAnimation(1, AnimationType.HoldThrowable, true, 0.0f);
+                break;
+
+            default:
+                break;
+        }
 
         debug(weapons_fire) writeln("fireBone:", fireBone);
     }

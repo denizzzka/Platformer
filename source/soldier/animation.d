@@ -24,6 +24,8 @@ enum AnimationType : AnimationProperty
     AimWeapon2HandsBp = AnimationProperty("aim-weapon-2hands-bp", 0.2),
     HoldThrowable = AnimationProperty("hold-throwable", 0.2),
 
+    HitThrowable = AnimationProperty("hit-throwable", 0.0),
+
     Reload2Hands1 = AnimationProperty("reload-2hands-1", 0.2),
 }
 
@@ -118,6 +120,19 @@ class SoldierAnimation
     {
         foreach(ref a; availableAnimations)
             if(a.type == animationType)
+            {
                 state.setAnimation(trackNum, a.animation, loop);
+                break;
+            }
+    }
+
+    void addAnimation(int trackNum, AnimationType animationType, bool loop, float delay)
+    {
+        foreach(ref a; availableAnimations)
+            if(a.type == animationType)
+            {
+                state.addAnimation(trackNum, a.animation, loop, delay);
+                break;
+            }
     }
 }
