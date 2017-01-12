@@ -24,6 +24,7 @@ enum AnimationType : AnimationProperty
     AimWeapon2HandsBp = AnimationProperty("aim-weapon-2hands-bp", 0.2),
     HoldThrowable = AnimationProperty("hold-throwable", 0.2),
 
+    ShotWeapon2Hands = AnimationProperty("shoot-hold-weapon-2hands", 0.0),
     HitThrowable = AnimationProperty("hit-throwable", 0.0),
 
     Reload2Hands1 = AnimationProperty("reload-2hands-1", 0.2),

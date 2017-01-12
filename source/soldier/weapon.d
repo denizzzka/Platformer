@@ -101,17 +101,8 @@ class HoldWeapon
 
         weapon.fire(soldier._scene, pos, soldier.speed, soldier.aimingDirection);
 
-        with(HoldType)
-        switch(weapon.holdType)
-        {
-            case THROWABLE:
-                soldier.state.setAnimation(AnimationType.HitThrowable, false, 1);
-                soldier.state.addAnimation(1, AnimationType.HoldThrowable, true, 0.0f);
-                break;
-
-            default:
-                break;
-        }
+        soldier.state.setAnimation(weapon.fireAnimation, false, 1);
+        soldier.state.addAnimation(1, weapon.holdingAnimation, true, 0.0f);
 
         debug(weapons_fire) writeln("fireBone:", fireBone);
     }
@@ -153,7 +144,7 @@ abstract class BaseWeapon
 
     HoldType holdType() const;
 
-    AnimationType holdingAnimation() const
+    AnimationType holdingAnimation() const // FIXME: временно. Тело этой функции должно быть удалено
     {
         with(HoldType)
         with(AnimationType)
@@ -168,6 +159,11 @@ abstract class BaseWeapon
             default:
                 return AimWeapon2Hands;
         }
+    }
+
+    AnimationType fireAnimation() const
+    {
+        return AnimationType.HitThrowable; // FIXME: временно. Тело этой функции должно быть удалено
     }
 
     void fire(Scene sc, vec2f pos, vec2f launcherSpeed, vec2f dir)
@@ -220,6 +216,8 @@ class Ak74 : BaseWeapon
     }
 
     override HoldType holdType() const { return HoldType.TWO_HANDS; }
+
+    override AnimationType fireAnimation() const { return AnimationType.ShotWeapon2Hands; }
 }
 
 class Colt : HandGun
