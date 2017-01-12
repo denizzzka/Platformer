@@ -217,7 +217,8 @@ class Ak74 : BaseWeapon
 
     override HoldType holdType() const { return HoldType.TWO_HANDS; }
 
-    override AnimationType fireAnimation() const { return AnimationType.ShotWeapon2Hands; }
+    override AnimationType holdingAnimation() const { return AnimationType.HoldWeapon2Hands; }
+    override AnimationType fireAnimation() const { return AnimationType.ShotHoldWeapon2Hands; }
 }
 
 class Colt : HandGun

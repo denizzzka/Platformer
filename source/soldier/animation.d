@@ -19,12 +19,14 @@ enum AnimationType : AnimationProperty
     SitForward = AnimationProperty("sit-forward", 0.2),
     SitBackward = AnimationProperty("sit-backward", 0.2),
 
+    HoldWeapon2Hands = AnimationProperty("hold-weapon-2hands", 0.2),
+    HoldThrowable = AnimationProperty("hold-throwable", 0.2),
+
     AimWeapon1Hand = AnimationProperty("aim-weapon-1hand", 0.2),
     AimWeapon2Hands = AnimationProperty("aim-weapon-2hands", 0.2),
     AimWeapon2HandsBp = AnimationProperty("aim-weapon-2hands-bp", 0.2),
-    HoldThrowable = AnimationProperty("hold-throwable", 0.2),
 
-    ShotWeapon2Hands = AnimationProperty("shoot-hold-weapon-2hands", 0.0),
+    ShotHoldWeapon2Hands = AnimationProperty("shoot-hold-weapon-2hands", 0.0),
     HitThrowable = AnimationProperty("hit-throwable", 0.0),
 
     Reload2Hands1 = AnimationProperty("reload-2hands-1", 0.2),
