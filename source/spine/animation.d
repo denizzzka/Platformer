@@ -73,7 +73,7 @@ class AnimationStateInstance
 
     void setAnimationByName(int trackIndex, string animationName, bool loop)
     {
-        spAnimationState_setAnimationByName(sp_animationState, trackIndex, animationName.toStringz, loop ? 1 : 0);
+        spAnimationState_setAnimationByName(sp_animationState, trackIndex, animationName.toStringz, loop);
     }
 
     void setAnimation(int trackIndex, Animation animation, bool loop)
@@ -83,7 +83,12 @@ class AnimationStateInstance
 
     void addAnimationByName(int trackIndex, string animationName, bool loop, float delay)
     {
-        spAnimationState_addAnimationByName(sp_animationState, trackIndex, animationName.toStringz, loop ? 1 : 0, delay);
+        spAnimationState_addAnimationByName(sp_animationState, trackIndex, animationName.toStringz, loop, delay);
+    }
+
+    void addAnimation(int trackIndex, Animation animation, bool loop, float delay)
+    {
+        spAnimationState_addAnimation(sp_animationState, trackIndex, animation.sp_animation, loop, delay);
     }
 
     void timeScale(float t)
@@ -207,6 +212,9 @@ spTrackEntry* spAnimationState_setAnimation (spAnimationState* self, int trackIn
 
 /** Adds an animation to be played delay seconds after the current or last queued animation, taking into account any mix duration. */
 spTrackEntry* spAnimationState_addAnimationByName (spAnimationState* self, int trackIndex, const(char)* animationName, int/*bool*/loop, float delay);
+
+/// ditto
+spTrackEntry* spAnimationState_addAnimation(spAnimationState* self, int trackIndex, spAnimation* animation, int/*bool*/loop, float delay);
 
 void spAnimationState_update (spAnimationState* self, float delta);
 
