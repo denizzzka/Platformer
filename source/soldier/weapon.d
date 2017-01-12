@@ -145,11 +145,7 @@ abstract class BaseWeapon
     HoldType holdType() const;
 
     AnimationType holdingAnimation() const;
-
-    AnimationType fireAnimation() const
-    {
-        return AnimationType.HitThrowable; // FIXME: временно. Тело этой функции должно быть удалено
-    }
+    AnimationType fireAnimation() const;
 
     void fire(Scene sc, vec2f pos, vec2f launcherSpeed, vec2f dir)
     {
@@ -168,12 +164,14 @@ abstract class HandGun : BaseWeapon
 {
     override HoldType holdType() const { return HoldType.HANDGUN; }
     override AnimationType holdingAnimation() const { return AnimationType.HoldWeapon1Hand; }
+    override AnimationType fireAnimation() const { return AnimationType.ShotHoldWeapon1Hand; }
 }
 
 abstract class Throwing : BaseWeapon
 {
     override HoldType holdType() const { return HoldType.THROWABLE; }
     override AnimationType holdingAnimation() const { return AnimationType.HoldThrowable; }
+    override AnimationType fireAnimation() const { return AnimationType.HitThrowable; }
 
     override void fire(Scene sc, vec2f pos, vec2f speed, vec2f dir)
     {
@@ -203,7 +201,6 @@ class Ak74 : BaseWeapon
     }
 
     override HoldType holdType() const { return HoldType.TWO_HANDS; }
-
     override AnimationType holdingAnimation() const { return AnimationType.HoldWeapon2Hands; }
     override AnimationType fireAnimation() const { return AnimationType.ShotHoldWeapon2Hands; }
 }
