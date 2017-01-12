@@ -28,7 +28,7 @@ class Grenade : PhysicalObjectBase, SceneObject
 
         position = startPosition;
         speed = launcherSpeed + direction.normalized * 500;
-        rotationSpeed = speed.length / 70;
+        rotationSpeed = speed.length / 30;
 
         super(scene.sceneMap, false);
 
