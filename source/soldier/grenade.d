@@ -28,7 +28,7 @@ class Grenade : PhysicalObjectBase, SceneObject
 
         position = startPosition;
         speed = launcherSpeed + direction.normalized * 500;
-        rotationSpeed = speed.length / 70 * (speed.x >= 0 ? 1 : -1);
+        rotationSpeed = speed.length / 70;
 
         super(scene.sceneMap, false);
 
@@ -71,7 +71,7 @@ class Grenade : PhysicalObjectBase, SceneObject
                 rotationSpeed = abs(speed.x / 4.0);
             }
 
-            skeleton.getBoneByIndex(0).rotation += rotationSpeed * (speed.x > 0 ? 1 : -1);
+            skeleton.getBoneByIndex(0).rotation += rotationSpeed * (speed.x >= 0 ? 1 : -1);
         }
 
         {
