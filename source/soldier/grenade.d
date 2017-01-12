@@ -3,6 +3,9 @@ module soldier.grenade;
 import math;
 public import physics;
 import scene;
+import spine.skeleton;
+import spine.animation;
+import spine.dsfml;
 import dsfml.graphics;
 
 class Grenade : PhysicalObjectBase, SceneObject
@@ -10,6 +13,14 @@ class Grenade : PhysicalObjectBase, SceneObject
     private Scene scene;
 
     private float timeCounter = 2;
+
+    private SkeletonData skeletonData;
+    private SkeletonInstanceDrawable skeleton;
+
+    private AnimationStateData stateData;
+    private AnimationStateInstance state;
+
+    private float angle = 0;
 
     this(Scene sc, vec2f startPosition, vec2f launcherSpeed, vec2f direction)
     {
@@ -21,6 +32,15 @@ class Grenade : PhysicalObjectBase, SceneObject
         super(scene.sceneMap, false);
 
         scene.add(this);
+
+        {
+            skeletonData = new SkeletonData("resources/animations/grenade-he.json", atlas);
+            skeletonData.defaultSkin = skeletonData.findSkin("throwable-default");
+            stateData = new AnimationStateData(skeletonData);
+
+            skeleton = new SkeletonInstanceDrawable(skeletonData);
+            state = new AnimationStateInstance(stateData);
+        }
     }
 
     override float rebound() const { return 0.45; }
@@ -38,9 +58,20 @@ class Grenade : PhysicalObjectBase, SceneObject
         timeCounter -= dt;
 
         if(timeCounter <= 0)
+        {
             beginExplosion();
+        }
         else
+        {
             super.update(dt, 1200.0f); // FIXME: это нужно хранить в сцене
+            skeleton.getBoneByIndex(0).rotation += speed.length / 4.0 * (speed.x > 0 ? 1 : -1);
+        }
+
+        {
+            state.update(dt);
+            state.apply(skeleton);
+            skeleton.updateWorldTransform();
+        }
     }
 
     void beginExplosion()
@@ -71,11 +102,11 @@ class Grenade : PhysicalObjectBase, SceneObject
 
     void draw(RenderTarget renderTarget, RenderStates renderStates)
     {
-        auto circle = new CircleShape(radius, 10);
+        immutable renderCenter = vec2f(0, 0);
 
-        circle.position = (position - vec2f(radius, radius)).gfm_dsfml;
-        circle.fillColor = Color.Black;
+        auto tr = position - renderCenter;
+        renderStates.transform.translate(tr.x, tr.y);
 
-        renderTarget.draw(circle);
+        skeleton.draw(renderTarget, renderStates);
     }
 }
