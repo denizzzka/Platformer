@@ -44,7 +44,7 @@ class HoldWeapon
 
     void beginReload()
     {
-        soldier.state.setAnimation(AnimationType.Reload2Hands1, false, 1);
+        soldier.state.setAnimation(1, AnimationType.Reload2Hands1, false);
     }
 
     private void changeWeapon(BaseWeapon weapon)
@@ -58,7 +58,7 @@ class HoldWeapon
 
         setAttachment(soldier.skeleton, "weapon", soldier.holderPrimary, weapon.skeleton);
 
-        soldier.state.setAnimation(weapon.holdingAnimation, true, 1);
+        soldier.state.setAnimation(1, weapon.holdingAnimation, true);
 
         {
             auto fireBoneIdx = weapon.skeletonData.findBoneIndex("fire-bone");
@@ -101,7 +101,7 @@ class HoldWeapon
 
         weapon.fire(soldier._scene, pos, soldier.speed, soldier.aimingDirection);
 
-        soldier.state.setAnimation(weapon.fireAnimation, false, 1);
+        soldier.state.setAnimation(1, weapon.fireAnimation, false);
         soldier.state.addAnimation(1, weapon.holdingAnimation, true, 0.0f);
 
         debug(weapons_fire) writeln("fireBone:", fireBone);

@@ -130,10 +130,10 @@ class SoldierAnimation
             }
         );
 
-        setAnimation(AnimationType.Stay);
+        setAnimation(0, AnimationType.Stay, true);
     }
 
-    void setAnimation(AnimationType animationType, bool loop = true, int trackNum = 0)
+    void setAnimation(int trackNum, AnimationType animationType, bool loop)
     {
         foreach(ref a; availableAnimations)
             if(a.type == animationType)
@@ -141,6 +141,11 @@ class SoldierAnimation
                 state.setAnimation(trackNum, a.animation, loop);
                 break;
             }
+    }
+
+    void setAnimation(AnimationType animationType)
+    {
+        setAnimation(0, animationType, true);
     }
 
     void addAnimation(int trackNum, AnimationType animationType, bool loop, float delay)
