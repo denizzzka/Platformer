@@ -143,11 +143,6 @@ class SoldierAnimation
             }
     }
 
-    void setAnimation(AnimationType animationType)
-    {
-        setAnimation(0, animationType, true);
-    }
-
     void addAnimation(int trackNum, AnimationType animationType, bool loop, float delay)
     {
         foreach(ref a; availableAnimations)

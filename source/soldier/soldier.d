@@ -126,33 +126,33 @@ class Soldier : SceneObject
         final switch(movingState)
         {
             case Stay:
-                setAnimation(AnimationType.Stay);
+                setAnimation(0, AnimationType.Stay, true);
                 break;
 
             case Run:
             case MoveUp:
             case MoveDown:
-                setAnimation(AnimationType.MoveForward);
+                setAnimation(0, AnimationType.MoveForward, true);
                 break;
 
             case RunBackwards:
-                setAnimation(AnimationType.MoveBackward);
+                setAnimation(0, AnimationType.MoveBackward, true);
                 break;
 
             case Jump:
-                setAnimation(AnimationType.Fly);
+                setAnimation(0, AnimationType.Fly, true);
                 break;
 
             case Sit:
-                setAnimation(AnimationType.Sit);
+                setAnimation(0, AnimationType.Sit, true);
                 break;
 
             case CrawlBackwards:
-                setAnimation(AnimationType.SitBackward);
+                setAnimation(0, AnimationType.SitBackward, true);
                 break;
 
             case Crawl:
-                setAnimation(AnimationType.SitForward);
+                setAnimation(0, AnimationType.SitForward, true);
                 break;
         }
     }
