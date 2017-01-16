@@ -40,10 +40,10 @@ class ParticlesStorage(Particle)
                 {
                     if(!p.isRemoved)
                         aliveParticles ~= p;
-
-                    particles = aliveParticles;
                 }
             );
+
+        particles = aliveParticles;
     }
 }
 
