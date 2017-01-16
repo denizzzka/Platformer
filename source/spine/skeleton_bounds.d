@@ -64,7 +64,12 @@ struct spSkeletonBounds
         foreach(i; 0 .. count)
             ret ~= polygons[i].toString ~ ",\n";
 
-        return "polygons:{\n"~ret~"}";
+        return
+            "minX="~minX.to!string~
+            " minY="~minY.to!string~
+            " maxX="~maxX.to!string~
+            " maxY="~maxY.to!string~
+            " polygons:{\n"~ret~"}\n";
     }
 }
 
