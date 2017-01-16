@@ -69,7 +69,7 @@ class SkeletonData
 
 struct Skin
 {
-    spSkin* skin;
+    spSkin* skin; // TODO: rename to sp_skin
 }
 
 struct Bone
@@ -162,6 +162,11 @@ class SkeletonInstance
         auto ret = spSkeleton_setAttachment(sp_skeleton, slotName.toStringz, attachmentName.toStringz);
 
         enforce(ret != 0, "Slot or attachment is not found");
+    }
+
+    void setSkin(Skin skin)
+    {
+	spSkeleton_setSkin(sp_skeleton, skin.skin);
     }
 }
 
@@ -369,9 +374,9 @@ int spSkeletonData_findBoneIndex (const(spSkeletonData)* self, const(char)* bone
 int spSkeletonData_findSlotIndex (const(spSkeletonData)* self, const(char)* slotName);
 
 spSkeleton* spSkeleton_create (spSkeletonData* data);
-
 void spSkeleton_dispose (spSkeleton* self);
 
 void spSkeleton_setToSetupPose (const(spSkeleton)* self);
+void spSkeleton_setSkin (spSkeleton* self, spSkin* skin);
 spAttachment* spSkeleton_getAttachmentForSlotIndex (const(spSkeleton)* self, int slotIndex, const(char)* attachmentName);
 int spSkeleton_setAttachment (spSkeleton* self, const(char)* slotName, const(char)* attachmentName);

@@ -57,7 +57,6 @@ class Soldier : SceneDamageableObject
         skeletonData = new SkeletonData("resources/animations/actor_pretty.json", atlas);
         SoldierAnimation.init(skeletonData);
 
-        skeletonData.defaultSkin = skeletonData.findSkin("xmas");
         spineHandsBoneIdx = skeletonData.findBoneIndex("root-hands");
         spineHeadBoneIdx = skeletonData.findBoneIndex("head-root");
         spineSlotPrimaryIdx = skeletonData.findSlotIndex("slot-primary");
@@ -67,6 +66,9 @@ class Soldier : SceneDamageableObject
     {
         _scene = placeToScene;
         skeleton = new SkeletonInstanceDrawable(skeletonData);
+
+        skeleton.setSkin(skeletonData.findSkin("xmas"));
+
         skeleton.flipY = true; // FIXME: зависит от направления осей графики
         holderPrimary = skeleton.getSlotByIndex(spineSlotPrimaryIdx);
 
