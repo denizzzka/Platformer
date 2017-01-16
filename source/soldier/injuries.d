@@ -17,16 +17,12 @@ string checkBulletHit(Soldier soldier, in Bullet b)
 
         bounds.update(soldier.skeleton, true);
 
-        import std.stdio;
-
         if(aabbIntersectsSegment(bounds, b.prevPosition, b.position))
         {
             const boundingBox = intersectsSegment(bounds, b.prevPosition, b.position);
 
             if(boundingBox != null)
             {
-                writeln("bb name=", boundingBox._super._super.name.fromStringz.to!string, " ", bounds.toString);
-
                 return boundingBox._super._super.name.fromStringz.to!string;
             }
         }
