@@ -1,39 +1,15 @@
 module particles.bullets;
 
-import particles.storage;
 import particles.faced;
-import math;
 import scene;
-import map;
-import map.segment_intersection;
-import std.typecons: Nullable;
+import math: gfm_dsfml;
 import dsfml.graphics;
 
-class Bullets : ParticlesStorage!Bullet
+class Bullets : PhysParticles!Bullet
 {
-    private Scene scene;
-
     this(Scene sc)
     {
-        scene = sc;
-    }
-
-    void update(float dt)
-    {
-        super.update(dt);
-
-        callForEach(
-                (ref Bullet b)
-                {
-                    auto coll = b.getBlockCollisionCoords(scene.sceneMap);
-
-                    if(!coll.isNull)
-                    {
-                        b.position = coll;
-                        b.markAsRemoved();
-                    }
-                }
-            );
+        super(sc);
     }
 
     void draw(RenderTarget renderTarget, RenderStates renderStates)
