@@ -14,6 +14,8 @@ class Blood : PhysParticles!BloodDrop
 
     void createSpray(vec2f start, vec2f speed)
     {
+        import std.random;
+
         immutable int num = 20;
 
         foreach(i; 0 .. num)
@@ -21,10 +23,15 @@ class Blood : PhysParticles!BloodDrop
             BloodDrop b;
 
             b.position = start;
-            b.speed = speed * 0.2;
-            b.windage = 0.8;
+            b.speed = speed * uniform(0.1f, 0.4f);
+            b.windage = 0.9;
             b.timeToLive = 2;
-            b.distanceToLive = 1000;
+            b.distanceToLive = 300;
+
+            enum halfAngle = PI_4 / 2;
+            float angle = uniform(-halfAngle, halfAngle);
+
+            b.speed = b.speed.rotated(angle);
 
             super.scene.blood.add(b);
         }

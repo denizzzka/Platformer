@@ -181,3 +181,18 @@ unittest
     assert(d2 == d);
     static assert(is(typeof(d2) == const IntRect));
 }
+
+vec2f rotated(vec2f s, float angle)
+{
+    import std.math;
+
+    vec2f ret;
+
+    with(s)
+    {
+        ret.x = x * cos(angle) - y * sin(angle);
+        ret.y = y * cos(angle) + x * sin(angle);
+    }
+
+    return ret;
+}
