@@ -12,6 +12,7 @@ import map;
 import math;
 import controls_reader;
 import scene;
+import bullets.bullet;
 debug(weapons) import std.stdio: writeln;
 
 enum PhysicalState
@@ -27,7 +28,7 @@ enum PhysicalState
     CrawlBackwards,
 }
 
-class Soldier : SceneObject
+class Soldier : SceneDamageableObject
 {
     static public SkeletonData skeletonData;
 
@@ -313,6 +314,13 @@ class Soldier : SceneObject
     vec2f aimingDirection() const
     {
         return _aimingDirection;
+    }
+
+    string checkBulletHit(Bullet b)
+    {
+        import soldier.injuries;
+
+        return this.checkBulletHit(b);
     }
 }
 

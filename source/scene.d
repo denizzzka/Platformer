@@ -30,6 +30,13 @@ interface SceneObject
     void draw(RenderTarget renderTarget, RenderStates renderStates);
 }
 
+interface SceneDamageableObject : SceneObject
+{
+    import bullets: Bullet;
+
+    string checkBulletHit(Bullet b);
+}
+
 class Scene
 {
     private Map _sceneMap;
@@ -47,7 +54,7 @@ class Scene
     {
         _sceneMap = m;
 
-        bullets = new Bullets(_sceneMap);
+        bullets = new Bullets(this);
         frameClock = new Clock();
     }
 

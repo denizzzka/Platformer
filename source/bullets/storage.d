@@ -1,20 +1,19 @@
 module bullets.storage;
 
-import scene: SceneObject;
+import scene;
 import math;
-import map: Map;
 import bullets.bullet;
 import dsfml.graphics;
 
 class Bullets: SceneObject
 {
-    private Map _map;
+    private Scene scene;
 
     private Bullet[] bullets;
 
-    this(Map m)
+    this(Scene sc)
     {
-        _map = m;
+        scene = sc;
     }
 
     void add(Bullet b)
@@ -36,7 +35,7 @@ class Bullets: SceneObject
 
                 b.timeToLive -= dt;
 
-                auto coll = b.getBlockCollisionCoords(_map);
+                auto coll = b.getBlockCollisionCoords(scene.sceneMap);
 
                 if(!coll.isNull)
                 {
