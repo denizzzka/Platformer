@@ -3,6 +3,10 @@ module particles.bullets;
 import particles.storage;
 import math;
 import scene: SceneObject;
+import map;
+import map.segment_intersection;
+import std.typecons: Nullable;
+import dsfml.graphics;
 
 alias Bullets = ParticlesStorage!Bullet;
 
@@ -36,5 +40,21 @@ struct Bullet
         speed *= windage;
 
         speed.y += g_force * dt;
+    }
+
+    Nullable!vec2f getBlockCollisionCoords(in Map m)
+    {
+        return checkBlockCollision(m, prevPosition, position);
+    }
+
+    void draw(ref Bullet b, RenderTarget renderTarget, RenderStates renderStates)
+    {
+        with(b)
+        {
+            Vertex start = prevPosition.gfm_dsfml;
+            Vertex end = position.gfm_dsfml;
+
+            renderTarget.draw([start, end], PrimitiveType.Lines, renderStates);
+        }
     }
 }
