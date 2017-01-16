@@ -3,7 +3,7 @@ module soldier.weapon;
 import spine.skeleton;
 import spine.animation;
 import spine.dsfml;
-import scene: atlas, Scene;
+import scene: atlas, Scene, SceneObject;
 import soldier.soldier: Soldier;
 import soldier.animation;
 import std.container;
@@ -98,7 +98,7 @@ class HoldWeapon
                 soldier.holderPrimary.bone.worldY
             ) + fireSourceOffset;
 
-        weapon.fire(soldier._scene, pos, soldier.speed, soldier.aimingDirection);
+        weapon.fire(soldier._scene, soldier, pos, soldier.speed, soldier.aimingDirection);
 
         soldier.state.setAnimation(1, weapon.fireAnimation, false);
         soldier.state.addAnimation(1, weapon.holdingAnimation, true, 0.0f);
@@ -146,7 +146,7 @@ abstract class BaseWeapon
     AnimationType holdingAnimation() const;
     AnimationType fireAnimation() const;
 
-    void fire(Scene sc, vec2f pos, vec2f launcherSpeed, vec2f dir)
+    void fire(Scene sc, SceneObject owner, vec2f pos, vec2f launcherSpeed, vec2f dir)
     {
         Bullet b;
 
@@ -154,6 +154,7 @@ abstract class BaseWeapon
         b.windage = 0.90;
         b.speed = dir.normalized * 5000;
         b.position = pos;
+        b.owner = owner;
 
         sc.bullets.add(b);
     }
@@ -172,7 +173,7 @@ abstract class Throwing : BaseWeapon
     override AnimationType holdingAnimation() const { return AnimationType.HoldThrowable; }
     override AnimationType fireAnimation() const { return AnimationType.HitThrowable; }
 
-    override void fire(Scene sc, vec2f pos, vec2f speed, vec2f dir)
+    override void fire(Scene sc, SceneObject owner, vec2f pos, vec2f speed, vec2f dir)
     {
         import soldier.grenade: Grenade;
 

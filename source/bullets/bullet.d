@@ -13,6 +13,9 @@ struct Bullet
     vec2f speed = vec2f(1, 1);
     float windage = 1;
     float timeToLive = 10;
+
+    import scene;
+    SceneObject owner;
 }
 
 void doMotion(ref Bullet b, in float dt, in float g_force)

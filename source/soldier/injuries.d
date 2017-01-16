@@ -11,17 +11,24 @@ string checkBulletHit(Soldier soldier, in Bullet b)
     import std.string: fromStringz;
     import std.conv: to;
 
-    auto bounds = new SkeletonBounds;
-
-    bounds.update(soldier.skeleton, true);
-
-    if(aabbIntersectsSegment(bounds, b.prevPosition, b.position))
+    if(b.owner != soldier)
     {
-        const boundingBox = intersectsSegment(bounds, b.prevPosition, b.position);
+        auto bounds = new SkeletonBounds;
 
-        if(boundingBox != null)
+        bounds.update(soldier.skeleton, true);
+
+        import std.stdio;
+
+        if(aabbIntersectsSegment(bounds, b.prevPosition, b.position))
         {
-            return boundingBox._super._super.name.fromStringz.to!string;
+            const boundingBox = intersectsSegment(bounds, b.prevPosition, b.position);
+
+            if(boundingBox != null)
+            {
+                writeln("bb name=", boundingBox._super._super.name.fromStringz.to!string, " ", bounds.toString);
+
+                return boundingBox._super._super.name.fromStringz.to!string;
+            }
         }
     }
 
