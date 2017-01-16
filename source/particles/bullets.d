@@ -12,6 +12,21 @@ class Bullets : PhysParticles!Bullet
         super(sc);
     }
 
+    void checkHit(SceneDamageableObject o)
+    {
+        callForEach(
+            (ref Bullet b)
+            {
+                if(o.checkIfBulletHit(b))
+                {
+                    b.markAsRemoved();
+
+                    super.scene.blood.createSpray(b.position, b.speed);
+                }
+            }
+        );
+    }
+
     void draw(RenderTarget renderTarget, RenderStates renderStates)
     {
         callForEach( (ref Bullet b){ b.draw(renderTarget, renderStates); } );

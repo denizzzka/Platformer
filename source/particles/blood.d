@@ -20,9 +20,11 @@ class Blood : PhysParticles!BloodDrop
         {
             BloodDrop b;
 
-            b.windage = 0.3;
-            b.timeToLive = 1;
-            b.distanceToLive = 200;
+            b.position = start;
+            b.speed = speed * 0.2;
+            b.windage = 0.8;
+            b.timeToLive = 2;
+            b.distanceToLive = 1000;
 
             super.scene.blood.add(b);
         }
@@ -45,6 +47,9 @@ struct BloodDrop
     {
         Vertex start = prevPosition.gfm_dsfml;
         Vertex end = position.gfm_dsfml;
+
+        start.color = Color.Red;
+        end.color = Color.Red;
 
         renderTarget.draw([start, end], PrimitiveType.Lines, renderStates);
     }

@@ -94,24 +94,10 @@ class Scene
         bullets.update(seconds);
 
         foreach(ref o; damageableObjects)
-        {
-            string[] bbName;
+            bullets.checkHit(o);
 
-            bullets.callForEach(
-                    (ref Bullet b)
-                    {
-                        if(o.checkIfBulletHit(b))
-                            b.markAsRemoved();
-                    }
-                );
-
-            if(bbName !is null)
-            {
-                import std.stdio;
-
-                writeln("Hit BB name: ", bbName);
-            }
-        }
+        blood.removeDead();
+        blood.update(seconds);
     }
 
     void draw(RenderWindow wnd, RenderStates renderStates)
@@ -130,6 +116,8 @@ class Scene
 
             foreach(ref o; objects.byKey)
                 o.draw(wnd, renderStates);
+
+            blood.draw(wnd, renderStates);
         }
 
         sceneMap.registerUnitsDrawCallback(&drawUnitsOnMapCallback);
