@@ -28,6 +28,18 @@ class ParticlesStorage(Particle)
     void update(float dt)
     {
         callForEach( (ref Particle p){ p.update(dt); } );
+
+        Particle[] aliveParticles;
+
+        callForEach(
+                (ref Particle p)
+                {
+                    if(!p.isRemoved)
+                        aliveParticles ~= p;
+
+                    particles = aliveParticles;
+                }
+            );
     }
 }
 
