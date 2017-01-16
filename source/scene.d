@@ -46,6 +46,8 @@ class Scene
 
     private SceneObject[] toRemove;
 
+    private SceneDamageableObject[] damageableObjects;
+
     public Bullets bullets;
     private Clock frameClock;
     vec2f currViewPosition = vec2f(0, 0);
@@ -64,6 +66,13 @@ class Scene
     {
         objects[obj] = objectCounter;
         objectCounter++;
+    }
+
+    void addDamageable(SceneDamageableObject o)
+    {
+        add(o);
+
+        damageableObjects ~= o;
     }
 
     void removeBeforeNextDraw(SceneObject obj)

@@ -28,7 +28,7 @@ void main(string[] args)
     auto soldier = new Soldier(testScene);
     soldier.position = vec2f(300, 300);
 
-    testScene.add(soldier);
+    testScene.addDamageable(soldier);
 
     while (window.isOpen())
     {
