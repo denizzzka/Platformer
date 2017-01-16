@@ -123,6 +123,9 @@ class SkeletonInstance
     bool flipX() const { return sp_skeleton.flipX != 0; }
     bool flipY() const { return sp_skeleton.flipY != 0; }
 
+    void x(float x){ sp_skeleton.x = x; }
+    void y(float y){ sp_skeleton.y = y; }
+
     Bone getBoneByIndex(int idx)
     {
         assert(idx >= 0);

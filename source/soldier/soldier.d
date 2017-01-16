@@ -82,6 +82,12 @@ class Soldier : SceneDamageableObject
         weapon = new HoldWeapon(this);
     }
 
+    private void skeletonPosition(vec2f pos)
+    {
+        skeleton.x = pos.x;
+        skeleton.y = pos.y;
+    }
+
     void update(float deltaTime)
     {
         const bool looksToRight = aimingDirection.isRightDirection;
@@ -107,6 +113,8 @@ class Soldier : SceneDamageableObject
         }
 
         applyMotion(acceleration, deltaTime, g_force);
+
+        skeletonPosition = position - renderCenter;
 
         if(movingState != oldPhysicalState)
         {
@@ -214,9 +222,6 @@ class Soldier : SceneDamageableObject
 
     void draw(RenderTarget renderTarget, RenderStates renderStates = RenderStates.Default)
     {
-        auto tr = position - renderCenter;
-        renderStates.transform.translate(tr.x, tr.y);
-
         skeleton.draw(renderTarget, renderStates);
     }
 

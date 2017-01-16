@@ -73,7 +73,7 @@ class HoldWeapon
         weaponsRange.popFront;
     }
 
-    private vec2f fireSourcePoint() const
+    private vec2f fireSourceOffset() const
     {
         import std.math;
 
@@ -93,11 +93,10 @@ class HoldWeapon
 
     void fire()
     {
-        vec2f pos = soldier.position - soldier.renderCenter + // FIXME: зависит от направления осей графики
-            vec2f( // holder coords
+        vec2f pos = vec2f( // holder coords
                 soldier.holderPrimary.bone.worldX,
                 soldier.holderPrimary.bone.worldY
-            ) + fireSourcePoint;
+            ) + fireSourceOffset;
 
         weapon.fire(soldier._scene, pos, soldier.speed, soldier.aimingDirection);
 
