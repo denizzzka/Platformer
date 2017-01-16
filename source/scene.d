@@ -32,7 +32,7 @@ interface SceneObject
 
 interface SceneDamageableObject : SceneObject
 {
-    string checkBulletHit(Bullet b);
+    bool checkIfBulletHit(Bullet b);
 }
 
 class Scene
@@ -95,10 +95,11 @@ class Scene
             bullets.callForEach(
                     (ref Bullet b)
                     {
-                        auto s = o.checkBulletHit(b);
-
-                        if(s !is null)
-                            bbName ~= o.checkBulletHit(b);
+                        if(o.checkIfBulletHit(b))
+                        {
+                            b.speed = vec2f(0, 0);
+                            b.timeToLive = 0;
+                        }
                     }
                 );
 

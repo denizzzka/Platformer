@@ -323,11 +323,11 @@ class Soldier : SceneDamageableObject
         return _aimingDirection;
     }
 
-    string checkBulletHit(Bullet b)
+    bool checkIfBulletHit(Bullet b)
     {
         import soldier.injuries;
 
-        return soldier.injuries.checkBulletHit(this, b);
+        return checkBulletHit(this, b) !is null;
     }
 }
 

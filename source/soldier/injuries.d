@@ -6,7 +6,7 @@ import spine.skeleton_bounds;
 import math;
 
 /// returns bounding box name or null
-string checkBulletHit(Soldier soldier, in Bullet b)
+package string checkBulletHit(Soldier soldier, in Bullet b)
 {
     import std.string: fromStringz;
     import std.conv: to;
