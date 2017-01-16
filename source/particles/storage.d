@@ -28,6 +28,10 @@ class ParticlesStorage(Particle)
     void update(A...)(A a)
     {
         callForEach( (ref Particle p){ p.update(a); } );
+    }
+
+    void removeDead()
+    {
 
         Particle[] aliveParticles;
 

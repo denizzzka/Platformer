@@ -17,6 +17,23 @@ class Bullets : ParticlesStorage!Bullet
         scene = sc;
     }
 
+    void update(float dt)
+    {
+        super.update(dt);
+
+        callForEach(
+                (ref Bullet b)
+                {
+                    auto coll = b.getBlockCollisionCoords(scene.sceneMap);
+
+                    if(!coll.isNull)
+                        b.markAsRemoved();
+                }
+            );
+
+        super.removeDead();
+    }
+
     void draw(RenderTarget renderTarget, RenderStates renderStates)
     {
         callForEach( (ref Bullet b){ b.draw(renderTarget, renderStates); } );
@@ -41,7 +58,7 @@ struct Bullet
 
     bool isRemoved()
     {
-        return timeToLive == 0 && speed == vec2f(0, 0);
+        return timeToLive == 0;
     }
 
     void update(float dt)
