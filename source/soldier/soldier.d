@@ -320,7 +320,7 @@ class Soldier : SceneDamageableObject
     {
         import soldier.injuries;
 
-        return this.checkBulletHit(b);
+        return soldier.injuries.checkBulletHit(this, b);
     }
 }
 

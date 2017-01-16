@@ -8,7 +8,7 @@ import map;
 import math: vec2f;
 import core.time: to;
 import std.conv: to;
-import bullets: Bullets;
+import bullets;
 
 static Atlas atlas()
 {
@@ -32,8 +32,6 @@ interface SceneObject
 
 interface SceneDamageableObject : SceneObject
 {
-    import bullets: Bullet;
-
     string checkBulletHit(Bullet b);
 }
 
@@ -89,6 +87,20 @@ class Scene
             o.update(seconds);
 
         bullets.update(seconds);
+
+        foreach(ref o; damageableObjects)
+        {
+            string bbName = null;
+
+            bullets.callForEach( (ref Bullet b){ bbName = o.checkBulletHit(b); } );
+
+            if(bbName !is null)
+            {
+                import std.stdio;
+
+                writeln("Hit BB name: ", bbName);
+            }
+        }
     }
 
     void draw(RenderWindow wnd, RenderStates renderStates)

@@ -21,6 +21,12 @@ class Bullets: SceneObject
         bullets ~= b;
     }
 
+    void callForEach(void delegate(ref Bullet b) dg)
+    {
+        foreach(ref b; bullets)
+            dg(b);
+    }
+
     void update(float dt)
     {
         const float g_force = 1200.0f; // FIXME: это нужно хранить в сцене
