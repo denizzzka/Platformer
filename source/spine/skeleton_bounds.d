@@ -38,6 +38,11 @@ class SkeletonBounds
     {
         return spSkeletonBounds_intersectsSegment(sp_skeletonBounds, x1, y1, x2, y2);
     }
+
+    debug override string toString() const
+    {
+        return sp_skeletonBounds.toString();
+    }
 }
 
 extern(C):
@@ -49,6 +54,18 @@ struct spSkeletonBounds
 	spPolygon** polygons;
 
 	float minX, minY, maxX, maxY;
+
+    debug string toString() const
+    {
+        import std.conv: to;
+
+        string ret;
+
+        foreach(i; 0 .. count)
+            ret ~= polygons[i].toString ~ ",\n";
+
+        return "polygons:{\n"~ret~"}";
+    }
 }
 
 struct spBoundingBoxAttachment
@@ -60,7 +77,24 @@ struct spBoundingBoxAttachment
 
 private:
 
-struct spPolygon;
+struct spPolygon
+{
+	const(float)* vertices;
+	int count;
+	int capacity;
+
+    debug string toString() const
+    {
+        import std.conv: to;
+
+        string ret;
+
+        foreach(i; 0 .. count)
+            ret ~= vertices[i].to!string ~ ",";
+
+        return "["~ret~"], capacity: "~capacity.to!string;
+    }
+}
 
 spSkeletonBounds* spSkeletonBounds_create ();
 void spSkeletonBounds_dispose (spSkeletonBounds* self);
