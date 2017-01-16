@@ -8,7 +8,7 @@ import map;
 import math: vec2f;
 import core.time: to;
 import std.conv: to;
-import bullets;
+import particles.bullets;
 
 static Atlas atlas()
 {
@@ -86,6 +86,7 @@ class Scene
         foreach(ref o; objects.byKey)
             o.update(seconds);
 
+        bullets.removeDead();
         bullets.update(seconds);
 
         foreach(ref o; damageableObjects)
@@ -96,10 +97,7 @@ class Scene
                     (ref Bullet b)
                     {
                         if(o.checkIfBulletHit(b))
-                        {
-                            b.speed = vec2f(0, 0);
-                            b.timeToLive = 0;
-                        }
+                            b.markAsRemoved();
                     }
                 );
 

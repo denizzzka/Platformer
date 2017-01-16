@@ -89,7 +89,7 @@ class Grenade : PhysicalObjectBase, SceneObject
 
         for(float a = 0; a < 2 * PI; a += 2 * PI / splintersNum)
         {
-            import bullets;
+            import particles.bullets: Bullet;
 
             vec2f dir;
 

@@ -27,11 +27,12 @@ class Bullets : ParticlesStorage!Bullet
                     auto coll = b.getBlockCollisionCoords(scene.sceneMap);
 
                     if(!coll.isNull)
+                    {
+                        b.position = coll;
                         b.markAsRemoved();
+                    }
                 }
             );
-
-        super.removeDead();
     }
 
     void draw(RenderTarget renderTarget, RenderStates renderStates)
@@ -53,12 +54,11 @@ struct Bullet
     void markAsRemoved()
     {
         timeToLive = 0;
-        speed = vec2f(0, 0);
     }
 
     bool isRemoved()
     {
-        return timeToLive == 0;
+        return timeToLive <= 0;
     }
 
     void update(float dt)
@@ -70,6 +70,8 @@ struct Bullet
         speed *= windage;
 
         speed.y += g_force * dt;
+
+        timeToLive -= dt;
     }
 
     Nullable!vec2f getBlockCollisionCoords(in Map m)

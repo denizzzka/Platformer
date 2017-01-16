@@ -8,7 +8,6 @@ import soldier.soldier: Soldier;
 import soldier.animation;
 import std.container;
 import std.range;
-import bullets;
 debug import std.stdio: writeln;
 import math: vec2f;
 
@@ -148,6 +147,8 @@ abstract class BaseWeapon
 
     void fire(Scene sc, SceneObject owner, vec2f pos, vec2f launcherSpeed, vec2f dir)
     {
+        import particles.bullets: Bullet;
+
         Bullet b;
 
         b.timeToLive = 10;
