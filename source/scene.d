@@ -90,9 +90,17 @@ class Scene
 
         foreach(ref o; damageableObjects)
         {
-            string bbName = null;
+            string[] bbName;
 
-            bullets.callForEach( (ref Bullet b){ bbName = o.checkBulletHit(b); } );
+            bullets.callForEach(
+                    (ref Bullet b)
+                    {
+                        auto s = o.checkBulletHit(b);
+
+                        if(s !is null)
+                            bbName ~= o.checkBulletHit(b);
+                    }
+                );
 
             if(bbName !is null)
             {

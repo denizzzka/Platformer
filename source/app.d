@@ -26,7 +26,7 @@ void main(string[] args)
     auto testMap = new Map("test_map/map_1");
     auto testScene = new Scene(testMap);
     auto soldier = new Soldier(testScene);
-    soldier.position = vec2f(300, 300);
+    soldier.position = vec2f(500, 100);
 
     testScene.addDamageable(soldier);
 
