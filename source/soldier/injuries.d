@@ -1,7 +1,7 @@
 module soldier.injuries;
 
 import soldier.soldier;
-import particles.bullets: Bullet;
+import bullets: Bullet;
 import spine.skeleton_bounds;
 import math;
 

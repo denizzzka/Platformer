@@ -8,7 +8,7 @@ import map;
 import math: vec2f;
 import core.time: to;
 import std.conv: to;
-import particles.bullets;
+import bullets;
 
 static Atlas atlas()
 {

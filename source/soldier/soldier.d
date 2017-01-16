@@ -12,7 +12,7 @@ import map;
 import math;
 import controls_reader;
 import scene;
-import particles.bullets;
+import bullets;
 debug(weapons) import std.stdio: writeln;
 
 enum PhysicalState

@@ -147,7 +147,7 @@ abstract class BaseWeapon
 
     void fire(Scene sc, SceneObject owner, vec2f pos, vec2f launcherSpeed, vec2f dir)
     {
-        import particles.bullets: Bullet;
+        import bullets: Bullet;
 
         Bullet b;
 

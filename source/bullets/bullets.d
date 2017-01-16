@@ -1,4 +1,4 @@
-module particles.bullets;
+module bullets;
 
 import particles.storage;
 import math;
