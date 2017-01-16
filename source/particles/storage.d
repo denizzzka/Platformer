@@ -25,9 +25,9 @@ class ParticlesStorage(Particle)
             dg(p);
     }
 
-    void update(float dt)
+    void update(A...)(A a)
     {
-        callForEach( (ref Particle p){ p.update(dt); } );
+        callForEach( (ref Particle p){ p.update(a); } );
 
         Particle[] aliveParticles;
 
@@ -51,8 +51,10 @@ unittest
 
         void markAsRemoved(){ removed = true; }
         bool isRemoved(){ return removed; }
-        void update(float dt){}
+        void update(float a, int b){ assert(a == 1); assert(b == 2); }
     }
 
     auto ps = new ParticlesStorage!DumbParticle;
+    ps.add(DumbParticle());
+    ps.update(1, 2);
 }
