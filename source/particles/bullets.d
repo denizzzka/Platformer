@@ -2,13 +2,26 @@ module particles.bullets;
 
 import particles.storage;
 import math;
-import scene: SceneObject;
+import scene;
 import map;
 import map.segment_intersection;
 import std.typecons: Nullable;
 import dsfml.graphics;
 
-alias Bullets = ParticlesStorage!Bullet;
+class Bullets : ParticlesStorage!Bullet
+{
+    private Scene scene;
+
+    this(Scene sc)
+    {
+        scene = sc;
+    }
+
+    void draw(RenderTarget renderTarget, RenderStates renderStates)
+    {
+        callForEach( (ref Bullet b){ b.draw(renderTarget, renderStates); } );
+    }
+}
 
 struct Bullet
 {
@@ -47,14 +60,11 @@ struct Bullet
         return checkBlockCollision(m, prevPosition, position);
     }
 
-    void draw(ref Bullet b, RenderTarget renderTarget, RenderStates renderStates)
+    void draw(RenderTarget renderTarget, RenderStates renderStates)
     {
-        with(b)
-        {
-            Vertex start = prevPosition.gfm_dsfml;
-            Vertex end = position.gfm_dsfml;
+        Vertex start = prevPosition.gfm_dsfml;
+        Vertex end = position.gfm_dsfml;
 
-            renderTarget.draw([start, end], PrimitiveType.Lines, renderStates);
-        }
+        renderTarget.draw([start, end], PrimitiveType.Lines, renderStates);
     }
 }
