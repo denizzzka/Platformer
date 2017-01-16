@@ -40,7 +40,7 @@ class SkeletonBounds
     }
 }
 
-private extern(C):
+extern(C):
 
 struct spSkeletonBounds
 {
@@ -51,7 +51,15 @@ struct spSkeletonBounds
 	float minX, minY, maxX, maxY;
 }
 
-struct spBoundingBoxAttachment;
+struct spBoundingBoxAttachment
+{
+    import spine.atlas: spVertexAttachment;
+
+    spVertexAttachment _super;
+}
+
+private:
+
 struct spPolygon;
 
 spSkeletonBounds* spSkeletonBounds_create ();
