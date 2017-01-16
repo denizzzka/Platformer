@@ -60,7 +60,7 @@ struct FacedParticle
 
         prevPosition = position;
         position += speed * dt;
-        speed *= windage;
+        speed -= speed * windage * dt;
 
         speed.y += g_force * dt;
 
