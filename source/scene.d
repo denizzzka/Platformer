@@ -9,6 +9,7 @@ import math: vec2f;
 import core.time: to;
 import std.conv: to;
 import particles.bullets;
+import particles.blood;
 
 static Atlas atlas()
 {
@@ -47,6 +48,8 @@ class Scene
     private SceneDamageableObject[] damageableObjects;
 
     public Bullets bullets;
+    public Blood blood;
+
     private Clock frameClock;
     vec2f currViewPosition = vec2f(0, 0);
 
@@ -55,6 +58,7 @@ class Scene
         _sceneMap = m;
 
         bullets = new Bullets(this);
+        blood = new Blood(this);
         frameClock = new Clock();
     }
 

@@ -9,7 +9,7 @@ import std.typecons: Nullable;
 /// Theese particles can collide with scene objects
 class PhysParticles(Particle) : ParticlesStorage!Particle
 {
-    private Scene scene;
+    package Scene scene;
 
     this(Scene sc)
     {
