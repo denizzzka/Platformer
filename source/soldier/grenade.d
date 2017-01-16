@@ -99,6 +99,7 @@ class Grenade : PhysicalObjectBase, SceneObject
             Bullet b;
 
             b.timeToLive = 2;
+            b.distanceToLive = 100;
             b.windage = 0.90;
             b.speed = dir * 1000;
             b.position = position;

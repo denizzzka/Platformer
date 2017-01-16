@@ -42,6 +42,7 @@ struct FacedParticle
     vec2f speed = vec2f(1, 1);
     float windage = 1;
     float timeToLive = 10;
+    float distanceToLive = 10000;
 
     void markAsRemoved()
     {
@@ -50,7 +51,7 @@ struct FacedParticle
 
     bool isRemoved()
     {
-        return timeToLive <= 0;
+        return timeToLive <= 0 || distanceToLive <= 0;
     }
 
     void update(float dt)
@@ -64,6 +65,7 @@ struct FacedParticle
         speed.y += g_force * dt;
 
         timeToLive -= dt;
+        distanceToLive -= (position - prevPosition).length;
     }
 
     Nullable!vec2f getBlockCollisionCoords(in Map m)
