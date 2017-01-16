@@ -5,6 +5,7 @@ import scene;
 import math;
 import dsfml.graphics;
 import std.random;
+import std.conv: to;
 
 class Blood : PhysParticles!BloodDrop
 {
@@ -15,19 +16,20 @@ class Blood : PhysParticles!BloodDrop
 
     void createSpray(vec2f start, vec2f speed)
     {
-        immutable int num = 20;
+        immutable int num = 50;
 
         foreach(i; 0 .. num)
         {
             BloodDrop b;
 
             b.position = start;
-            b.speed = speed * uniform(0.1f, 0.4f);
-            b.windage = 0.9;
+            b.color = Color(uniform(100, 255).to!ubyte, 0, 0);
+            b.speed = speed * uniform(0.7f, 1.0f) * 0.15;
+            b.windage = 0.97;
             b.timeToLive = 2;
             b.distanceToLive = 300;
 
-            enum halfAngle = PI_4 / 2;
+            enum halfAngle = PI_4 / 6;
             float angle = uniform(-halfAngle, halfAngle);
 
             b.speed = b.speed.rotated(angle);
