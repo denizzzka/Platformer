@@ -96,8 +96,8 @@ class Scene
         foreach(ref o; damageableObjects)
             bullets.checkHit(o);
 
-        blood.removeDead();
         blood.update(seconds);
+        blood.removeDead();
     }
 
     void draw(RenderWindow wnd, RenderStates renderStates)

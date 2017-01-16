@@ -4,6 +4,7 @@ import particles.faced;
 import scene;
 import math;
 import dsfml.graphics;
+import std.random;
 
 class Blood : PhysParticles!BloodDrop
 {
@@ -14,8 +15,6 @@ class Blood : PhysParticles!BloodDrop
 
     void createSpray(vec2f start, vec2f speed)
     {
-        import std.random;
-
         immutable int num = 20;
 
         foreach(i; 0 .. num)
@@ -48,16 +47,18 @@ struct BloodDrop
     FacedParticle _super;
     alias _super this;
 
-    SceneObject owner;
+    Color color = Color.Red;
 
     void draw(RenderTarget renderTarget, RenderStates renderStates)
     {
-        Vertex start = prevPosition.gfm_dsfml;
-        Vertex end = position.gfm_dsfml;
+        immutable size = vec2f(2, 2).gfm_dsfml;
 
-        start.color = Color.Red;
-        end.color = Color.Red;
+        auto r = new RectangleShape(size);
 
-        renderTarget.draw([start, end], PrimitiveType.Lines, renderStates);
+        r.position = position.gfm_dsfml;
+        r.fillColor = color;
+        r.outlineColor = color;
+
+        r.draw(renderTarget, renderStates);
     }
 }
