@@ -145,23 +145,35 @@ abstract class BaseWeapon
     AnimationType holdingAnimation() const;
     AnimationType fireAnimation() const;
 
-    void shot(Scene sc, SceneObject owner, vec2f pos, vec2f launcherSpeed, vec2f dir)
+    void shot(Scene sc, SceneObject owner, vec2f pos, vec2f launcherSpeed, vec2f dir);
+}
+
+abstract class BaseGun : BaseWeapon
+{
+    private bool canShoot = true;
+
+    override void shot(Scene sc, SceneObject owner, vec2f pos, vec2f launcherSpeed, vec2f dir)
     {
         import particles.bullets: Bullet;
 
-        Bullet b;
+        if(canShoot)
+        {
+            Bullet b;
 
-        b.timeToLive = 10;
-        b.windage = 0.90;
-        b.speed = dir.normalized * 5000;
-        b.position = pos;
-        b.owner = owner;
+            b.timeToLive = 10;
+            b.windage = 0.90;
+            b.speed = dir.normalized * 5000;
+            b.position = pos;
+            b.owner = owner;
 
-        sc.bullets.add(b);
+            sc.bullets.add(b);
+
+            canShoot = false;
+        }
     }
 }
 
-abstract class HandGun : BaseWeapon
+abstract class HandGun : BaseGun
 {
     override HoldType holdType() const { return HoldType.HANDGUN; }
     override AnimationType holdingAnimation() const { return AnimationType.HoldWeapon1Hand; }
@@ -182,7 +194,7 @@ abstract class Throwing : BaseWeapon
     }
 }
 
-class Ak74 : BaseWeapon
+class Ak74 : BaseGun
 {
     this()
     {
