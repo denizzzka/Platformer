@@ -281,6 +281,8 @@ class Ak74 : BaseGun
 
 class Colt : HandGun
 {
+    private Sound[] fireSounds;
+
     this()
     {
         skeletonData = new SkeletonData("resources/animations/weapon-colt.json", atlas);
@@ -289,6 +291,9 @@ class Colt : HandGun
 
         skeleton = new SkeletonInstanceDrawable(skeletonData);
         state = new AnimationStateInstance(stateData);
+
+        foreach(i; 1 .. 7)
+            fireSounds ~= loadSound("resources/sounds/colt-shoot-"~i.to!string~".flac");
     }
 
     override Colt createInstanceOfWeapon()
@@ -296,6 +301,16 @@ class Colt : HandGun
         auto ret = new Colt;
 
         return ret;
+    }
+
+    override void shot(Scene sc, SceneObject owner, vec2f pos, vec2f speed, vec2f dir)
+    {
+        import std.random;
+
+        super.shot(sc, owner, pos, speed, dir);
+
+        size_t soundNum = uniform(0, fireSounds.length);
+        fireSounds[soundNum].play();
     }
 }
 
