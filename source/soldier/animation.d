@@ -32,6 +32,7 @@ enum AnimationType : AnimationProperty
     HitThrowable = AnimationProperty("hit-throwable", 0.0),
 
     Reload2Hands1 = AnimationProperty("reload-2hands-1", 0.2),
+    Reload2Hands2 = AnimationProperty("reload-2hands-2", 0.2),
 }
 
 private struct AvailableAnimation

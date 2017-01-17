@@ -10,6 +10,8 @@ import std.container;
 import std.range;
 debug import std.stdio: writeln;
 import math: vec2f;
+import sound.library;
+import std.conv: to;
 
 class HoldWeapon
 {
@@ -43,7 +45,13 @@ class HoldWeapon
 
     void beginReload()
     {
-        soldier.state.setAnimation(1, AnimationType.Reload2Hands1, false);
+        if(weapon.isReloadable)
+        {
+            auto reloadableGun = cast(BaseGun) weapon;
+
+            reloadableGun.reload();
+            soldier.state.setAnimation(1, reloadableGun.reloadAnimation, false);
+        }
     }
 
     private void changeWeapon(BaseWeapon weapon)
@@ -147,6 +155,7 @@ abstract class BaseWeapon
     BaseWeapon createInstanceOfWeapon();
 
     HoldType holdType() const;
+    bool isReloadable() const;
 
     AnimationType holdingAnimation() const;
     AnimationType fireAnimation() const;
@@ -158,6 +167,14 @@ abstract class BaseWeapon
 abstract class BaseGun : BaseWeapon
 {
     private float prevShootTime = -float.infinity;
+    private Sound reloadSound;
+
+    this()
+    {
+        reloadSound = loadSound("resources/sounds/ak74-reload.flac");
+    }
+
+    override bool isReloadable() const { return true; }
 
     override bool canShot(float currentTime) const
     {
@@ -180,6 +197,13 @@ abstract class BaseGun : BaseWeapon
 
         prevShootTime = sc.currentTime;
     }
+
+    void reload()
+    {
+        reloadSound.play();
+    }
+
+    AnimationType reloadAnimation() const { return AnimationType.Reload2Hands1; }
 }
 
 abstract class HandGun : BaseGun
@@ -187,10 +211,12 @@ abstract class HandGun : BaseGun
     override HoldType holdType() const { return HoldType.HANDGUN; }
     override AnimationType holdingAnimation() const { return AnimationType.HoldWeapon1Hand; }
     override AnimationType fireAnimation() const { return AnimationType.ShotHoldWeapon1Hand; }
+    override AnimationType reloadAnimation() const { return AnimationType.Reload2Hands2; }
 }
 
 abstract class Throwing : BaseWeapon
 {
+    override bool isReloadable() const { return false; }
     override HoldType holdType() const { return HoldType.THROWABLE; }
     override AnimationType holdingAnimation() const { return AnimationType.HoldThrowable; }
     override AnimationType fireAnimation() const { return AnimationType.HitThrowable; }
@@ -205,9 +231,6 @@ abstract class Throwing : BaseWeapon
 
 class Ak74 : BaseGun
 {
-    import sound.library;
-    import std.conv: to;
-
     private Sound[] fireSounds;
 
     this()
