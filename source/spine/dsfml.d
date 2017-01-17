@@ -6,8 +6,8 @@ import spine.skeleton_attach;
 import spine.animation;
 import dsfml.graphics;
 import dsfml.graphics.drawable;
+import std.conv: to;
 debug import std.math: isNaN;
-debug import std.conv: to;
 debug import std.stdio;
 
 enum SPINE_MESH_VERTEX_COUNT_MAX = 1000;

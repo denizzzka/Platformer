@@ -349,9 +349,12 @@ abstract class PhysicalObjectBase
 
     private CollisionState checkCollision(vec2i startTile, vec2i endTile, out vec2i blameTileCoords) const
     {
-        version(assert) auto dir = endTile - startTile;
-        assert(dir.x >= 0);
-        assert(dir.y >= 0);
+        version(assert)
+        {
+            auto dir = endTile - startTile;
+            assert(dir.x >= 0);
+            assert(dir.y >= 0);
+        }
 
         PhysLayer.TileType ret = PhysLayer.TileType.Empty;
 
