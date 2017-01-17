@@ -206,8 +206,9 @@ abstract class Throwing : BaseWeapon
 class Ak74 : BaseGun
 {
     import sound.library;
+    import std.conv: to;
 
-    private Sound fireSound;
+    private Sound[] fireSounds;
 
     this()
     {
@@ -218,7 +219,8 @@ class Ak74 : BaseGun
         skeleton = new SkeletonInstanceDrawable(skeletonData);
         state = new AnimationStateInstance(stateData);
 
-        fireSound = loadSound("resources/sounds/ak74-shoot-2.flac");
+        foreach(i; 1 .. 7)
+            fireSounds ~= loadSound("resources/sounds/ak74-shoot-"~i.to!string~".flac");
     }
 
     override Ak74 createInstanceOfWeapon()
@@ -234,9 +236,12 @@ class Ak74 : BaseGun
 
     override void shot(Scene sc, SceneObject owner, vec2f pos, vec2f speed, vec2f dir)
     {
+        import std.random;
+
         super.shot(sc, owner, pos, speed, dir);
 
-        fireSound.play();
+        size_t soundNum = uniform(0, fireSounds.length);
+        fireSounds[soundNum].play();
     }
 }
 
