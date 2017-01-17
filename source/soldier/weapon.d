@@ -214,6 +214,11 @@ abstract class HandGun : BaseGun
         reloadSound = loadSound("resources/sounds/ak74-reload-fast.flac");
     }
 
+    override bool canShot(float currentTime) const
+    {
+        return prevShootTime + 0.2 <= currentTime;
+    }
+
     override void reload()
     {
         reloadSound.play();
