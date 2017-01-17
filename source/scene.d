@@ -53,6 +53,8 @@ class Scene
     private Clock frameClock;
     vec2f currViewPosition = vec2f(0, 0);
 
+    private float _currentTime = 0;
+
     this(Map m)
     {
         _sceneMap = m;
@@ -98,6 +100,8 @@ class Scene
 
         blood.update(seconds);
         blood.removeDead();
+
+        _currentTime += seconds;
     }
 
     void draw(RenderWindow wnd, RenderStates renderStates)
@@ -122,5 +126,10 @@ class Scene
 
         sceneMap.registerUnitsDrawCallback(&drawUnitsOnMapCallback);
         sceneMap.draw(wnd, currViewPosition);
+    }
+
+    float currentTime() const
+    {
+        return _currentTime;
     }
 }

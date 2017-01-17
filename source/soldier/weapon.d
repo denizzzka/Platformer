@@ -150,13 +150,13 @@ abstract class BaseWeapon
 
 abstract class BaseGun : BaseWeapon
 {
-    private bool canShoot = true;
+    private float prevShootTime = -float.infinity;
 
     override void shot(Scene sc, SceneObject owner, vec2f pos, vec2f launcherSpeed, vec2f dir)
     {
         import particles.bullets: Bullet;
 
-        if(canShoot)
+        if(prevShootTime + 0.1 <= sc.currentTime)
         {
             Bullet b;
 
@@ -168,7 +168,7 @@ abstract class BaseGun : BaseWeapon
 
             sc.bullets.add(b);
 
-            canShoot = false;
+            prevShootTime = sc.currentTime;
         }
     }
 }
