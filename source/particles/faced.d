@@ -2,6 +2,7 @@ module particles.faced;
 
 import particles.storage;
 import scene;
+import math;
 import map: Map;
 import map.segment_intersection;
 import std.typecons: Nullable;
