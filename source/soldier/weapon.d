@@ -161,7 +161,7 @@ abstract class BaseWeapon
     AnimationType holdingAnimation() const;
     AnimationType fireAnimation() const;
 
-    bool canShot(float currentTime) const { return true; }
+    bool canShot(float currentTime) const;
     void shot(Scene sc, SceneObject owner, vec2f pos, vec2f launcherSpeed, vec2f dir);
 }
 
@@ -232,16 +232,25 @@ abstract class HandGun : BaseGun
 
 abstract class Throwing : BaseWeapon
 {
+    private float prevShootTime = -float.infinity; // TODO: временно, чтобы исключить "дребезг" бросков гранат 
+
     override bool isReloadable() const { return false; }
     override HoldType holdType() const { return HoldType.THROWABLE; }
     override AnimationType holdingAnimation() const { return AnimationType.HoldThrowable; }
     override AnimationType fireAnimation() const { return AnimationType.HitThrowable; }
+
+    override bool canShot(float currentTime) const
+    {
+        return prevShootTime + 0.3 <= currentTime;
+    }
 
     override void shot(Scene sc, SceneObject owner, vec2f pos, vec2f speed, vec2f dir)
     {
         import soldier.grenade: Grenade;
 
         auto g = new Grenade(sc, pos, speed, dir);
+
+        prevShootTime = sc.currentTime;
     }
 }
 
