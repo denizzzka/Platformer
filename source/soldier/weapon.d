@@ -51,6 +51,7 @@ class HoldWeapon
 
             reloadableGun.reload();
             soldier.state.setAnimation(1, reloadableGun.reloadAnimation, false);
+            soldier.state.addAnimation(1, reloadableGun.holdingAnimation, false, 0);
         }
     }
 
@@ -221,7 +222,7 @@ abstract class HandGun : BaseGun
     override HoldType holdType() const { return HoldType.HANDGUN; }
     override AnimationType holdingAnimation() const { return AnimationType.HoldWeapon1Hand; }
     override AnimationType fireAnimation() const { return AnimationType.ShotHoldWeapon1Hand; }
-    override AnimationType reloadAnimation() const { return AnimationType.Reload2Hands2; }
+    override AnimationType reloadAnimation() const { return AnimationType.Reload2Hands1; }
 }
 
 abstract class Throwing : BaseWeapon

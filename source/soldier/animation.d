@@ -73,6 +73,9 @@ class SoldierAnimation
                     ShotHoldWeapon2Hands,
                     ShotHoldWeapon1Hand,
                     HitThrowable,
+
+                    Reload2Hands1,
+                    Reload2Hands2,
                 ];
 
             mixAnimationsWithEachOther(stayAnimations);
