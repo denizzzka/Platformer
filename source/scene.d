@@ -118,10 +118,10 @@ class Scene
         {
             bullets.draw(wnd, renderStates);
 
+            blood.draw(wnd, renderStates);
+
             foreach(ref o; objects.byKey)
                 o.draw(wnd, renderStates);
-
-            blood.draw(wnd, renderStates);
         }
 
         sceneMap.registerUnitsDrawCallback(&drawUnitsOnMapCallback);
