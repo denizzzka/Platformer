@@ -7,6 +7,7 @@ import spine.skeleton;
 import spine.animation;
 import spine.dsfml;
 import dsfml.graphics;
+import sound.library;
 
 class Grenade : PhysicalObjectBase, SceneObject
 {
@@ -21,6 +22,8 @@ class Grenade : PhysicalObjectBase, SceneObject
     private AnimationStateInstance state;
 
     private float rotationSpeed;
+
+    private Sound explosionSound;
 
     this(Scene sc, vec2f startPosition, vec2f launcherSpeed, vec2f direction)
     {
@@ -42,6 +45,8 @@ class Grenade : PhysicalObjectBase, SceneObject
             skeleton = new SkeletonInstanceDrawable(skeletonData);
             state = new AnimationStateInstance(stateData);
         }
+
+        explosionSound = loadSound("resources/sounds/explosion.flac");
     }
 
     override float rebound() const { return 0.45; }
@@ -106,6 +111,8 @@ class Grenade : PhysicalObjectBase, SceneObject
 
             scene.bullets.add(b);
         }
+
+        explosionSound.play();
     }
 
     void draw(RenderTarget renderTarget, RenderStates renderStates)
