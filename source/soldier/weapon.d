@@ -208,6 +208,16 @@ abstract class BaseGun : BaseWeapon
 
 abstract class HandGun : BaseGun
 {
+    this()
+    {
+        reloadSound = loadSound("resources/sounds/ak74-reload-fast.flac");
+    }
+
+    override void reload()
+    {
+        reloadSound.play();
+    }
+
     override HoldType holdType() const { return HoldType.HANDGUN; }
     override AnimationType holdingAnimation() const { return AnimationType.HoldWeapon1Hand; }
     override AnimationType fireAnimation() const { return AnimationType.ShotHoldWeapon1Hand; }
