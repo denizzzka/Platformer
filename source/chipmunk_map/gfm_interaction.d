@@ -5,9 +5,6 @@ import dchip.all;
 import std.traits;
 
 /// gfm and chipmunk interaction
-/// params:
-/// Vs - source vector
-/// Vr - result vector
 auto gfm_chip(Vs)(Vs s)
 if(
     is(Vs == cpVect) ||
