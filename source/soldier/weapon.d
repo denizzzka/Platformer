@@ -205,6 +205,10 @@ abstract class Throwing : BaseWeapon
 
 class Ak74 : BaseGun
 {
+    import sound.library;
+
+    private Sound fireSound;
+
     this()
     {
         skeletonData = new SkeletonData("resources/animations/weapon-ak74.json", atlas);
@@ -213,6 +217,8 @@ class Ak74 : BaseGun
 
         skeleton = new SkeletonInstanceDrawable(skeletonData);
         state = new AnimationStateInstance(stateData);
+
+        fireSound = loadSound("resources/sounds/ak74-shoot-2.flac");
     }
 
     override Ak74 createInstanceOfWeapon()
@@ -225,6 +231,13 @@ class Ak74 : BaseGun
     override HoldType holdType() const { return HoldType.TWO_HANDS; }
     override AnimationType holdingAnimation() const { return AnimationType.HoldWeapon2Hands; }
     override AnimationType fireAnimation() const { return AnimationType.ShotHoldWeapon2Hands; }
+
+    override void shot(Scene sc, SceneObject owner, vec2f pos, vec2f speed, vec2f dir)
+    {
+        super.shot(sc, owner, pos, speed, dir);
+
+        fireSound.play();
+    }
 }
 
 class Colt : HandGun
