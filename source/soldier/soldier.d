@@ -311,7 +311,7 @@ class Soldier : SceneDamageableObject
 
             if(Mouse.isButtonPressed(Mouse.Button.Left))
             {
-                weapon.shot();
+                weapon.fire();
             }
         }
 

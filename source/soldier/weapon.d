@@ -90,7 +90,13 @@ class HoldWeapon
         return ret;
     }
 
-    void shot()
+    void fire()
+    {
+        if(weapon.canShot(soldier._scene.currentTime))
+            shot();
+    }
+
+    private void shot()
     {
         vec2f pos = vec2f( // holder coords
                 soldier.holderPrimary.bone.worldX,
@@ -145,6 +151,7 @@ abstract class BaseWeapon
     AnimationType holdingAnimation() const;
     AnimationType fireAnimation() const;
 
+    bool canShot(float currentTime) const { return true; }
     void shot(Scene sc, SceneObject owner, vec2f pos, vec2f launcherSpeed, vec2f dir);
 }
 
@@ -152,24 +159,26 @@ abstract class BaseGun : BaseWeapon
 {
     private float prevShootTime = -float.infinity;
 
+    override bool canShot(float currentTime) const
+    {
+        return prevShootTime + 0.1 <= currentTime;
+    }
+
     override void shot(Scene sc, SceneObject owner, vec2f pos, vec2f launcherSpeed, vec2f dir)
     {
         import particles.bullets: Bullet;
 
-        if(prevShootTime + 0.1 <= sc.currentTime)
-        {
-            Bullet b;
+        Bullet b;
 
-            b.timeToLive = 10;
-            b.windage = 0.90;
-            b.speed = dir.normalized * 5000;
-            b.position = pos;
-            b.owner = owner;
+        b.timeToLive = 10;
+        b.windage = 0.90;
+        b.speed = dir.normalized * 5000;
+        b.position = pos;
+        b.owner = owner;
 
-            sc.bullets.add(b);
+        sc.bullets.add(b);
 
-            prevShootTime = sc.currentTime;
-        }
+        prevShootTime = sc.currentTime;
     }
 }
 
