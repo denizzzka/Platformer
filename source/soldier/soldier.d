@@ -37,7 +37,7 @@ class Soldier : SceneDamageableObject
     package SkeletonInstanceDrawable skeleton;
     package SoldierAnimation state;
 
-    HoldWeapon weapon;
+    HoldWeapon weaponHolder;
 
     PhysicalPerson physicalPerson;
     alias physicalPerson this;
@@ -79,7 +79,7 @@ class Soldier : SceneDamageableObject
 
         groundSpeedScale = 2.0;
 
-        weapon = new HoldWeapon(this);
+        weaponHolder = new HoldWeapon(this);
     }
 
     private void skeletonPosition(vec2f pos)
@@ -94,7 +94,7 @@ class Soldier : SceneDamageableObject
 
         skeleton.flipX = !looksToRight; // FIXME: зависит от направления осей графики
 
-        weapon.skeleton.flipX = skeleton.flipX;
+        weaponHolder.skeleton.flipX = skeleton.flipX;
 
         auto oldPhysicalState = movingState;
 
@@ -127,7 +127,7 @@ class Soldier : SceneDamageableObject
         updateSkeletonAimingDirection();
         skeleton.updateWorldTransform();
 
-        weapon.update(deltaTime);
+        weaponHolder.update(deltaTime);
     }
 
     private void updateAnimation()
@@ -194,7 +194,7 @@ class Soldier : SceneDamageableObject
 
         hands.rotation = degrees;
         head.rotation = degrees;
-        holderPrimary.bone.rotation = weapon.skeleton.flipX ? degrees : -degrees;
+        holderPrimary.bone.rotation = weaponHolder.skeleton.flipX ? degrees : -degrees;
 
         debug(weapons) writeln("aim x=", aimingDirection.x, " y=", aimingDirection.y, " aim angle=", angle, " degrees=", degrees);
         debug(weapons) writeln("holder.bone:", *holderPrimary.bone);
@@ -301,17 +301,17 @@ class Soldier : SceneDamageableObject
 
             if(kp(R))
             {
-                weapon.beginReload();
+                weaponHolder.beginReload();
             }
 
             if(kp(RBracket))
             {
-                weapon.nextWeapon();
+                weaponHolder.nextWeapon();
             }
 
             if(Mouse.isButtonPressed(Mouse.Button.Left))
             {
-                weapon.fire();
+                weaponHolder.fire();
             }
         }
 
