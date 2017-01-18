@@ -55,6 +55,8 @@ class Scene
 
     private float _currentTime = 0;
 
+    private vec2f latestWindowSize; // used only for sounds
+
     this(Map m)
     {
         _sceneMap = m;
@@ -126,6 +128,12 @@ class Scene
 
         sceneMap.registerUnitsDrawCallback(&drawUnitsOnMapCallback);
         sceneMap.draw(wnd, currViewPosition);
+
+        {
+            import math;
+
+            latestWindowSize = wnd.size.gfm_dsfml;
+        }
     }
 
     float currentTime() const
@@ -133,8 +141,13 @@ class Scene
         return _currentTime;
     }
 
-    vec2f worldToScreenCoords(vec2f worldCoords) const
+    private vec2f worldToScreenCoords(vec2f worldCoords) const
     {
         return worldCoords - currViewPosition;
+    }
+
+    vec2f calcSoundPosition(vec2f worldCoords) const
+    {
+        return worldToScreenCoords(worldCoords) - latestWindowSize / 2;
     }
 }

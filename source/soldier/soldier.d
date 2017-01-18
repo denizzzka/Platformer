@@ -330,9 +330,9 @@ class Soldier : SceneDamageableObject
         return checkBulletHit(this, b) !is null;
     }
 
-    vec2f screenCoords() const
+    vec2f soundScreenCoords() const
     {
-        return _scene.worldToScreenCoords(position);
+        return _scene.calcSoundPosition(position);
     }
 }
 

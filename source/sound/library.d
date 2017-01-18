@@ -20,11 +20,14 @@ Sound loadSound(string name)
 
 struct Sound
 {
-    dsfml.audio.Sound sound;
+    private dsfml.audio.Sound sound;
 
     this(dsfml.audio.SoundBuffer s)
     {
         sound = new dsfml.audio.Sound(s);
+
+        sound.attenuation = 2.0f;
+        sound.minDistance = 100.0f;
     }
 
     void play(vec2f screenCoords)

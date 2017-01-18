@@ -289,7 +289,7 @@ class Ak74 : BaseGun
         super.shot(sc, owner, pos, speed, dir);
 
         size_t soundNum = uniform(0, fireSounds.length);
-        fireSounds[soundNum].play(sc.worldToScreenCoords(pos));
+        fireSounds[soundNum].play(sc.calcSoundPosition(pos));
     }
 }
 
@@ -324,7 +324,7 @@ class Colt : HandGun
         super.shot(sc, owner, pos, speed, dir);
 
         size_t soundNum = uniform(0, fireSounds.length);
-        fireSounds[soundNum].play(sc.worldToScreenCoords(pos));
+        fireSounds[soundNum].play(sc.calcSoundPosition(pos));
     }
 }
 
