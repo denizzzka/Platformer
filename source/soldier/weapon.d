@@ -199,9 +199,9 @@ abstract class BaseGun : BaseWeapon
         prevShootTime = sc.currentTime;
     }
 
-    void reload(vec2f screenCoords)
+    void reload(vec2f soundScreenCoords)
     {
-        reloadSound.play(screenCoords);
+        reloadSound.play(soundScreenCoords);
     }
 
     AnimationType reloadAnimation() const { return AnimationType.Reload2Hands1; }
@@ -219,9 +219,9 @@ abstract class HandGun : BaseGun
         return prevShootTime + 0.2 <= currentTime;
     }
 
-    override void reload(vec2f screenCoords)
+    override void reload(vec2f soundScreenCoords)
     {
-        reloadSound.play(screenCoords);
+        reloadSound.play(soundScreenCoords);
     }
 
     override HoldType holdType() const { return HoldType.HANDGUN; }
