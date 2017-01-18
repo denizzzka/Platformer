@@ -131,7 +131,7 @@ class SkeletonInstance
     void x(float x){ sp_skeleton.x = x; }
     void y(float y){ sp_skeleton.y = y; }
 
-    const(Bone) getRootBone()
+    Bone getRootBone()
     {
 	return Bone(sp_skeleton.root);
     }
