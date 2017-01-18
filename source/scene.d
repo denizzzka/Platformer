@@ -132,4 +132,9 @@ class Scene
     {
         return _currentTime;
     }
+
+    vec2f worldToScreenCoords(vec2f worldCoords) const
+    {
+        return worldCoords - currViewPosition;
+    }
 }
