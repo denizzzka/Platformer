@@ -21,19 +21,18 @@ Sound loadSound(string name)
 struct Sound
 {
     private dsfml.audio.Sound sound;
+    import dsfml.system: Vector3f;
 
     this(dsfml.audio.SoundBuffer s)
     {
         sound = new dsfml.audio.Sound(s);
 
-        sound.attenuation = 2.0f;
+        sound.attenuation = 1.5f;
         sound.minDistance = 100.0f;
     }
 
     void play(vec2f screenCoords)
     {
-        import dsfml.system: Vector3f;
-
         sound.position = Vector3f(screenCoords.x, screenCoords.y, 0);
         sound.play();
     }
