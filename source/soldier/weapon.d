@@ -49,7 +49,7 @@ class HoldWeapon
         {
             auto reloadableGun = cast(BaseGun) weapon;
 
-            reloadableGun.reload(soldier.screenCoords);
+            reloadableGun.reload(soldier.soundScreenCoords);
             soldier.state.setAnimation(1, reloadableGun.reloadAnimation, false);
             soldier.state.addAnimation(1, reloadableGun.holdingAnimation, false, 0);
         }
