@@ -343,11 +343,11 @@ struct spSlot
 
 struct spSkeleton
 {
-    const(spSkeletonData)* data;
+    const spSkeletonData* data;
 
     int bonesCount;
     spBone** bones;
-    const(spBone)* root;
+    const spBone* root;
 
     int slotsCount;
     spSlot** slots;
@@ -362,7 +362,7 @@ struct spSkeleton
     int pathConstraintsCount;
     spPathConstraint** pathConstraints;
 
-    const(spSkin)* skin;
+    const spSkin* skin;
     float r=0, g=0, b=0, a=0;
     float time=0;
     int/*bool*/flipX=0, flipY=0;
