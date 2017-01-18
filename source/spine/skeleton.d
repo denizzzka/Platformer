@@ -107,6 +107,11 @@ class SkeletonInstance
         spSkeleton_dispose (sp_skeleton);
     }
 
+    const (spSkeleton*) getSpSkeleton() const
+    {
+	return sp_skeleton;
+    }
+
     void update(float deltaTime)
     {
         spSkeleton_update(sp_skeleton, deltaTime);
