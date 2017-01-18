@@ -31,9 +31,9 @@ struct Sound
         sound.minDistance = 100.0f;
     }
 
-    void play(vec2f screenCoords)
+    void play(vec2f worldCoords)
     {
-        sound.position = Vector3f(screenCoords.x, screenCoords.y, 0);
+        sound.position = Vector3f(worldCoords.x, worldCoords.y, 0);
         sound.play();
     }
 }

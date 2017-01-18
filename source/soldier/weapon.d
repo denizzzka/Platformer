@@ -49,7 +49,7 @@ class HoldWeapon
         {
             auto reloadableGun = cast(BaseGun) weapon;
 
-            reloadableGun.reload(soldier.soundScreenCoords);
+            reloadableGun.reload(soldier.position);
             soldier.state.setAnimation(1, reloadableGun.reloadAnimation, false);
             soldier.state.addAnimation(1, reloadableGun.holdingAnimation, false, 0);
         }
@@ -289,7 +289,7 @@ class Ak74 : BaseGun
         super.shot(sc, owner, pos, speed, dir);
 
         size_t soundNum = uniform(0, fireSounds.length);
-        fireSounds[soundNum].play(sc.calcSoundPosition(pos));
+        fireSounds[soundNum].play(pos);
     }
 }
 
@@ -324,7 +324,7 @@ class Colt : HandGun
         super.shot(sc, owner, pos, speed, dir);
 
         size_t soundNum = uniform(0, fireSounds.length);
-        fireSounds[soundNum].play(sc.calcSoundPosition(pos));
+        fireSounds[soundNum].play(pos);
     }
 }
 

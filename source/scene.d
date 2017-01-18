@@ -4,8 +4,9 @@ import spine.atlas;
 import spine.dsfml;
 import dsfml.graphics: RenderTarget, RenderStates, RenderWindow;
 import dsfml.system.clock;
+import dsfml.audio: Listener;
 import map;
-import math: vec2f;
+import math;
 import core.time: to;
 import std.conv: to;
 import particles.bullets;
@@ -54,8 +55,6 @@ class Scene
     vec2f currViewPosition = vec2f(0, 0);
 
     private float _currentTime = 0;
-
-    private vec2f latestWindowSize; // used only for sounds
 
     this(Map m)
     {
@@ -130,9 +129,10 @@ class Scene
         sceneMap.draw(wnd, currViewPosition);
 
         {
-            import math;
+            import dsfml.system: Vector3f;
 
-            latestWindowSize = wnd.size.gfm_dsfml;
+            vec2f pos = currViewPosition + wnd.size.gfm_dsfml / 2;
+            Listener.Position = Vector3f(pos.x, pos.y, 0);
         }
     }
 
@@ -144,10 +144,5 @@ class Scene
     private vec2f worldToScreenCoords(vec2f worldCoords) const
     {
         return worldCoords - currViewPosition;
-    }
-
-    vec2f calcSoundPosition(vec2f worldCoords) const
-    {
-        return worldToScreenCoords(worldCoords) - latestWindowSize / 2;
     }
 }
