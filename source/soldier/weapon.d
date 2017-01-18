@@ -49,7 +49,7 @@ class HoldWeapon
         {
             auto reloadableGun = cast(BaseGun) weapon;
 
-            reloadableGun.reload();
+            reloadableGun.reload(soldier.screenCoords);
             soldier.state.setAnimation(1, reloadableGun.reloadAnimation, false);
             soldier.state.addAnimation(1, reloadableGun.holdingAnimation, false, 0);
         }
@@ -199,9 +199,9 @@ abstract class BaseGun : BaseWeapon
         prevShootTime = sc.currentTime;
     }
 
-    void reload()
+    void reload(vec2f screenCoords)
     {
-        reloadSound.play();
+        reloadSound.play(screenCoords);
     }
 
     AnimationType reloadAnimation() const { return AnimationType.Reload2Hands1; }
@@ -219,9 +219,9 @@ abstract class HandGun : BaseGun
         return prevShootTime + 0.2 <= currentTime;
     }
 
-    override void reload()
+    override void reload(vec2f screenCoords)
     {
-        reloadSound.play();
+        reloadSound.play(screenCoords);
     }
 
     override HoldType holdType() const { return HoldType.HANDGUN; }
@@ -289,7 +289,7 @@ class Ak74 : BaseGun
         super.shot(sc, owner, pos, speed, dir);
 
         size_t soundNum = uniform(0, fireSounds.length);
-        fireSounds[soundNum].play();
+        fireSounds[soundNum].play(sc.worldToScreenCoords(pos));
     }
 }
 
@@ -324,7 +324,7 @@ class Colt : HandGun
         super.shot(sc, owner, pos, speed, dir);
 
         size_t soundNum = uniform(0, fireSounds.length);
-        fireSounds[soundNum].play();
+        fireSounds[soundNum].play(sc.worldToScreenCoords(pos));
     }
 }
 

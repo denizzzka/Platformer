@@ -112,7 +112,7 @@ class Grenade : PhysicalObjectBase, SceneObject
             scene.bullets.add(b);
         }
 
-        explosionSound.play();
+        explosionSound.play(scene.worldToScreenCoords(position));
     }
 
     void draw(RenderTarget renderTarget, RenderStates renderStates)

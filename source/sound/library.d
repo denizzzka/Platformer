@@ -27,10 +27,11 @@ struct Sound
         sound = new dsfml.audio.Sound(s);
     }
 
-    void play()
+    void play(vec2f screenCoords)
     {
+        import dsfml.system: Vector3f;
+
+        sound.position = Vector3f(screenCoords.x, screenCoords.y, 0);
         sound.play();
     }
-
-    //~ void play(vec2f screenCoords) const;
 }

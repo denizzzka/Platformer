@@ -329,6 +329,11 @@ class Soldier : SceneDamageableObject
 
         return checkBulletHit(this, b) !is null;
     }
+
+    vec2f screenCoords() const
+    {
+        return _scene.worldToScreenCoords(position);
+    }
 }
 
 unittest
