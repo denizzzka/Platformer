@@ -76,6 +76,11 @@ struct Bone
 {
     spBone* bone;
     alias bone this;
+
+    this(inout(spBone)* b)
+    {
+	bone = cast(spBone*) b;
+    }
 }
 
 struct Slot
@@ -125,6 +130,11 @@ class SkeletonInstance
 
     void x(float x){ sp_skeleton.x = x; }
     void y(float y){ sp_skeleton.y = y; }
+
+    const(Bone) getRootBone()
+    {
+	return Bone(sp_skeleton.root);
+    }
 
     Bone getBoneByIndex(int idx)
     {
