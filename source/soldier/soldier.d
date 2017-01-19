@@ -52,6 +52,8 @@ class Soldier : SceneDamageableObject
 
     package Slot holderPrimary;
 
+    float _health = 100;
+
     static this()
     {
         skeletonData = new SkeletonData("resources/animations/actor_pretty.json", atlas);
@@ -328,6 +330,22 @@ class Soldier : SceneDamageableObject
         import soldier.injuries;
 
         return checkBulletHit(this, b) !is null;
+    }
+
+    void decreaseHealth(float decrement)
+    {
+        _health -= decrement;
+
+        if(isDead)
+        {
+            import std.stdio;
+            writeln("Soldier is dead");
+        }
+    }
+
+    bool isDead() const
+    {
+        return _health <= 0;
     }
 }
 

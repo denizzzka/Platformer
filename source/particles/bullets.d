@@ -17,10 +17,11 @@ class Bullets : PhysParticles!Bullet
         callForEach(
             (ref Bullet b)
             {
-                if(o.checkIfBulletHit(b))
+                if(o.checkIfBulletHit(b) && !o.isDead)
                 {
                     b.markAsRemoved();
 
+                    o.decreaseHealth(10);
                     super.scene.blood.createSpray(b.position, b.speed);
                 }
             }

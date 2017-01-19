@@ -34,6 +34,8 @@ interface SceneObject
 
 interface SceneDamageableObject : SceneObject
 {
+    void decreaseHealth(float h);
+    bool isDead() const;
     bool checkIfBulletHit(Bullet b);
 }
 
