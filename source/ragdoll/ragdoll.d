@@ -51,6 +51,8 @@ class Ragdoll
                 shape.cpShapeSetElasticity = 0.0f;
                 shape.cpShapeSetFriction = 0.0f;
 
+                space.cpSpaceAddConstraint(cpPivotJointNew(вверх_по_иерархии_body, _body, absolutePos));
+
                 _cpBodies ~= _body;
                 _spBones ~= slot.bone;
             }
