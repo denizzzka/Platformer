@@ -9,11 +9,13 @@ class Ragdoll
 {
     private cpSpace* space;
     private SkeletonInstance skeleton;
+    private cpBody*[] bodies;
 
     this(cpSpace* sp, SkeletonInstance si)
     {
         space = sp;
         skeleton = si;
+        bodies.length = 0; // TODO: странный баг происходит если эту инициализацию убрать
 
         foreach(i; 0 .. si.getSpSkeleton.slotsCount)
         {
@@ -32,12 +34,24 @@ class Ragdoll
                     v ~= cpVect(att._super.vertices[n], att._super.vertices[n+1]);
 
                 cpShape* shape = cpPolyShapeNew(_body, v.length.to!int, v.ptr, cpvzero);
-
-                space.staticBody.cpBodyAddShape(shape);
-
                 shape.cpShapeSetElasticity = 0.0f;
                 shape.cpShapeSetFriction = 0.8f;
+
+                _body.cpBodyAddShape(shape);
+
+                bodies ~= _body;
             }
+        }
+    }
+
+    void updateSkeleton()
+    {
+        assert(bodies.length == skeleton.getSpSkeleton.slotsCount);
+
+        foreach(size_t i, ref _body; bodies)
+        {
+            skeleton.getSpSkeleton.bones[i].worldX = _body.p.x;
+            skeleton.getSpSkeleton.bones[i].worldY = _body.p.y;
         }
     }
 }

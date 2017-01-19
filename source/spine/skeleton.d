@@ -107,7 +107,7 @@ class SkeletonInstance
         spSkeleton_dispose (sp_skeleton);
     }
 
-    const (spSkeleton*) getSpSkeleton() const
+    spSkeleton* getSpSkeleton()
     {
 	return sp_skeleton;
     }
