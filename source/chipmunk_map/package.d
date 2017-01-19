@@ -4,7 +4,7 @@ import map;
 import map.segment_intersection: isBulletproof;
 import math;
 import dchip.all;
-private import chipmunk_map.gfm_interaction;
+public import chipmunk_map.gfm_interaction;
 
 // FIXME: many memory leaks
 

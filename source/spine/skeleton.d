@@ -298,14 +298,14 @@ struct spSkeletonData
 	spPathConstraintData** pathConstraints;
 }
 
-enum spAttachmentType
+public enum spAttachmentType
 {
 	REGION,
 	BOUNDING_BOX,
 	MESH,
 	LINKED_MESH,
 	PATH,
-    SKELETON = 1000 /// Unofficial type
+	SKELETON = 1000 /// Unofficial type
 }
 
 struct spAttachment
