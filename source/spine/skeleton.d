@@ -247,6 +247,8 @@ public struct spBone
         return
             "x="~x.to!string~"\n"~
             "y="~y.to!string~"\n"~
+            "ax="~ax.to!string~"\n"~
+            "ay="~ay.to!string~"\n"~
             "shearX="~shearX.to!string~"\n"~
             "shearY="~shearY.to!string~"\n"~
             "rotation="~rotation.to!string~"\n"~

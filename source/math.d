@@ -196,3 +196,17 @@ vec2f rotated(vec2f s, float angle)
 
     return ret;
 }
+
+T rad2deg(T)(T radians) pure
+{
+    import std.math;
+
+    return radians * 180.0 / PI;
+}
+
+T deg2rad(T)(T degrees) pure
+{
+    import std.math;
+
+    return degrees * PI / 180.0;
+}

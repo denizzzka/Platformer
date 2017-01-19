@@ -2,8 +2,11 @@ module ragdoll;
 
 import spine.skeleton;
 import spine.skeleton_bounds;
+import spine.atlas: spRegionAttachment;
 import dchip.all;
 import std.conv: to;
+import math;
+import chipmunk_map.gfm_interaction;
 
 class Ragdoll
 {
@@ -17,61 +20,57 @@ class Ragdoll
         space = sp;
         skeleton = si;
 
-        cpBody*[spBone*] bones;
+        _cpBodies.length = 0;
+        _spBones.length = 0;
 
         foreach(i; 0 .. si.getSpSkeleton.slotsCount)
         {
             auto slot = si.getSpSkeleton.slots[i];
 
-            cpBody* _body;
-
+            if(slot.attachment !is null && slot.attachment.type == spAttachmentType.REGION)
             {
-                cpBody** res = (slot.bone in bones);
+                spRegionAttachment* att = cast(spRegionAttachment*) slot.attachment;
 
-                if(res !is null)
-                {
-                    _body = *res;
-                }
-                else
-                {
-                    _body = space.cpSpaceAddBody(cpBodyNew(1.0f, cpMomentForBox(1.0f, 30.0f, 30.0f)));
-                    _body.cpBodySetPos = cpv(slot.bone.x, slot.bone.y);
+                cpBody* _body = space.cpSpaceAddBody(cpBodyNew(1.0f, cpMomentForBox(1.0f, att.width, att.height)));
 
-                    bones[slot.bone] = _body;
-                    _cpBodies ~= _body;
-                    _spBones ~= slot.bone;
-                }
-            }
+                cpv absolutePos = cpv(slot.bone.x, slot.bone.y);
+                _body.cpBodySetPos = absolutePos;
 
-            if(slot.attachment !is null && slot.attachment.type == spAttachmentType.BOUNDING_BOX)
-            {
-                cpVect[] v;
+                vec2f[4] _v;
+                cpVect[_v.length] v;
 
-                spBoundingBoxAttachment* att = cast(spBoundingBoxAttachment*) slot.attachment;
+                _v[0] = vec2f(0, 0);
+                _v[1] = vec2f(0, att.height);
+                _v[2] = vec2f(att.width, att.height);
+                _v[3] = vec2f(att.width, 0);
 
-                for(int n = att._super.verticesCount - 2; n >= 0; n -= 2)
-                    v ~= cpVect(att._super.vertices[n], att._super.vertices[n+1]);
+                foreach(n, ref vect; _v)
+                    v[n] = vect.rotated(att.rotation.deg2rad).gfm_chip;
 
-                cpShape* shape = cpPolyShapeNew(_body, v.length.to!int, v.ptr, cpvzero);
+                cpShape* shape = cpPolyShapeNew(_body, v.length.to!int, v.ptr, absolutePos);
                 shape.cpShapeSetElasticity = 0.0f;
                 shape.cpShapeSetFriction = 0.8f;
 
-                _body.cpBodyAddShape(shape);
+                _cpBodies ~= _body;
+                _spBones ~= slot.bone;
             }
         }
     }
 
     void update(float dt)
     {
+        assert(_spBones.length);
+
         cpSpaceStep(space, dt);
 
         foreach(i, b; _spBones)
         {
             b.x = _cpBodies[i].p.x;
-            b.x = _cpBodies[i].p.y;
+            b.y = _cpBodies[i].p.y;
 
-            //~ import std.stdio;
-            //~ writeln(b.toString);
+            import std.stdio;
+            writeln(b.toString);
+            writeln(*_cpBodies[i]);
         }
     }
 }
