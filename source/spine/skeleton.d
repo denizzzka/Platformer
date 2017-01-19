@@ -224,7 +224,7 @@ struct spBoneData
     }
 }
 
-struct spBone
+public struct spBone
 {
 	const(spBoneData)* data;
 	const(spSkeleton)* skeleton;

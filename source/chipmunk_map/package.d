@@ -15,6 +15,9 @@ class ChipmunkMap
     this(Map m)
     {
         space = cpSpaceNew();
+
+        space.gravity = cpv(0, -1);
+
         space.staticBody = cpBodyNewStatic();
 
         auto l = m.physLayer;

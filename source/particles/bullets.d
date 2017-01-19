@@ -21,7 +21,7 @@ class Bullets : PhysParticles!Bullet
                 {
                     b.markAsRemoved();
 
-                    o.decreaseHealth(10);
+                    o.decreaseHealth(50);
                     super.scene.blood.createSpray(b.position, b.speed);
                 }
             }

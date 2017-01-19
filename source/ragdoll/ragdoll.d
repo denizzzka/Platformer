@@ -9,23 +9,42 @@ class Ragdoll
 {
     private cpSpace* space;
     private SkeletonInstance skeleton;
-    private cpBody*[] bodies;
+    cpBody*[] _cpBodies;
+    spBone*[] _spBones;
 
     this(cpSpace* sp, SkeletonInstance si)
     {
         space = sp;
         skeleton = si;
-        bodies.length = 0; // TODO: странный баг происходит если эту инициализацию убрать
+
+        cpBody*[spBone*] bones;
 
         foreach(i; 0 .. si.getSpSkeleton.slotsCount)
         {
             auto slot = si.getSpSkeleton.slots[i];
 
+            cpBody* _body;
+
+            {
+                cpBody** res = (slot.bone in bones);
+
+                if(res !is null)
+                {
+                    _body = *res;
+                }
+                else
+                {
+                    _body = space.cpSpaceAddBody(cpBodyNew(1.0f, cpMomentForBox(1.0f, 30.0f, 30.0f)));
+                    _body.cpBodySetPos = cpv(slot.bone.x, slot.bone.y);
+
+                    bones[slot.bone] = _body;
+                    _cpBodies ~= _body;
+                    _spBones ~= slot.bone;
+                }
+            }
+
             if(slot.attachment !is null && slot.attachment.type == spAttachmentType.BOUNDING_BOX)
             {
-                cpBody* _body = space.cpSpaceAddBody(cpBodyNew(1.0f, cpMomentForBox(1.0f, 30.0f, 30.0f)));
-                _body.cpBodySetPos = cpv(slot.bone.worldX, slot.bone.worldY);
-
                 cpVect[] v;
 
                 spBoundingBoxAttachment* att = cast(spBoundingBoxAttachment*) slot.attachment;
@@ -38,20 +57,21 @@ class Ragdoll
                 shape.cpShapeSetFriction = 0.8f;
 
                 _body.cpBodyAddShape(shape);
-
-                bodies ~= _body;
             }
         }
     }
 
-    void updateSkeleton()
+    void update(float dt)
     {
-        assert(bodies.length == skeleton.getSpSkeleton.slotsCount);
+        cpSpaceStep(space, dt);
 
-        foreach(size_t i, ref _body; bodies)
+        foreach(i, b; _spBones)
         {
-            skeleton.getSpSkeleton.bones[i].worldX = _body.p.x;
-            skeleton.getSpSkeleton.bones[i].worldY = _body.p.y;
+            b.x = _cpBodies[i].p.x;
+            b.x = _cpBodies[i].p.y;
+
+            //~ import std.stdio;
+            //~ writeln(b.toString);
         }
     }
 }
@@ -70,6 +90,7 @@ unittest
 
     auto space = cpSpaceNew();
     auto r = new Ragdoll(space, si1);
+    r.update(0.3);
 
     auto bounds = new SkeletonBounds;
     bounds.update(si1, false);

@@ -93,7 +93,20 @@ class Soldier : SceneDamageableObject
         skeleton.y = pos.y;
     }
 
-    void update(float deltaTime)
+    void update(float dt)
+    {
+        if(!isDead)
+        {
+            _update(dt);
+        }
+        else
+        {
+            ragdoll.update(dt);
+            skeleton.updateWorldTransform();
+        }
+    }
+
+    private void _update(float deltaTime)
     {
         const bool looksToRight = aimingDirection.isRightDirection;
 
