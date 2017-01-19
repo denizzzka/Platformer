@@ -245,6 +245,10 @@ public struct spBone
         import std.conv: to;
 
         return
+            "x="~x.to!string~"\n"~
+            "y="~y.to!string~"\n"~
+            "shearX="~shearX.to!string~"\n"~
+            "shearY="~shearY.to!string~"\n"~
             "rotation="~rotation.to!string~"\n"~
             "arotation="~arotation.to!string~"\n"~
             "a="~a.to!string~"\n"~
