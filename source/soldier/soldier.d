@@ -13,6 +13,7 @@ import math;
 import controls_reader;
 import scene;
 import particles.bullets;
+import ragdoll;
 debug(weapons) import std.stdio: writeln;
 
 enum PhysicalState
@@ -53,6 +54,8 @@ class Soldier : SceneDamageableObject
     package Slot holderPrimary;
 
     float _health = 100;
+
+    private Ragdoll ragdoll;
 
     static this()
     {
@@ -339,7 +342,9 @@ class Soldier : SceneDamageableObject
         if(isDead)
         {
             import std.stdio;
-            writeln("Soldier is dead");
+            writeln("Soldier ", this, " is dead");
+
+            ragdoll = new Ragdoll(_scene.physMap.space, skeleton);
         }
     }
 

@@ -10,7 +10,7 @@ public import chipmunk_map.gfm_interaction;
 
 class ChipmunkMap
 {
-    private cpSpace* space;
+    public cpSpace* space;
 
     this(Map m)
     {

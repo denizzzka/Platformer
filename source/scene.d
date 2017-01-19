@@ -11,6 +11,7 @@ import core.time: to;
 import std.conv: to;
 import particles.bullets;
 import particles.blood;
+import chipmunk_map;
 
 static Atlas atlas()
 {
@@ -58,6 +59,8 @@ class Scene
 
     private float _currentTime = 0;
 
+    ChipmunkMap physMap;
+
     this(Map m)
     {
         _sceneMap = m;
@@ -65,6 +68,7 @@ class Scene
         bullets = new Bullets(this);
         blood = new Blood(this);
         frameClock = new Clock();
+        physMap = new ChipmunkMap(m);
     }
 
     Map sceneMap(){ return _sceneMap; }
