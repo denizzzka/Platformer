@@ -33,7 +33,7 @@ class Ragdoll
 
                 cpBody* _body = space.cpSpaceAddBody(cpBodyNew(1.0f, cpMomentForBox(1.0f, att.width, att.height)));
 
-                cpv absolutePos = cpv(slot.bone.x, slot.bone.y);
+                cpv absolutePos = cpv(slot.bone.worldX, slot.bone.worldY);
                 _body.cpBodySetPos = absolutePos;
 
                 vec2f[4] _v;
@@ -47,9 +47,9 @@ class Ragdoll
                 foreach(n, ref vect; _v)
                     v[n] = vect.rotated(att.rotation.deg2rad).gfm_chip;
 
-                cpShape* shape = cpPolyShapeNew(_body, v.length.to!int, v.ptr, absolutePos);
+                cpShape* shape = cpPolyShapeNew(_body, v.length.to!int, v.ptr, cpvzero);
                 shape.cpShapeSetElasticity = 0.0f;
-                shape.cpShapeSetFriction = 0.8f;
+                shape.cpShapeSetFriction = 0.0f;
 
                 _cpBodies ~= _body;
                 _spBones ~= slot.bone;
@@ -65,12 +65,8 @@ class Ragdoll
 
         foreach(i, b; _spBones)
         {
-            b.x = _cpBodies[i].p.x;
-            b.y = _cpBodies[i].p.y;
-
-            import std.stdio;
-            writeln(b.toString);
-            writeln(*_cpBodies[i]);
+            b.worldX = _cpBodies[i].p.x;
+            b.worldY = _cpBodies[i].p.y;
         }
     }
 }

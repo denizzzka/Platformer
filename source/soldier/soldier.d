@@ -102,7 +102,6 @@ class Soldier : SceneDamageableObject
         else
         {
             ragdoll.update(dt);
-            skeleton.updateWorldTransform();
         }
     }
 
