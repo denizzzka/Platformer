@@ -10,12 +10,20 @@ import chipmunk_map.gfm_interaction;
 debug import dsfml.graphics;
 debug import std.stdio;
 
+struct RagdollBone
+{
+    spBone* bone;
+    cpBody* _body;
+
+    size_t parentIdx;
+}
+
 class Ragdoll
 {
     private cpSpace* space;
     private SkeletonInstance skeleton;
-    cpBody*[] _cpBodies;
-    spBone*[] _spBones;
+    RagdollBone[] bones;
+    spRegionAttachment*[] _spRegionAttachments;
 
     this(cpSpace* sp, SkeletonInstance si)
     {
@@ -25,10 +33,9 @@ class Ragdoll
 
     void read()
     {
-        _cpBodies.length = 0;
-        _spBones.length = 0;
+        _spRegionAttachments.length = 0;
 
-        cpBody*[spBone*] _bodies;
+        size_t[spBone*] _bodies;
 
         //~ foreach(i; 0 .. si.getSpSkeleton.slotsCount)
         //~ foreach(i; 0 .. 0)
@@ -69,86 +76,158 @@ class Ragdoll
         {
             spBone* currBone = skeleton.getSpSkeleton.bones[i];
 
-            cpBody* currBody = space.cpSpaceAddBody(cpBodyNew(1.0f, 10.0f));
+            cpBody* currBody = space.cpSpaceAddBody(cpBodyNew(1.0f, 100.0f));
             currBody.cpBodySetPos = cpv(currBone.worldX, currBone.worldY);
             currBody.setAngle = currBone.rotation.deg2rad;
 
-            _cpBodies ~= currBody;
-            _spBones ~= currBone;
-            _bodies[currBone] = currBody;
+            _bodies[currBone] = bones.length;
+            bones ~= RagdollBone(currBone, currBody);
         }
 
         // join bodies
-        foreach(i; 0 .. skeleton.getSpSkeleton.bonesCount)
+        foreach(ref b; bones)
         {
-            spBone* currBone = skeleton.getSpSkeleton.bones[i];
+            spBone* currBone = b.bone;
 
             while(currBone !is null)
             {
                 if(currBone.parent !is null)
                 {
-                    auto currBody = (currBone in _bodies);
-                    auto parentBody = (currBone.parent in _bodies);
+                    auto currIdx = (currBone in _bodies);
+                    auto parentIdx = (currBone.parent in _bodies);
 
-                    assert(currBody !is null);
-                    assert(parentBody !is null);
+                    assert(currIdx !is null);
+                    assert(parentIdx !is null);
 
-                    space.cpSpaceAddConstraint(cpPivotJointNew(*currBody, *parentBody, cpv(currBone.parent.worldX, currBone.parent.worldY)));
+                    b.parentIdx = *parentIdx;
+
+                    auto currBody = bones[*currIdx]._body;
+                    auto parentBody = bones[*parentIdx]._body;
+
+                    space.cpSpaceAddConstraint(
+                        cpPivotJointNew(
+                            currBody,
+                            parentBody,
+                            cpv(currBone.parent.worldX,
+                            currBone.parent.worldY)
+                        )
+                    );
                 }
 
                 currBone = currBone.parent;
             }
         }
+
+        //~ foreach(i; 0 .. skeleton.getSpSkeleton.slotsCount)
+        //~ {
+            //~ auto slot = skeleton.getSpSkeleton.slots[i];
+
+            //~ if(slot.attachment !is null && slot.attachment.type == spAttachmentType.REGION)
+            //~ {
+                //~ spRegionAttachment* att = cast(spRegionAttachment*) slot.attachment;
+
+                //~ if(slot.bone.parent !is null)
+                //~ {
+                    //~ cpBody* currBody = _bodies[slot.bone];
+                    //~ cpBody* parentBody = _bodies[slot.bone.parent];
+
+                    //~ space.cpSpaceAddConstraint(cpRotaryLimitJointNew(currBody, parentBody, 0.0f, 10.0f.deg2rad));
+                //~ }
+            //~ }
+        //~ }
     }
 
     debug void applyImpulse()
     {
-        _cpBodies[5].apply_impulse(cpv(-20, 0), cpv(-1, -5));
+        bones[5]._body.apply_impulse(cpv(-20, 0), cpv(-1, -5));
     }
 
     void update(float dt)
     {
-        assert(_spBones.length);
-
         cpSpaceStep(space, dt);
 
-        foreach(i, b; _spBones)
+        foreach(ref b; bones)
         {
-            b.rotation = _cpBodies[i].a.rad2deg;
+            if(b.bone.parent !is null)
+            {
+                auto parent = bones[b.parentIdx];
+
+                auto v1 = vec2f(b._body.p.x, b._body.p.y);
+                auto v2 = vec2f(parent._body.p.x, parent._body.p.y);
+
+                b.bone.rotation = v1.angleBetween(v2).rad2deg;
+            }
         }
 
         skeleton.updateWorldTransform();
 
-        foreach(i, b; _spBones)
+        // специальное поведение для косточек, к которым прикреплены картинки
+        //~ foreach(i; 0 .. skeleton.getSpSkeleton.slotsCount)
+        //~ {
+            //~ auto slot = skeleton.getSpSkeleton.slots[i];
+
+            //~ if(slot.attachment !is null && slot.attachment.type == spAttachmentType.REGION)
+            //~ {
+                //~ spRegionAttachment* att = cast(spRegionAttachment*) slot.attachment;
+
+                //~ att.rotation = slot.bone.rotation;
+            //~ }
+        //~ }
+
+        foreach(ref b; bones)
         {
-            b.worldX = _cpBodies[i].p.x;
-            b.worldY = _cpBodies[i].p.y;
+            b.bone.worldX = b._body.p.x;
+            b.bone.worldY = b._body.p.y;
         }
     }
 
     debug void draw(RenderTarget target, RenderStates states)
     {
-        foreach(ref v; _spBones)
-        {
-            const(spBone)* curr = v;
-            Vertex[] points;
+        //~ foreach(ref v; _spBones)
+        //~ {
+            //~ const(spBone)* curr = v;
+            //~ Vertex[] points;
 
-            while(curr !is null)
+            //~ while(curr !is null)
+            //~ {
+                //~ if(curr.parent !is null)
+                //~ {
+                    //~ auto s = vec2f(curr.worldX, curr.worldY);
+                    //~ auto f = vec2f(curr.parent.worldX, curr.parent.worldY);
+
+                    //~ points ~= s.gfm_dsfml.Vertex(Color.Blue);
+                    //~ points ~= f.gfm_dsfml.Vertex(Color.Green);
+                //~ }
+
+                //~ curr = curr.parent;
+            //~ }
+
+            //~ target.draw(points, PrimitiveType.Lines, states);
+        //~ }
+
+        // рисуем только родителей слотов
+        foreach(i; 0 .. skeleton.getSpSkeleton.slotsCount)
+        {
+            auto slot = skeleton.getSpSkeleton.slots[i];
+
+            if(slot.attachment !is null && slot.attachment.type == spAttachmentType.REGION)
             {
-                if(curr.parent !is null)
+                if(slot.bone.parent !is null)
                 {
+                    Vertex[] points;
+                    auto curr = slot.bone;
+
                     auto s = vec2f(curr.worldX, curr.worldY);
                     auto f = vec2f(curr.parent.worldX, curr.parent.worldY);
 
                     points ~= s.gfm_dsfml.Vertex(Color.Blue);
                     points ~= f.gfm_dsfml.Vertex(Color.Green);
+
+                    target.draw(points, PrimitiveType.Lines, states);
                 }
-
-                curr = curr.parent;
             }
-
-            target.draw(points, PrimitiveType.Lines, states);
         }
+
     }
 }
 
