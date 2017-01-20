@@ -23,6 +23,8 @@ class Ragdoll
         _cpBodies.length = 0;
         _spBones.length = 0;
 
+        cpBody*[spBone*] invisibleBones;
+
         foreach(i; 0 .. si.getSpSkeleton.slotsCount)
         {
             auto slot = si.getSpSkeleton.slots[i];
@@ -51,10 +53,42 @@ class Ragdoll
                 shape.cpShapeSetElasticity = 0.0f;
                 shape.cpShapeSetFriction = 0.0f;
 
-                space.cpSpaceAddConstraint(cpPivotJointNew(вверх_по_иерархии_body, _body, absolutePos));
-
                 _cpBodies ~= _body;
                 _spBones ~= slot.bone;
+
+                // fill out invisible parent skeleton bones into joined physical bodies
+                {
+                    _body.v = cpv(-20, 0);
+                    const(spBone)* currBone = slot.bone;
+
+                    while(currBone !is null)
+                    {
+                        cpBody* forFixture;
+
+                        if(currBone.parent !is null)
+                        {
+                            cpBody** b = (currBone.parent in invisibleBones);
+
+                            if(b is null)
+                            {
+                                forFixture = space.cpSpaceAddBody(cpBodyNew(1.0f, 1.0f);
+                                forFixture.cpBodySetPos = cpv(currBone.parent.worldX, currBone.parent.worldY);
+                            }
+                            else
+                            {
+                                forFixture = *b;
+                            }
+
+                            space.cpSpaceAddConstraint(cpPivotJointNew(_body, forFixture, cpv(currBone.worldX, currBone.worldY)));
+
+                            if(b !is null)
+                                break;
+                        }
+
+                        currBone = currBone.parent;
+                        _body = forFixture;
+                    }
+                }
             }
         }
     }
@@ -64,6 +98,16 @@ class Ragdoll
         assert(_spBones.length);
 
         cpSpaceStep(space, dt);
+
+        foreach(i, b; _spBones)
+        {
+            b.rotation = _cpBodies[i].a.rad2deg;
+
+            import std.stdio;
+            writeln(_cpBodies[i].a.rad2deg);
+        }
+
+        skeleton.updateWorldTransform();
 
         foreach(i, b; _spBones)
         {
