@@ -16,7 +16,6 @@ class Ragdoll
     private SkeletonInstance skeleton;
     cpBody*[] _cpBodies;
     spBone*[] _spBones;
-    debug cpBody*[spBone*] invisibleBones;
 
     this(cpSpace* sp, SkeletonInstance si)
     {
@@ -26,7 +25,10 @@ class Ragdoll
         _cpBodies.length = 0;
         _spBones.length = 0;
 
-        foreach(i; 0 .. si.getSpSkeleton.slotsCount)
+        cpBody*[spBone*] _bones;
+
+        //~ foreach(i; 0 .. si.getSpSkeleton.slotsCount)
+        foreach(i; 0 .. 1)
         {
             auto slot = si.getSpSkeleton.slots[i];
 
@@ -56,9 +58,9 @@ class Ragdoll
 
                 _cpBodies ~= _body;
                 _spBones ~= slot.bone;
-                invisibleBones[slot.bone] = _body;
+                _bones[slot.bone] = _body;
 
-                // fill out invisible parent skeleton bones into joined physical bodies
+                // fill out parent skeleton bones into joined physical bodies
                 {
                     _body.apply_impulse(cpv(-20, 0), cpvzero);
                     const(spBone)* currBone = slot.bone.parent;
@@ -66,7 +68,7 @@ class Ragdoll
                     while(currBone !is null)
                     {
                         cpBody* forFixture;
-                        cpBody** b = (currBone in invisibleBones);
+                        cpBody** b = (currBone in _bones);
 
                         if(b is null)
                         {
@@ -120,18 +122,35 @@ class Ragdoll
         }
     }
 
-    debug void draw(RenderTarget target, RenderStates states) const
+    debug void draw(RenderTarget target, RenderStates states)
     {
-        Vertex[] points;
-
-        foreach(v; invisibleBones.byValue)
+        foreach(ref v; _spBones)
         {
-            auto p = v.p.gfm_chip.gfm_dsfml;
+            const(spBone)* curr = v;
+            Vertex[] points;
 
-            points ~= Vertex(p);
+            while(curr !is null)
+            {
+                auto p = vec2f(curr.worldX, curr.worldY).gfm_dsfml;
+
+                points ~= Vertex(p, Color.Green);
+
+                curr = curr.parent;
+            }
+
+            target.draw(points, PrimitiveType.Lines, states);
         }
 
-        target.draw(points, PrimitiveType.Lines, states);            
+        //~ space.cpSpaceEachConstraint(
+                //~ (constr, data)
+                //~ {
+                    //~ auto c = cast(cpPivotJoint*) constr;
+                    //~ auto p = c.anchr1.gfm_chip.gfm_dsfml;
+
+                    //~ Vertex[]* arr = cast(Vertex[]*) data;
+                    //~ *arr ~= Vertex(p, Color.Black);
+                //~ }
+            //~ , cast(void*) &points);
     }
 }
 
