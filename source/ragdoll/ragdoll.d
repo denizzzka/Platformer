@@ -25,10 +25,10 @@ class Ragdoll
         _cpBodies.length = 0;
         _spBones.length = 0;
 
-        cpBody*[spBone*] _bones;
+        cpBody*[spBone*] _bodies;
 
-        //~ foreach(i; 0 .. si.getSpSkeleton.slotsCount)
-        foreach(i; 0 .. 1)
+        foreach(i; 0 .. si.getSpSkeleton.slotsCount)
+        //~ foreach(i; 0 .. 1)
         {
             auto slot = si.getSpSkeleton.slots[i];
 
@@ -58,40 +58,46 @@ class Ragdoll
 
                 _cpBodies ~= _body;
                 _spBones ~= slot.bone;
-                _bones[slot.bone] = _body;
+                _bodies[slot.bone] = _body;
+            }
+        }
 
-                // fill out parent skeleton bones into joined physical bodies
+        // join skeleton bones joined physical body
+        foreach(i; 0 .. _spBones.length)
+        {
+            //~ if(i == 0)
+                //~ _cpBodies[i].apply_impulse(cpv(-20, 0), cpvzero);
+
+            const(spBone)* currBone = _spBones[i].parent;
+            cpBody* currBody = _cpBodies[i];
+
+            while(currBone !is null)
+            {
+                cpBody* forFixture;
+                cpBody** b = (currBone in _bodies);
+
+                if(b is null)
                 {
-                    _body.apply_impulse(cpv(-20, 0), cpvzero);
-                    const(spBone)* currBone = slot.bone.parent;
+                    forFixture = space.cpSpaceAddBody(cpBodyNew(1.0f, 1.0f));
+                    forFixture.cpBodySetPos = cpv(currBone.worldX, currBone.worldY);
 
-                    while(currBone !is null)
-                    {
-                        cpBody* forFixture;
-                        cpBody** b = (currBone in _bones);
+                    _bodies[currBone] = forFixture;
+                }
+                else
+                {
+                    forFixture = *b;
+                }
 
-                        if(b is null)
-                        {
-                            forFixture = space.cpSpaceAddBody(cpBodyNew(1.0f, 1.0f));
-                            forFixture.cpBodySetPos = cpv(currBone.worldX, currBone.worldY);
-                        }
-                        else
-                        {
-                            forFixture = *b;
-                        }
+                space.cpSpaceAddConstraint(cpPivotJointNew(currBody, forFixture, cpv(currBone.worldX, currBone.worldY)));
 
-                        space.cpSpaceAddConstraint(cpPivotJointNew(_body, forFixture, cpv(currBone.worldX, currBone.worldY)));
-
-                        if(b is null)
-                        {
-                            currBone = currBone.parent;
-                            _body = forFixture;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
+                if(b is null)
+                {
+                    currBone = currBone.parent;
+                    currBody = forFixture;
+                }
+                else
+                {
+                    break;
                 }
             }
         }
