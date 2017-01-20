@@ -228,7 +228,7 @@ public struct spBone
 {
 	const(spBoneData)* data;
 	const(spSkeleton)* skeleton;
-	const(spBone)* parent;
+	spBone* parent;
 	int childrenCount;
 	const(spBone)** children;
 	float x=0, y=0, rotation=0, scaleX=0, scaleY=0, shearX=0, shearY=0;

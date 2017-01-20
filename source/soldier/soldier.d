@@ -85,6 +85,8 @@ class Soldier : SceneDamageableObject
         groundSpeedScale = 2.0;
 
         weaponHolder = new HoldWeapon(this);
+
+        ragdoll = new Ragdoll(_scene.physMap.space, skeleton);
     }
 
     private void skeletonPosition(vec2f pos)
@@ -98,6 +100,7 @@ class Soldier : SceneDamageableObject
         if(!isDead)
         {
             _update(dt);
+            ragdoll.read();
         }
         else
         {
@@ -241,8 +244,7 @@ class Soldier : SceneDamageableObject
     {
         skeleton.draw(renderTarget, renderStates);
 
-        if(isDead)
-            ragdoll.draw(renderTarget, renderStates);
+        ragdoll.draw(renderTarget, renderStates);
     }
 
     /// params: g_force used only for jump force calculation
@@ -358,8 +360,6 @@ class Soldier : SceneDamageableObject
         {
             import std.stdio;
             writeln("Soldier ", this, " is dead");
-
-            ragdoll = new Ragdoll(_scene.physMap.space, skeleton);
         }
     }
 

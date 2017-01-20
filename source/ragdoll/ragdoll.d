@@ -21,22 +21,25 @@ class Ragdoll
     {
         space = sp;
         skeleton = si;
+    }
 
+    void read()
+    {
         _cpBodies.length = 0;
         _spBones.length = 0;
 
         cpBody*[spBone*] _bodies;
 
-        foreach(i; 0 .. si.getSpSkeleton.slotsCount)
-        //~ foreach(i; 0 .. 1)
+        //~ foreach(i; 0 .. si.getSpSkeleton.slotsCount)
+        foreach(i; 0 .. 0)
         {
-            auto slot = si.getSpSkeleton.slots[i];
+            auto slot = skeleton.getSpSkeleton.slots[i];
 
             if(slot.attachment !is null && slot.attachment.type == spAttachmentType.REGION)
             {
                 spRegionAttachment* att = cast(spRegionAttachment*) slot.attachment;
 
-                cpBody* _body = space.cpSpaceAddBody(cpBodyNew(1.0f, 0.001f/*cpMomentForBox(1.0f, att.width, att.height)*/));
+                cpBody* _body = space.cpSpaceAddBody(cpBodyNew(1.0f, 10.0f/*cpMomentForBox(1.0f, att.width, att.height)*/));
 
                 _body.cpBodySetPos = cpv(slot.bone.worldX, slot.bone.worldY);
                 _body.setAngle((att.rotation + 180).deg2rad);
@@ -58,42 +61,41 @@ class Ragdoll
                 _cpBodies ~= _body;
                 _spBones ~= slot.bone;
                 _bodies[slot.bone] = _body;
+
+                if(_cpBodies.length == 1)
+                    _cpBodies[$-1].apply_impulse(cpv(-20, 0), cpv(-1, -1));
             }
         }
 
-        // join skeleton bones joined physical body
-        //~ foreach(i; 0 .. _spBones.length)
-        foreach(i; 0 .. 1)
+        // join skeleton bones into joined physical bodies
+        foreach(i; 0 .. skeleton.getSpSkeleton.bonesCount)
         {
-            if(i == 0)
-                _cpBodies[i].apply_impulse(cpv(-20, 0), cpvzero);
-
-            const(spBone)* currBone = _spBones[i].parent;
-            cpBody* currBody = _cpBodies[i];
+            spBone* currBone = skeleton.getSpSkeleton.bones[i];
 
             while(currBone !is null)
             {
-                cpBody* forFixture;
+                cpBody* currBody;
                 cpBody** b = (currBone in _bodies);
 
                 if(b is null)
                 {
-                    forFixture = space.cpSpaceAddBody(cpBodyNew(1.0f, 1.0f));
-                    forFixture.cpBodySetPos = cpv(currBone.worldX, currBone.worldY);
+                    currBody = space.cpSpaceAddBody(cpBodyNew(1.0f, 1.0f));
+                    currBody.cpBodySetPos = cpv(currBone.worldX, currBone.worldY);
 
-                    _bodies[currBone] = forFixture;
+                    _cpBodies ~= currBody;
+                    _spBones ~= currBone;
+                    _bodies[currBone] = currBody;
                 }
                 else
                 {
-                    forFixture = *b;
+                    currBody = *b;
                 }
 
-                space.cpSpaceAddConstraint(cpPivotJointNew(currBody, forFixture, cpv(currBone.worldX, currBone.worldY)));
+                //~ space.cpSpaceAddConstraint(cpPivotJointNew(currBody, forFixture, cpv(currBone.worldX, currBone.worldY)));
 
                 if(b is null)
                 {
                     currBone = currBone.parent;
-                    currBody = forFixture;
                 }
                 else
                 {
@@ -111,12 +113,7 @@ class Ragdoll
 
         foreach(i, b; _spBones)
         {
-            b.rotation = _cpBodies[i].a.rad2deg;
-
-            if(i == 0)
-            {
-                //~ writeln(*_cpBodies[i]);
-            }
+            b.rotation += _cpBodies[i].a.rad2deg;
         }
 
         skeleton.updateWorldTransform();
@@ -137,9 +134,11 @@ class Ragdoll
 
             while(curr !is null)
             {
-                auto p = vec2f(curr.worldX, curr.worldY).gfm_dsfml;
+                auto s = vec2f(curr.worldX, curr.worldY);
+                auto f = s + vec2f(curr.x, curr.y);
 
-                points ~= Vertex(p, Color.Green);
+                points ~= s.gfm_dsfml.Vertex(Color.Blue);
+                points ~= f.gfm_dsfml.Vertex(Color.Green);
 
                 curr = curr.parent;
             }
@@ -163,6 +162,7 @@ unittest
 
     auto space = cpSpaceNew();
     auto r = new Ragdoll(space, si1);
+    r.read();
     r.update(0.3);
 
     auto bounds = new SkeletonBounds;
