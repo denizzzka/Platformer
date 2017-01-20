@@ -38,21 +38,20 @@ class Ragdoll
 
                 cpBody* _body = space.cpSpaceAddBody(cpBodyNew(1.0f, 0.001f/*cpMomentForBox(1.0f, att.width, att.height)*/));
 
-                cpv absolutePos = cpv(slot.bone.worldX, slot.bone.worldY);
-                _body.cpBodySetPos = absolutePos;
+                _body.cpBodySetPos = cpv(slot.bone.worldX, slot.bone.worldY);
+                _body.setAngle((att.rotation + 180).deg2rad);
 
-                vec2f[4] _v;
-                cpVect[_v.length] v;
+                assert(att.width > 0);
+                assert(att.height > 0);
 
-                _v[0] = vec2f(0, 0);
-                _v[1] = vec2f(0, att.height);
-                _v[2] = vec2f(att.width, att.height);
-                _v[3] = vec2f(att.width, 0);
+                cpVect[4] _v;
 
-                foreach(n, ref vect; _v)
-                    v[n] = vect.rotated(att.rotation.deg2rad).gfm_chip;
+                _v[0] = cpv(0, 0);
+                _v[1] = cpv(0, att.height);
+                _v[2] = cpv(att.width, att.height);
+                _v[3] = cpv(att.width, 0);
 
-                cpShape* shape = cpPolyShapeNew(_body, v.length.to!int, v.ptr, cpvzero);
+                cpShape* shape = cpPolyShapeNew(_body, _v.length.to!int, _v.ptr, cpvzero);
                 shape.cpShapeSetElasticity = 0.0f;
                 shape.cpShapeSetFriction = 0.0f;
 
@@ -63,10 +62,11 @@ class Ragdoll
         }
 
         // join skeleton bones joined physical body
-        foreach(i; 0 .. _spBones.length)
+        //~ foreach(i; 0 .. _spBones.length)
+        foreach(i; 0 .. 1)
         {
-            //~ if(i == 0)
-                //~ _cpBodies[i].apply_impulse(cpv(-20, 0), cpvzero);
+            if(i == 0)
+                _cpBodies[i].apply_impulse(cpv(-20, 0), cpvzero);
 
             const(spBone)* currBone = _spBones[i].parent;
             cpBody* currBody = _cpBodies[i];
@@ -111,7 +111,7 @@ class Ragdoll
 
         foreach(i, b; _spBones)
         {
-            b.rotation = _cpBodies[i].a.rad2deg + 90;
+            b.rotation = _cpBodies[i].a.rad2deg;
 
             if(i == 0)
             {
@@ -146,17 +146,6 @@ class Ragdoll
 
             target.draw(points, PrimitiveType.Lines, states);
         }
-
-        //~ space.cpSpaceEachConstraint(
-                //~ (constr, data)
-                //~ {
-                    //~ auto c = cast(cpPivotJoint*) constr;
-                    //~ auto p = c.anchr1.gfm_chip.gfm_dsfml;
-
-                    //~ Vertex[]* arr = cast(Vertex[]*) data;
-                    //~ *arr ~= Vertex(p, Color.Black);
-                //~ }
-            //~ , cast(void*) &points);
     }
 }
 
