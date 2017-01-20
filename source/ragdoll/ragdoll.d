@@ -7,7 +7,7 @@ import dchip.all;
 import std.conv: to;
 import math;
 import chipmunk_map.gfm_interaction;
-
+debug import dsfml.graphics;
 debug import std.stdio;
 
 class Ragdoll
@@ -16,6 +16,7 @@ class Ragdoll
     private SkeletonInstance skeleton;
     cpBody*[] _cpBodies;
     spBone*[] _spBones;
+    debug cpBody*[spBone*] invisibleBones;
 
     this(cpSpace* sp, SkeletonInstance si)
     {
@@ -24,8 +25,6 @@ class Ragdoll
 
         _cpBodies.length = 0;
         _spBones.length = 0;
-
-        cpBody*[spBone*] invisibleBones;
 
         foreach(i; 0 .. si.getSpSkeleton.slotsCount)
         {
@@ -81,11 +80,15 @@ class Ragdoll
 
                         space.cpSpaceAddConstraint(cpPivotJointNew(_body, forFixture, cpv(currBone.worldX, currBone.worldY)));
 
-                        if(b !is null)
+                        if(b is null)
+                        {
+                            currBone = currBone.parent;
+                            _body = forFixture;
+                        }
+                        else
+                        {
                             break;
-
-                        currBone = currBone.parent;
-                        _body = forFixture;
+                        }
                     }
                 }
             }
@@ -100,7 +103,7 @@ class Ragdoll
 
         foreach(i, b; _spBones)
         {
-            b.rotation = _cpBodies[i].a.rad2deg;
+            b.rotation = _cpBodies[i].a.rad2deg + 90;
 
             if(i == 0)
             {
@@ -115,6 +118,20 @@ class Ragdoll
             b.worldX = _cpBodies[i].p.x;
             b.worldY = _cpBodies[i].p.y;
         }
+    }
+
+    debug void draw(RenderTarget target, RenderStates states) const
+    {
+        Vertex[] points;
+
+        foreach(v; invisibleBones.byValue)
+        {
+            auto p = v.p.gfm_chip.gfm_dsfml;
+
+            points ~= Vertex(p);
+        }
+
+        target.draw(points, PrimitiveType.Lines, states);            
     }
 }
 
