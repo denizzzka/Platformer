@@ -31,78 +31,79 @@ class Ragdoll
         cpBody*[spBone*] _bodies;
 
         //~ foreach(i; 0 .. si.getSpSkeleton.slotsCount)
-        foreach(i; 0 .. 0)
+        //~ foreach(i; 0 .. 0)
+        //~ {
+            //~ auto slot = skeleton.getSpSkeleton.slots[i];
+
+            //~ if(slot.attachment !is null && slot.attachment.type == spAttachmentType.REGION)
+            //~ {
+                //~ spRegionAttachment* att = cast(spRegionAttachment*) slot.attachment;
+
+                //~ cpBody* _body = space.cpSpaceAddBody(cpBodyNew(1.0f, 10.0f/*cpMomentForBox(1.0f, att.width, att.height)*/));
+
+                //~ _body.cpBodySetPos = cpv(slot.bone.worldX, slot.bone.worldY);
+                //~ _body.setAngle((att.rotation + 180).deg2rad);
+
+                //~ assert(att.width > 0);
+                //~ assert(att.height > 0);
+
+                //~ cpVect[4] _v;
+
+                //~ _v[0] = cpv(0, 0);
+                //~ _v[1] = cpv(0, att.height);
+                //~ _v[2] = cpv(att.width, att.height);
+                //~ _v[3] = cpv(att.width, 0);
+
+                //~ cpShape* shape = cpPolyShapeNew(_body, _v.length.to!int, _v.ptr, cpvzero);
+                //~ shape.cpShapeSetElasticity = 0.0f;
+                //~ shape.cpShapeSetFriction = 0.0f;
+
+                //~ _cpBodies ~= _body;
+                //~ _spBones ~= slot.bone;
+                //~ _bodies[slot.bone] = _body;
+            //~ }
+        //~ }
+
+        // load all skeleton bones into physical bodies
+        foreach(i; 0 .. skeleton.getSpSkeleton.bonesCount)
         {
-            auto slot = skeleton.getSpSkeleton.slots[i];
+            spBone* currBone = skeleton.getSpSkeleton.bones[i];
 
-            if(slot.attachment !is null && slot.attachment.type == spAttachmentType.REGION)
-            {
-                spRegionAttachment* att = cast(spRegionAttachment*) slot.attachment;
+            cpBody* currBody = space.cpSpaceAddBody(cpBodyNew(1.0f, 10.0f));
+            currBody.cpBodySetPos = cpv(currBone.worldX, currBone.worldY);
+            currBody.setAngle = currBone.rotation.deg2rad;
 
-                cpBody* _body = space.cpSpaceAddBody(cpBodyNew(1.0f, 10.0f/*cpMomentForBox(1.0f, att.width, att.height)*/));
-
-                _body.cpBodySetPos = cpv(slot.bone.worldX, slot.bone.worldY);
-                _body.setAngle((att.rotation + 180).deg2rad);
-
-                assert(att.width > 0);
-                assert(att.height > 0);
-
-                cpVect[4] _v;
-
-                _v[0] = cpv(0, 0);
-                _v[1] = cpv(0, att.height);
-                _v[2] = cpv(att.width, att.height);
-                _v[3] = cpv(att.width, 0);
-
-                cpShape* shape = cpPolyShapeNew(_body, _v.length.to!int, _v.ptr, cpvzero);
-                shape.cpShapeSetElasticity = 0.0f;
-                shape.cpShapeSetFriction = 0.0f;
-
-                _cpBodies ~= _body;
-                _spBones ~= slot.bone;
-                _bodies[slot.bone] = _body;
-
-                if(_cpBodies.length == 1)
-                    _cpBodies[$-1].apply_impulse(cpv(-20, 0), cpv(-1, -1));
-            }
+            _cpBodies ~= currBody;
+            _spBones ~= currBone;
+            _bodies[currBone] = currBody;
         }
 
-        // join skeleton bones into joined physical bodies
+        // join bodies
         foreach(i; 0 .. skeleton.getSpSkeleton.bonesCount)
         {
             spBone* currBone = skeleton.getSpSkeleton.bones[i];
 
             while(currBone !is null)
             {
-                cpBody* currBody;
-                cpBody** b = (currBone in _bodies);
-
-                if(b is null)
+                if(currBone.parent !is null)
                 {
-                    currBody = space.cpSpaceAddBody(cpBodyNew(1.0f, 1.0f));
-                    currBody.cpBodySetPos = cpv(currBone.worldX, currBone.worldY);
+                    auto currBody = (currBone in _bodies);
+                    auto parentBody = (currBone.parent in _bodies);
 
-                    _cpBodies ~= currBody;
-                    _spBones ~= currBone;
-                    _bodies[currBone] = currBody;
-                }
-                else
-                {
-                    currBody = *b;
+                    assert(currBody !is null);
+                    assert(parentBody !is null);
+
+                    space.cpSpaceAddConstraint(cpPivotJointNew(*currBody, *parentBody, cpv(currBone.parent.worldX, currBone.parent.worldY)));
                 }
 
-                //~ space.cpSpaceAddConstraint(cpPivotJointNew(currBody, forFixture, cpv(currBone.worldX, currBone.worldY)));
-
-                if(b is null)
-                {
-                    currBone = currBone.parent;
-                }
-                else
-                {
-                    break;
-                }
+                currBone = currBone.parent;
             }
         }
+    }
+
+    debug void applyImpulse()
+    {
+        _cpBodies[5].apply_impulse(cpv(-10, 0), cpv(-1, -1));
     }
 
     void update(float dt)
@@ -113,7 +114,7 @@ class Ragdoll
 
         foreach(i, b; _spBones)
         {
-            b.rotation += _cpBodies[i].a.rad2deg;
+            b.rotation = _cpBodies[i].a.rad2deg;
         }
 
         skeleton.updateWorldTransform();
@@ -134,11 +135,14 @@ class Ragdoll
 
             while(curr !is null)
             {
-                auto s = vec2f(curr.worldX, curr.worldY);
-                auto f = s + vec2f(curr.x, curr.y);
+                if(curr.parent !is null)
+                {
+                    auto s = vec2f(curr.worldX, curr.worldY);
+                    auto f = vec2f(curr.parent.worldX, curr.parent.worldY);
 
-                points ~= s.gfm_dsfml.Vertex(Color.Blue);
-                points ~= f.gfm_dsfml.Vertex(Color.Green);
+                    points ~= s.gfm_dsfml.Vertex(Color.Blue);
+                    points ~= f.gfm_dsfml.Vertex(Color.Green);
+                }
 
                 curr = curr.parent;
             }

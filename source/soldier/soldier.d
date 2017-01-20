@@ -360,6 +360,8 @@ class Soldier : SceneDamageableObject
         {
             import std.stdio;
             writeln("Soldier ", this, " is dead");
+
+            ragdoll.applyImpulse();
         }
     }
 
