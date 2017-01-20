@@ -103,7 +103,7 @@ class Ragdoll
 
     debug void applyImpulse()
     {
-        _cpBodies[5].apply_impulse(cpv(-10, 0), cpv(-1, -1));
+        _cpBodies[5].apply_impulse(cpv(-20, 0), cpv(-1, -5));
     }
 
     void update(float dt)

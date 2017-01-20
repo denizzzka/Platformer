@@ -242,9 +242,13 @@ class Soldier : SceneDamageableObject
 
     void draw(RenderTarget renderTarget, RenderStates renderStates = RenderStates.Default)
     {
-        skeleton.draw(renderTarget, renderStates);
-
-        ragdoll.draw(renderTarget, renderStates);
+        if(!isDead)
+            skeleton.draw(renderTarget, renderStates);
+        else
+        {
+            skeleton.draw(renderTarget, renderStates);
+            ragdoll.draw(renderTarget, renderStates);
+        }
     }
 
     /// params: g_force used only for jump force calculation
