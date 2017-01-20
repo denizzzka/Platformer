@@ -8,6 +8,8 @@ import std.conv: to;
 import math;
 import chipmunk_map.gfm_interaction;
 
+debug import std.stdio;
+
 class Ragdoll
 {
     private cpSpace* space;
@@ -33,7 +35,7 @@ class Ragdoll
             {
                 spRegionAttachment* att = cast(spRegionAttachment*) slot.attachment;
 
-                cpBody* _body = space.cpSpaceAddBody(cpBodyNew(1.0f, cpMomentForBox(1.0f, att.width, att.height)));
+                cpBody* _body = space.cpSpaceAddBody(cpBodyNew(1.0f, 0.001f/*cpMomentForBox(1.0f, att.width, att.height)*/));
 
                 cpv absolutePos = cpv(slot.bone.worldX, slot.bone.worldY);
                 _body.cpBodySetPos = absolutePos;
@@ -55,35 +57,32 @@ class Ragdoll
 
                 _cpBodies ~= _body;
                 _spBones ~= slot.bone;
+                invisibleBones[slot.bone] = _body;
 
                 // fill out invisible parent skeleton bones into joined physical bodies
                 {
-                    _body.v = cpv(-20, 0);
-                    const(spBone)* currBone = slot.bone;
+                    _body.apply_impulse(cpv(-20, 0), cpvzero);
+                    const(spBone)* currBone = slot.bone.parent;
 
                     while(currBone !is null)
                     {
                         cpBody* forFixture;
+                        cpBody** b = (currBone in invisibleBones);
 
-                        if(currBone.parent !is null)
+                        if(b is null)
                         {
-                            cpBody** b = (currBone.parent in invisibleBones);
-
-                            if(b is null)
-                            {
-                                forFixture = space.cpSpaceAddBody(cpBodyNew(1.0f, 1.0f);
-                                forFixture.cpBodySetPos = cpv(currBone.parent.worldX, currBone.parent.worldY);
-                            }
-                            else
-                            {
-                                forFixture = *b;
-                            }
-
-                            space.cpSpaceAddConstraint(cpPivotJointNew(_body, forFixture, cpv(currBone.worldX, currBone.worldY)));
-
-                            if(b !is null)
-                                break;
+                            forFixture = space.cpSpaceAddBody(cpBodyNew(1.0f, 1.0f));
+                            forFixture.cpBodySetPos = cpv(currBone.worldX, currBone.worldY);
                         }
+                        else
+                        {
+                            forFixture = *b;
+                        }
+
+                        space.cpSpaceAddConstraint(cpPivotJointNew(_body, forFixture, cpv(currBone.worldX, currBone.worldY)));
+
+                        if(b !is null)
+                            break;
 
                         currBone = currBone.parent;
                         _body = forFixture;
@@ -103,8 +102,10 @@ class Ragdoll
         {
             b.rotation = _cpBodies[i].a.rad2deg;
 
-            import std.stdio;
-            writeln(_cpBodies[i].a.rad2deg);
+            if(i == 0)
+            {
+                //~ writeln(*_cpBodies[i]);
+            }
         }
 
         skeleton.updateWorldTransform();
