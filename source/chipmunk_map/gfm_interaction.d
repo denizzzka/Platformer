@@ -5,7 +5,7 @@ import dchip.all;
 import std.traits;
 
 /// gfm and chipmunk interaction
-auto gfm_chip(Vs)(Vs s)
+auto gfm_chip(Vs)(inout Vs s)
 if(
     is(Vs == cpVect) ||
     (isInstanceOf!(gfm.math.Vector, Vs) && Vs.v.length == 2)
