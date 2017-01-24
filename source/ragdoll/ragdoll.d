@@ -116,23 +116,18 @@ class Ragdoll
 
         foreach(i, ref ragdollBody; bodies)
         {
-            ragdollBody.bones[0].rotation = ragdollBody._body.a.rad2deg;
+            if(i == 0)
+            {
+                assert(ragdollBody.parent is null);
 
-            //~ foreach(ref bone; ragdollBody.bones)
-            //~ {
-                //~ if(i == 0)
-                //~ {
-                    //~ assert(ragdollBody.parent is null);
+                ragdollBody.bones[0].rotation = ragdollBody._body.a.rad2deg;
+            }
+            else
+            {
+                RagdollBody* parent = ragdollBody.parent;
 
-                    //~ bone.rotation = ragdollBody._body.a.rad2deg;
-                //~ }
-                //~ else
-                //~ {
-                    //~ RagdollBody* parent = ragdollBody.parent;
-
-                    //~ bone.rotation = (ragdollBody._body.a - parent._body.a).rad2deg;
-                //~ }
-            //~ }
+                ragdollBody.bones[0].rotation = (ragdollBody._body.a - parent._body.a).rad2deg;
+            }
         }
 
         skeleton.updateWorldTransform();
