@@ -112,6 +112,11 @@ class SkeletonInstance
 	return sp_skeleton;
     }
 
+    const(SkeletonData) getSkeletonData() const
+    {
+	return skeletonData;
+    }
+
     void update(float deltaTime)
     {
         spSkeleton_update(sp_skeleton, deltaTime);

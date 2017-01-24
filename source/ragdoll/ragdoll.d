@@ -72,7 +72,10 @@ class Ragdoll
         //~ }
 
         // load all skeleton bones into physical bodies
-        immutable size_t[] fixturesIdx = [4];
+        size_t rootIdx = skeleton.getSkeletonData.findBoneIndex("root");
+        assert(rootIdx == 0);
+
+        immutable size_t[] fixturesIdx = [rootIdx, 4];
 
         bones.length = 0;
 
@@ -137,7 +140,8 @@ class Ragdoll
 
     void applyImpulse()
     {
-        bones[0]._body.apply_impulse(cpv(10, 0), cpv(-10, -10));
+        bones[0]._body.apply_impulse(cpv(1, 0), cpv(-10, 5));
+        bones[1]._body.apply_impulse(cpv(-1, 0), cpv(-10, -10));
     }
 
     void update(float dt)
@@ -146,11 +150,15 @@ class Ragdoll
 
         foreach(ref b; bones)
         {
+            //~ b.bone.appliedValid = false;
             //~ b.bone.setLocalPosition = b._body.p.gfm_chip;
+            //~ b.bone.updateAppliedTransform();
 
             //~ if(b.bone.parent is null)
             //~ {
                 b.bone.rotation = b._body.a.rad2deg;
+                //~ b.bone.y = 30;
+                //~ b.bone.setLocalPosition = b._body.p.gfm_chip;
             //~ }
             //~ else
             //~ {
@@ -178,6 +186,7 @@ class Ragdoll
         foreach(ref b; bones)
         {
             //~ b.bone.setLocalPosition = b._body.p.gfm_chip;
+            //~ b.bone.updateAppliedTransform();
             //~ b.bone.worldX = b._body.p.x;
             //~ b.bone.worldY = b._body.p.y;
         }
