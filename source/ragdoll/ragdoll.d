@@ -39,7 +39,7 @@ class Ragdoll
         size_t leg1 = skeleton.getSkeletonData.findBoneIndex("leg1");
         size_t leg2 = skeleton.getSkeletonData.findBoneIndex("leg2");
 
-        immutable size_t[] fixturesIdx = [rootIdx, leg1];
+        immutable size_t[] fixturesIdx = [rootIdx, leg1, leg2];
 
         spBone*[] fixtures;
         fixtures.length = 0;
@@ -74,6 +74,8 @@ class Ragdoll
 
                 bodies ~= newB;
 
+                writeln("body created, num=", bodies.length);
+
                 if(oldBody !is null)
                 {
                     space.cpSpaceAddConstraint(
@@ -104,8 +106,8 @@ class Ragdoll
 
     void applyImpulse()
     {
-        //~ bodies[0]._body.apply_impulse(cpv(10, 0), cpv(-10, 5));
-        bodies[1]._body.apply_impulse(cpv(10, 0), cpv(-10, -10));
+        bodies[1]._body.apply_impulse(cpv(10, 0), cpv(-10, 5));
+        bodies[2]._body.apply_impulse(cpv(10, 0), cpv(-10, -10));
     }
 
     void update(float dt)
@@ -114,21 +116,23 @@ class Ragdoll
 
         foreach(i, ref ragdollBody; bodies)
         {
-            foreach(ref bone; ragdollBody.bones)
-            {
-                if(i == 0)
-                {
-                    assert(ragdollBody.parent is null);
+            ragdollBody.bones[0].rotation = ragdollBody._body.a.rad2deg;
 
-                    bone.rotation = ragdollBody._body.a.rad2deg;
-                }
-                else
-                {
-                    RagdollBody* parent = ragdollBody.parent;
+            //~ foreach(ref bone; ragdollBody.bones)
+            //~ {
+                //~ if(i == 0)
+                //~ {
+                    //~ assert(ragdollBody.parent is null);
 
-                    bone.rotation = (ragdollBody._body.a - parent._body.a).rad2deg;
-                }
-            }
+                    //~ bone.rotation = ragdollBody._body.a.rad2deg;
+                //~ }
+                //~ else
+                //~ {
+                    //~ RagdollBody* parent = ragdollBody.parent;
+
+                    //~ bone.rotation = (ragdollBody._body.a - parent._body.a).rad2deg;
+                //~ }
+            //~ }
         }
 
         skeleton.updateWorldTransform();
