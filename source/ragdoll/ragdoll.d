@@ -135,14 +135,6 @@ class Ragdoll
 
         //~ skeleton.getRootBone.worldX = bodies[0]._body.p.x;
         //~ skeleton.getRootBone.worldY = bodies[0]._body.p.y;
-
-        foreach(ref b; bodies)
-        {
-            //~ b.bone.setLocalPosition = b._body.p.gfm_chip;
-            //~ b.bone.updateAppliedTransform();
-            //~ b.bone.worldX = b._body.p.x;
-            //~ b.bone.worldY = b._body.p.y;
-        }
     }
 
     debug void draw(RenderTarget target, RenderStates states)
@@ -165,30 +157,6 @@ class Ragdoll
                 target.draw(points, PrimitiveType.Lines, states);
             }
         }
-
-        // рисуем только родителей слотов
-        //~ foreach(i; 0 .. skeleton.getSpSkeleton.slotsCount)
-        //~ {
-            //~ auto slot = skeleton.getSpSkeleton.slots[i];
-
-            //~ if(slot.attachment !is null && slot.attachment.type == spAttachmentType.REGION)
-            //~ {
-                //~ if(slot.bone.parent !is null)
-                //~ {
-                    //~ Vertex[] points;
-                    //~ auto curr = slot.bone;
-
-                    //~ auto s = vec2f(curr.worldX, curr.worldY);
-                    //~ auto f = vec2f(curr.parent.worldX, curr.parent.worldY);
-
-                    //~ points ~= s.gfm_dsfml.Vertex(Color.Blue);
-                    //~ points ~= f.gfm_dsfml.Vertex(Color.Green);
-
-                    //~ target.draw(points, PrimitiveType.Lines, states);
-                //~ }
-            //~ }
-        //~ }
-
     }
 }
 
