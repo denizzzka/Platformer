@@ -264,6 +264,11 @@ public struct spBone
 	    spBone_worldToLocal(&this, worldX, worldY, &localX, &localY);
 	}
 
+	void updateAppliedTransform()
+	{
+	    spBone_updateAppliedTransform(&this);
+	}
+
     string toString() const
     {
         import std.conv: to;
@@ -430,3 +435,5 @@ spAttachment* spSkeleton_getAttachmentForSlotIndex (const(spSkeleton)* self, int
 int spSkeleton_setAttachment (spSkeleton* self, const(char)* slotName, const(char)* attachmentName);
 
 void spBone_worldToLocal (spBone* self, float worldX, float worldY, float* localX, float* localY);
+
+void spBone_updateAppliedTransform (spBone* self);
