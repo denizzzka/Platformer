@@ -10,7 +10,7 @@ import chipmunk_map.gfm_interaction;
 debug import dsfml.graphics;
 debug import std.stdio;
 
-struct RagdollBone
+private struct RagdollBone
 {
     spBone* bone;
     cpBody* _body;
@@ -96,9 +96,6 @@ class Ragdoll
                     auto currIdx = (currBone in _bodies);
                     auto parentIdx = (currBone.parent in _bodies);
 
-                    assert(currIdx !is null);
-                    assert(parentIdx !is null);
-
                     b.parentIdx = *parentIdx;
 
                     auto currBody = bones[*currIdx]._body;
@@ -108,8 +105,10 @@ class Ragdoll
                         cpPivotJointNew(
                             currBody,
                             parentBody,
-                            cpv(currBone.parent.worldX,
-                            currBone.parent.worldY)
+                            cpv(
+                                currBone.parent.worldX,
+                                currBone.parent.worldY
+                            )
                         )
                     );
                 }
@@ -139,7 +138,7 @@ class Ragdoll
 
     debug void applyImpulse()
     {
-        bones[5]._body.apply_impulse(cpv(-20, 0), cpv(-1, -5));
+        bones[4]._body.apply_impulse(cpv(-20, 0), cpv(-1, -5));
     }
 
     void update(float dt)
@@ -150,12 +149,9 @@ class Ragdoll
         {
             if(b.bone.parent !is null)
             {
-                auto parent = bones[b.parentIdx];
+                RagdollBone* parent = &bones[b.parentIdx];
 
-                auto v1 = vec2f(b._body.p.x, b._body.p.y);
-                auto v2 = vec2f(parent._body.p.x, parent._body.p.y);
-
-                b.bone.rotation = v1.angleBetween(v2).rad2deg;
+                b.bone.rotation = (b._body.a - parent._body.a).rad2deg + 90;
             }
         }
 
