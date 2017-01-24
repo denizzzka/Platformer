@@ -136,6 +136,9 @@ class SkeletonInstance
     void x(float x){ sp_skeleton.x = x; }
     void y(float y){ sp_skeleton.y = y; }
 
+    float x() const { return sp_skeleton.x; }
+    float y() const { return sp_skeleton.y; }
+
     Bone getRootBone()
     {
 	return Bone(sp_skeleton.root);
@@ -253,6 +256,11 @@ public struct spBone
 	    }
 
 	    return ret;
+	}
+
+	void worldToLocal(float worldX, float worldY, out float localX, out float localY)
+	{
+	    spBone_worldToLocal(&this, worldX, worldY, &localX, &localY);
 	}
 
     string toString() const
@@ -419,3 +427,5 @@ void spSkeleton_setToSetupPose (const(spSkeleton)* self);
 void spSkeleton_setSkin (spSkeleton* self, spSkin* skin);
 spAttachment* spSkeleton_getAttachmentForSlotIndex (const(spSkeleton)* self, int slotIndex, const(char)* attachmentName);
 int spSkeleton_setAttachment (spSkeleton* self, const(char)* slotName, const(char)* attachmentName);
+
+void spBone_worldToLocal (spBone* self, float worldX, float worldY, float* localX, float* localY);
