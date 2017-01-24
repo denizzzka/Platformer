@@ -240,6 +240,21 @@ public struct spBone
 
 	int/*bool*/ sorted;
 
+	float worldRotation() const
+	{
+	    float ret = rotation;
+
+	    const(spBone)* curr = parent;
+
+	    while(curr !is null)
+	    {
+		ret += curr.rotation;
+		curr = curr.parent;
+	    }
+
+	    return ret;
+	}
+
     string toString() const
     {
         import std.conv: to;
