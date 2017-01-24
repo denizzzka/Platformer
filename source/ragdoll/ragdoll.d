@@ -66,7 +66,7 @@ class Ragdoll
 
                 currBody = space.cpSpaceAddBody(cpBodyNew(1.0f, 10.0f));
                 currBody.cpBodySetPos = cpv(currBone.worldX, currBone.worldY);
-                currBody.setAngle = currBone.rotation.deg2rad;
+                currBody.setAngle = currBone.worldRotation.deg2rad;
 
                 RagdollBody newB;
                 newB._body = currBody;
@@ -104,8 +104,8 @@ class Ragdoll
 
     void applyImpulse()
     {
-        //~ bodies[0]._body.apply_impulse(cpv(1, 0), cpv(-10, 5));
-        //~ bones[1]._body.apply_impulse(cpv(2, 0), cpv(-10, -10));
+        //~ bodies[0]._body.apply_impulse(cpv(10, 0), cpv(-10, 5));
+        bodies[1]._body.apply_impulse(cpv(10, 0), cpv(-10, -10));
     }
 
     void update(float dt)
@@ -133,8 +133,8 @@ class Ragdoll
 
         skeleton.updateWorldTransform();
 
-        skeleton.getRootBone.worldX = bodies[0]._body.p.x;
-        skeleton.getRootBone.worldY = bodies[0]._body.p.y;
+        //~ skeleton.getRootBone.worldX = bodies[0]._body.p.x;
+        //~ skeleton.getRootBone.worldY = bodies[0]._body.p.y;
 
         foreach(ref b; bodies)
         {
