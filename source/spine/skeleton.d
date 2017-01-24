@@ -161,6 +161,13 @@ class SkeletonInstance
         return ret;
     }
 
+    Bone getBoneByIndex(size_t idx)
+    {
+	import std.conv: to;
+
+	return getBoneByIndex(idx.to!int);
+    }
+
     Slot getSlotByIndex(int idx)
     {
         assert(idx >= 0);
