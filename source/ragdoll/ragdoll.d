@@ -39,7 +39,7 @@ class Ragdoll
         size_t leg1 = skeleton.getSkeletonData.findBoneIndex("leg1");
         size_t leg2 = skeleton.getSkeletonData.findBoneIndex("leg2");
 
-        immutable size_t[] fixturesIdx = [rootIdx, leg1, leg2];
+        immutable size_t[] fixturesIdx = [rootIdx, leg1];
 
         spBone*[] fixtures;
         fixtures.length = 0;
@@ -147,24 +147,24 @@ class Ragdoll
 
     debug void draw(RenderTarget target, RenderStates states)
     {
-        //~ foreach(ref ragdollBody; bodies)
-        //~ {
-            //~ forech(const ref curr; ragdollBody.bones)
-            //~ {
-                //~ Vertex[] points;
+        foreach(ref const ragdollBody; bodies)
+        {
+            foreach(ref const curr; ragdollBody.bones)
+            {
+                Vertex[] points;
 
-                //~ if(curr.parent !is null)
-                //~ {
-                    //~ auto s = vec2f(curr.worldX, curr.worldY);
-                    //~ auto f = vec2f(curr.parent.worldX, curr.parent.worldY);
+                if(curr.parent !is null)
+                {
+                    auto s = vec2f(curr.worldX, curr.worldY);
+                    auto f = vec2f(curr.parent.worldX, curr.parent.worldY);
 
-                    //~ points ~= s.gfm_dsfml.Vertex(Color.Blue);
-                    //~ points ~= f.gfm_dsfml.Vertex(Color.Green);
-                //~ }
+                    points ~= s.gfm_dsfml.Vertex(Color.Blue);
+                    points ~= f.gfm_dsfml.Vertex(Color.Green);
+                }
 
-                //~ target.draw(points, PrimitiveType.Lines, states);
-            //~ }
-        //~ }
+                target.draw(points, PrimitiveType.Lines, states);
+            }
+        }
 
         // рисуем только родителей слотов
         //~ foreach(i; 0 .. skeleton.getSpSkeleton.slotsCount)
