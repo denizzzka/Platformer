@@ -247,7 +247,7 @@ class Soldier : SceneDamageableObject
         else
         {
             skeleton.draw(renderTarget, renderStates);
-            ragdoll.draw(renderTarget, renderStates);
+            debug ragdoll.draw(renderTarget, renderStates);
         }
     }
 

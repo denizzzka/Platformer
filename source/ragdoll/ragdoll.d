@@ -2,7 +2,7 @@ module ragdoll;
 
 import spine.skeleton;
 import spine.skeleton_bounds;
-import spine.atlas: spRegionAttachment;
+//~ import spine.atlas: spRegionAttachment;
 import dchip.all;
 import std.conv: to;
 import math;
@@ -15,15 +15,15 @@ private struct RagdollBone
     spBone* bone;
     cpBody* _body;
 
-    size_t parentIdx;
+    size_t parentIdx = -1;
 }
 
 class Ragdoll
 {
     private cpSpace* space;
     private SkeletonInstance skeleton;
-    RagdollBone[] bones;
-    spRegionAttachment*[] _spRegionAttachments;
+    private RagdollBone[] bones;
+    //~ spRegionAttachment*[] _spRegionAttachments;
 
     this(cpSpace* sp, SkeletonInstance si)
     {
@@ -33,7 +33,7 @@ class Ragdoll
 
     void read()
     {
-        _spRegionAttachments.length = 0;
+        //~ _spRegionAttachments.length = 0;
 
         size_t[spBone*] _bodies;
 
@@ -72,13 +72,15 @@ class Ragdoll
         //~ }
 
         // load all skeleton bones into physical bodies
+        bones.length = 0;
+
         foreach(i; 0 .. skeleton.getSpSkeleton.bonesCount)
         {
             spBone* currBone = skeleton.getSpSkeleton.bones[i];
 
-            cpBody* currBody = space.cpSpaceAddBody(cpBodyNew(1.0f, 100.0f));
+            cpBody* currBody = space.cpSpaceAddBody(cpBodyNew(1.0f, 10.0f));
             currBody.cpBodySetPos = cpv(currBone.worldX, currBone.worldY);
-            currBody.setAngle = currBone.rotation.deg2rad;
+            currBody.setAngle = currBone.worldRotation.deg2rad;
 
             _bodies[currBone] = bones.length;
             bones ~= RagdollBone(currBone, currBody);
@@ -89,31 +91,26 @@ class Ragdoll
         {
             spBone* currBone = b.bone;
 
-            while(currBone !is null)
+            if(currBone.parent !is null)
             {
-                if(currBone.parent !is null)
-                {
-                    auto currIdx = (currBone in _bodies);
-                    auto parentIdx = (currBone.parent in _bodies);
+                size_t currIdx = _bodies[currBone];
+                size_t parentIdx = _bodies[currBone.parent];
 
-                    b.parentIdx = *parentIdx;
+                b.parentIdx = parentIdx; // also fill out parent indexes
 
-                    auto currBody = bones[*currIdx]._body;
-                    auto parentBody = bones[*parentIdx]._body;
+                auto currBody = bones[currIdx]._body;
+                auto parentBody = bones[parentIdx]._body;
 
-                    space.cpSpaceAddConstraint(
-                        cpPivotJointNew(
-                            currBody,
-                            parentBody,
-                            cpv(
-                                currBone.parent.worldX,
-                                currBone.parent.worldY
-                            )
+                space.cpSpaceAddConstraint(
+                    cpPivotJointNew(
+                        currBody,
+                        parentBody,
+                        cpv(
+                            currBone.parent.worldX,
+                            currBone.parent.worldY
                         )
-                    );
-                }
-
-                currBone = currBone.parent;
+                    )
+                );
             }
         }
 
@@ -136,9 +133,9 @@ class Ragdoll
         //~ }
     }
 
-    debug void applyImpulse()
+    void applyImpulse()
     {
-        bones[4]._body.apply_impulse(cpv(-20, 0), cpv(-1, -5));
+        bones[17]._body.apply_impulse(cpv(20, 0), cpv(-1, -5));
     }
 
     void update(float dt)
@@ -147,11 +144,15 @@ class Ragdoll
 
         foreach(ref b; bones)
         {
-            if(b.bone.parent !is null)
+            if(b.bone.parent is null)
+            {
+                b.bone.rotation = b._body.a.rad2deg;
+            }
+            else
             {
                 RagdollBone* parent = &bones[b.parentIdx];
 
-                b.bone.rotation = (b._body.a - parent._body.a).rad2deg + 90;
+                b.bone.rotation = (b._body.a - parent._body.a).rad2deg;
             }
         }
 
@@ -179,50 +180,45 @@ class Ragdoll
 
     debug void draw(RenderTarget target, RenderStates states)
     {
-        //~ foreach(ref v; _spBones)
-        //~ {
-            //~ const(spBone)* curr = v;
-            //~ Vertex[] points;
+        foreach(ref v; bones)
+        {
+            const(spBone)* curr = v.bone;
+            Vertex[] points;
 
-            //~ while(curr !is null)
+            if(curr.parent !is null)
+            {
+                auto s = vec2f(curr.worldX, curr.worldY);
+                auto f = vec2f(curr.parent.worldX, curr.parent.worldY);
+
+                points ~= s.gfm_dsfml.Vertex(Color.Blue);
+                points ~= f.gfm_dsfml.Vertex(Color.Green);
+            }
+
+            target.draw(points, PrimitiveType.Lines, states);
+        }
+
+        // рисуем только родителей слотов
+        //~ foreach(i; 0 .. skeleton.getSpSkeleton.slotsCount)
+        //~ {
+            //~ auto slot = skeleton.getSpSkeleton.slots[i];
+
+            //~ if(slot.attachment !is null && slot.attachment.type == spAttachmentType.REGION)
             //~ {
-                //~ if(curr.parent !is null)
+                //~ if(slot.bone.parent !is null)
                 //~ {
+                    //~ Vertex[] points;
+                    //~ auto curr = slot.bone;
+
                     //~ auto s = vec2f(curr.worldX, curr.worldY);
                     //~ auto f = vec2f(curr.parent.worldX, curr.parent.worldY);
 
                     //~ points ~= s.gfm_dsfml.Vertex(Color.Blue);
                     //~ points ~= f.gfm_dsfml.Vertex(Color.Green);
+
+                    //~ target.draw(points, PrimitiveType.Lines, states);
                 //~ }
-
-                //~ curr = curr.parent;
             //~ }
-
-            //~ target.draw(points, PrimitiveType.Lines, states);
         //~ }
-
-        // рисуем только родителей слотов
-        foreach(i; 0 .. skeleton.getSpSkeleton.slotsCount)
-        {
-            auto slot = skeleton.getSpSkeleton.slots[i];
-
-            if(slot.attachment !is null && slot.attachment.type == spAttachmentType.REGION)
-            {
-                if(slot.bone.parent !is null)
-                {
-                    Vertex[] points;
-                    auto curr = slot.bone;
-
-                    auto s = vec2f(curr.worldX, curr.worldY);
-                    auto f = vec2f(curr.parent.worldX, curr.parent.worldY);
-
-                    points ~= s.gfm_dsfml.Vertex(Color.Blue);
-                    points ~= f.gfm_dsfml.Vertex(Color.Green);
-
-                    target.draw(points, PrimitiveType.Lines, states);
-                }
-            }
-        }
 
     }
 }
