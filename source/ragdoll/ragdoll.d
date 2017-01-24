@@ -72,9 +72,11 @@ class Ragdoll
         //~ }
 
         // load all skeleton bones into physical bodies
+        immutable size_t[] fixturesIdx = [4];
+
         bones.length = 0;
 
-        foreach(i; 0 .. skeleton.getSpSkeleton.bonesCount)
+        foreach(i; fixturesIdx)
         {
             spBone* currBone = skeleton.getSpSkeleton.bones[i];
 
@@ -87,32 +89,32 @@ class Ragdoll
         }
 
         // join bodies
-        foreach(ref b; bones)
-        {
-            spBone* currBone = b.bone;
+        //~ foreach(ref b; bones)
+        //~ {
+            //~ spBone* currBone = b.bone;
 
-            if(currBone.parent !is null)
-            {
-                size_t currIdx = _bodies[currBone];
-                size_t parentIdx = _bodies[currBone.parent];
+            //~ if(currBone.parent !is null)
+            //~ {
+                //~ size_t currIdx = _bodies[currBone];
+                //~ size_t parentIdx = _bodies[currBone.parent];
 
-                b.parentIdx = parentIdx; // also fill out parent indexes
+                //~ b.parentIdx = parentIdx; // also fill out parent indexes
 
-                auto currBody = bones[currIdx]._body;
-                auto parentBody = bones[parentIdx]._body;
+                //~ auto currBody = bones[currIdx]._body;
+                //~ auto parentBody = bones[parentIdx]._body;
 
-                space.cpSpaceAddConstraint(
-                    cpPivotJointNew(
-                        currBody,
-                        parentBody,
-                        cpv(
-                            currBone.parent.worldX,
-                            currBone.parent.worldY
-                        )
-                    )
-                );
-            }
-        }
+                //~ space.cpSpaceAddConstraint(
+                    //~ cpPivotJointNew(
+                        //~ currBody,
+                        //~ parentBody,
+                        //~ cpv(
+                            //~ currBone.parent.worldX,
+                            //~ currBone.parent.worldY
+                        //~ )
+                    //~ )
+                //~ );
+            //~ }
+        //~ }
 
         //~ foreach(i; 0 .. skeleton.getSpSkeleton.slotsCount)
         //~ {
@@ -135,7 +137,7 @@ class Ragdoll
 
     void applyImpulse()
     {
-        bones[17]._body.apply_impulse(cpv(20, 0), cpv(-1, -5));
+        bones[0]._body.apply_impulse(cpv(10, 0), cpv(-10, -10));
     }
 
     void update(float dt)
@@ -144,16 +146,18 @@ class Ragdoll
 
         foreach(ref b; bones)
         {
-            if(b.bone.parent is null)
-            {
-                b.bone.rotation = b._body.a.rad2deg;
-            }
-            else
-            {
-                RagdollBone* parent = &bones[b.parentIdx];
+            //~ b.bone.setLocalPosition = b._body.p.gfm_chip;
 
-                b.bone.rotation = (b._body.a - parent._body.a).rad2deg;
-            }
+            //~ if(b.bone.parent is null)
+            //~ {
+                b.bone.rotation = b._body.a.rad2deg;
+            //~ }
+            //~ else
+            //~ {
+                //~ RagdollBone* parent = &bones[b.parentIdx];
+
+                //~ b.bone.rotation = (b._body.a - parent._body.a).rad2deg;
+            //~ }
         }
 
         skeleton.updateWorldTransform();
@@ -173,8 +177,9 @@ class Ragdoll
 
         foreach(ref b; bones)
         {
-            b.bone.worldX = b._body.p.x;
-            b.bone.worldY = b._body.p.y;
+            //~ b.bone.setLocalPosition = b._body.p.gfm_chip;
+            //~ b.bone.worldX = b._body.p.x;
+            //~ b.bone.worldY = b._body.p.y;
         }
     }
 
@@ -221,6 +226,17 @@ class Ragdoll
         //~ }
 
     }
+}
+
+private void setLocalPosition(spBone* bone, vec2f worldPosition)
+{
+    float x;
+    float y;
+
+    bone.worldToLocal(worldPosition.x, worldPosition.y, x, y);
+
+    bone.x = x;
+    bone.y = y;
 }
 
 unittest

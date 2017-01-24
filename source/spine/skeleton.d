@@ -258,6 +258,7 @@ public struct spBone
 	    return ret;
 	}
 
+	/// Converts a skeleton-space position into a bone local position
 	void worldToLocal(float worldX, float worldY, out float localX, out float localY)
 	{
 	    spBone_worldToLocal(&this, worldX, worldY, &localX, &localY);
