@@ -57,6 +57,8 @@ class Soldier : SceneDamageableObject
 
     private Ragdoll ragdoll;
 
+    private bool wasDead = false;
+
     static this()
     {
         skeletonData = new SkeletonData("resources/animations/actor_pretty.json", atlas);
@@ -100,10 +102,16 @@ class Soldier : SceneDamageableObject
         if(!isDead)
         {
             _update(dt);
-            ragdoll.read();
         }
         else
         {
+            if(!wasDead)
+            {
+                wasDead = true;
+                ragdoll.read();
+                ragdoll.applyImpulse();
+            }
+
             ragdoll.update(dt);
         }
     }
@@ -247,7 +255,7 @@ class Soldier : SceneDamageableObject
         else
         {
             skeleton.draw(renderTarget, renderStates);
-            debug ragdoll.draw(renderTarget, renderStates);
+            //~ debug ragdoll.draw(renderTarget, renderStates);
         }
     }
 
@@ -364,8 +372,6 @@ class Soldier : SceneDamageableObject
         {
             import std.stdio;
             writeln("Soldier ", this, " is dead");
-
-            ragdoll.applyImpulse();
         }
     }
 
