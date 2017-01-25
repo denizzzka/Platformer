@@ -2,6 +2,7 @@ module ragdoll;
 
 import spine.skeleton;
 import spine.skeleton_bounds;
+import spine.atlas: spRegionAttachment;
 import dchip.all;
 import std.conv: to;
 import math;
@@ -111,6 +112,7 @@ class Ragdoll
             }
 
             currRagdollBody.bones ~= currBone;
+            checkForAttachment(currBone, currBody);
 
             foreach(idx; 0 .. skeleton.getSpSkeleton.bonesCount)
             {
@@ -158,6 +160,24 @@ class Ragdoll
         skeleton.updateWorldTransform();
     }
 
+    private void checkForAttachment(in spBone* bone, cpBody* bodyToAdd)
+    {
+        foreach(idx; 0 .. skeleton.getSpSkeleton.slotsCount)
+        {
+            auto slot = skeleton.getSpSkeleton.slots[idx];
+
+            if(slot.bone == bone)
+            {
+                if(slot.attachment !is null && slot.attachment.type == spAttachmentType.REGION)
+                {
+                    addShape(bodyToAdd, cast(spRegionAttachment*) slot.attachment);
+                }
+
+                break;
+            }
+        }
+    }
+
     debug void draw(RenderTarget target, RenderStates states)
     {
         foreach(ref const ragdollBody; bodies)
@@ -181,15 +201,18 @@ class Ragdoll
     }
 }
 
-private void setLocalPosition(spBone* bone, vec2f worldPosition)
+private void addShape(cpBody* _body, spRegionAttachment* att)
 {
-    float x;
-    float y;
+    cpVect[4] v;
 
-    bone.worldToLocal(worldPosition.x, worldPosition.y, x, y);
+    v[0] = cpVect(0, 0);
+    v[1] = cpVect(0, att.height);
+    v[2] = cpVect(att.width, att.height);
+    v[3] = cpVect(att.width, 0);
 
-    bone.x = x;
-    bone.y = y;
+    cpShape* shape = cpPolyShapeNew(_body, v.length.to!int, v.ptr, cpvzero);
+    shape.cpShapeSetElasticity = 0.0f;
+    shape.cpShapeSetFriction = 0.0f;
 }
 
 unittest

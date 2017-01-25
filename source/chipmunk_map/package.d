@@ -16,7 +16,7 @@ class ChipmunkMap
     {
         space = cpSpaceNew();
 
-        //~ space.gravity = cpv(0, 1);
+        space.gravity = cpv(0, 1);
 
         space.staticBody = cpBodyNewStatic();
 
