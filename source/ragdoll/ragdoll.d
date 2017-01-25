@@ -169,11 +169,7 @@ class Ragdoll
             if(slot.bone == bone)
             {
                 if(slot.attachment !is null && slot.attachment.type == spAttachmentType.REGION)
-                {
                     addShape(bodyToAdd, cast(spRegionAttachment*) slot.attachment);
-                }
-
-                break;
             }
         }
     }
