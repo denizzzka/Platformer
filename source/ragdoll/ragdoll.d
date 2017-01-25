@@ -145,8 +145,11 @@ class Ragdoll
 
         skeleton.updateWorldTransform();
 
+        //~ skeleton.getRootBone.setLocalPosition = bodies[0]._body.p.gfm_chip;
         //~ skeleton.getRootBone.worldX = bodies[0]._body.p.x;
         //~ skeleton.getRootBone.worldY = bodies[0]._body.p.y;
+        skeleton.x = bodies[0]._body.p.x;
+        skeleton.y = bodies[0]._body.p.y;
     }
 
     debug void draw(RenderTarget target, RenderStates states)
