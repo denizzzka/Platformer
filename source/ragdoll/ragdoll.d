@@ -78,7 +78,6 @@ class Ragdoll
                 RagdollBody* oldBody = currRagdollBody;
 
                 currBody = space.cpSpaceAddBody(cpBodyNew(1.0f, 10.0f));
-                currBody.cpBodySetPos = cpv(currBone.worldX, currBone.worldY);
                 currBody.setAngle = currBone.worldRotation.deg2rad;
 
                 RagdollBody newB;
@@ -89,8 +88,14 @@ class Ragdoll
 
                 writeln("body created, num=", bodies.length);
 
-                if(oldBody !is null)
+                if(oldBody is null)
                 {
+                    currBody.cpBodySetPos = cpv(skeleton.x, skeleton.y);
+                }
+                else
+                {
+                    currBody.cpBodySetPos = cpv(currBone.worldX, currBone.worldY);
+
                     space.cpSpaceAddConstraint(
                         cpPivotJointNew(
                             currBody,
@@ -119,8 +124,10 @@ class Ragdoll
 
     void applyImpulse()
     {
-        bodies[1]._body.apply_impulse(cpv(10, 0), cpv(-10, 5));
-        bodies[2]._body.apply_impulse(cpv(10, 0), cpv(-10, -10));
+        //~ bodies[1]._body.apply_impulse(cpv(10, 0), cpv(-10, 5));
+
+        size_t foot1 = skeleton.getSkeletonData.findBoneIndex("foot1");
+        bodies[foot1]._body.apply_impulse(cpv(10, 0), cpv(-10, -10));
     }
 
     void update(float dt)
