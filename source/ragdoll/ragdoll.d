@@ -33,13 +33,26 @@ class Ragdoll
     void read()
     {
         // load all skeleton bones into physical bodies
-        size_t rootIdx = skeleton.getSkeletonData.findBoneIndex("root");
-        assert(rootIdx == 0);
+        assert(skeleton.getSkeletonData.findBoneIndex("root") == 0);
 
-        size_t leg1 = skeleton.getSkeletonData.findBoneIndex("leg1");
-        size_t leg2 = skeleton.getSkeletonData.findBoneIndex("leg2");
+        auto f = &skeleton.getSkeletonData.findBoneIndex;
 
-        immutable size_t[] fixturesIdx = [rootIdx, leg1, leg2];
+        immutable size_t[] fixturesIdx = [
+            f("root"),
+            f("head"),
+            f("leg1"),
+            f("leg2"),
+            f("knee1"),
+            f("knee2"),
+            f("foot1"),
+            f("foot2"),
+            f("hand1"),
+            f("hand2"),
+            f("palm1"),
+            f("palm2"),
+            f("holder-primary"),
+            f("holder-secondary"),
+        ];
 
         spBone*[] fixtures;
         fixtures.length = 0;
