@@ -64,7 +64,7 @@ class Ragdoll
 
         void recursive(RagdollBody* currRagdollBody, spBone* currBone)
         {
-            cpBody* currBody = currRagdollBody is null ? null : currRagdollBody._body;
+            cpBody* currBody = currRagdollBody._body;
 
             import std.algorithm.searching;
 
@@ -88,14 +88,10 @@ class Ragdoll
 
                 writeln("body created, num=", bodies.length);
 
-                if(oldBody is null)
-                {
-                    currBody.cpBodySetPos = cpv(skeleton.x, skeleton.y);
-                }
-                else
-                {
-                    currBody.cpBodySetPos = cpv(currBone.worldX, currBone.worldY);
+                currBody.cpBodySetPos = cpv(currBone.worldX, currBone.worldY);
 
+                if(oldBody !is null)
+                {
                     space.cpSpaceAddConstraint(
                         cpPivotJointNew(
                             currBody,
@@ -119,7 +115,14 @@ class Ragdoll
             }
         }
 
-        recursive(null, skeleton.getRootBone);
+        RagdollBody skelRB;
+
+        skelRB._body = space.cpSpaceAddBody(cpBodyNew(1.0f, 10.0f));
+        skelRB._body.cpBodySetPos = cpv(skeleton.x, skeleton.y);
+
+        bodies ~= skelRB;
+
+        recursive(&bodies[0], skeleton.getRootBone);
     }
 
     void applyImpulse()
@@ -136,10 +139,16 @@ class Ragdoll
 
         foreach(i, ref ragdollBody; bodies)
         {
-            if(i == 0)
+            if(i == 0) // skeleton position body
             {
                 assert(ragdollBody.parent is null);
+                continue;
+            }
 
+            assert(ragdollBody.parent !is null);
+
+            if(i == 1) // root body
+            {
                 ragdollBody.bones[0].rotation = ragdollBody._body.a.rad2deg;
             }
             else
@@ -150,13 +159,10 @@ class Ragdoll
             }
         }
 
-        skeleton.updateWorldTransform();
-
-        //~ skeleton.getRootBone.setLocalPosition = bodies[0]._body.p.gfm_chip;
-        //~ skeleton.getRootBone.worldX = bodies[0]._body.p.x;
-        //~ skeleton.getRootBone.worldY = bodies[0]._body.p.y;
         skeleton.x = bodies[0]._body.p.x;
         skeleton.y = bodies[0]._body.p.y;
+
+        skeleton.updateWorldTransform();
     }
 
     debug void draw(RenderTarget target, RenderStates states)
