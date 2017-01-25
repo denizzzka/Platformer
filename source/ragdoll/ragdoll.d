@@ -60,6 +60,11 @@ class Ragdoll
         foreach(idx; fixturesIdx)
             fixtures ~= skeleton.getBoneByIndex(idx);
 
+        const rootOffset = vec2f(
+                skeleton.getRootBone.worldX - skeleton.x,
+                skeleton.getRootBone.worldY - skeleton.y
+            );
+
         bodies.length = 0;
 
         void recursive(RagdollBody* currRagdollBody, spBone* currBone)
@@ -86,16 +91,13 @@ class Ragdoll
 
                 bodies ~= newB;
 
-                writeln("body created, num=", bodies.length);
+                currBody.cpBodySetPos = cpv(
+                        currBone.worldX - rootOffset.x,
+                        currBone.worldY - rootOffset.y
+                    );
 
-                if(oldBody is null)
+                if(oldBody !is null)
                 {
-                    currBody.cpBodySetPos = cpv(skeleton.x, skeleton.y);
-                }
-                else
-                {
-                    currBody.cpBodySetPos = cpv(currBone.worldX, currBone.worldY);
-
                     space.cpSpaceAddConstraint(
                         cpPivotJointNew(
                             currBody,
@@ -150,13 +152,10 @@ class Ragdoll
             }
         }
 
-        skeleton.updateWorldTransform();
-
-        //~ skeleton.getRootBone.setLocalPosition = bodies[0]._body.p.gfm_chip;
-        //~ skeleton.getRootBone.worldX = bodies[0]._body.p.x;
-        //~ skeleton.getRootBone.worldY = bodies[0]._body.p.y;
         skeleton.x = bodies[0]._body.p.x;
         skeleton.y = bodies[0]._body.p.y;
+
+        skeleton.updateWorldTransform();
     }
 
     debug void draw(RenderTarget target, RenderStates states)
