@@ -40,8 +40,6 @@ class ChipmunkMap
                     v[3] = cpVect(wE.x, wS.y);
 
                     cpShape* shape = cpPolyShapeNew(space.staticBody, 4, v.ptr, cpvzero);
-
-                    space.staticBody.cpBodyAddShape(shape);
                 }
             }
         }
