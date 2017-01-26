@@ -30,16 +30,15 @@ class ChipmunkMap
 
                 if(m.tileTypeByTileCoords(tileCoords).isBulletproof)
                 {
-                    vec2f wS = m.tileCoordsToWorldCoords(tileCoords);
-                    vec2f wE = wS + m.tileSize;
-
                     cpVect[4] v;
-                    v[0] = cpVect(wS.x, wS.y);
-                    v[1] = cpVect(wS.x, wE.y);
-                    v[2] = cpVect(wE.x, wE.y);
-                    v[3] = cpVect(wE.x, wS.y);
+                    v[0] = cpVect(0, 0);
+                    v[1] = cpVect(0, m.tileSize.y);
+                    v[2] = cpVect(m.tileSize.x, m.tileSize.y);
+                    v[3] = cpVect(m.tileSize.x, 0);
 
-                    cpShape* shape = cpPolyShapeNew(space.staticBody, 4, v.ptr, cpvzero);
+                    vec2f offset = m.tileCoordsToWorldCoords(tileCoords);
+
+                    cpShape* shape = cpPolyShapeNew(space.staticBody, v.length, v.ptr, offset.gfm_chip);
                 }
             }
         }
