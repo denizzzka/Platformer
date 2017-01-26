@@ -169,7 +169,11 @@ class Ragdoll
             if(slot.bone == bone)
             {
                 if(slot.attachment !is null && slot.attachment.type == spAttachmentType.REGION)
-                    addShape(bodyToAdd, cast(spRegionAttachment*) slot.attachment);
+                {
+                    auto shape = bodyToAdd.addShape(cast(spRegionAttachment*) slot.attachment);
+
+                    space.cpSpaceAddShape(shape);
+                }
             }
         }
     }
@@ -197,7 +201,7 @@ class Ragdoll
     }
 }
 
-private void addShape(cpBody* _body, spRegionAttachment* att)
+private cpShape* addShape(cpBody* _body, spRegionAttachment* att)
 {
     cpVect[4] v;
 
@@ -209,6 +213,8 @@ private void addShape(cpBody* _body, spRegionAttachment* att)
     cpShape* shape = cpPolyShapeNew(_body, v.length.to!int, v.ptr, cpvzero);
     shape.cpShapeSetElasticity = 0.0f;
     shape.cpShapeSetFriction = 0.0f;
+
+    return shape;
 }
 
 unittest
