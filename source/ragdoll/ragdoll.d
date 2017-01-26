@@ -2,7 +2,6 @@ module ragdoll;
 
 import spine.skeleton;
 import spine.skeleton_bounds;
-import spine.atlas: spRegionAttachment;
 import dchip.all;
 import std.conv: to;
 import math;
@@ -168,9 +167,9 @@ class Ragdoll
 
             if(slot.bone == bone)
             {
-                if(slot.attachment !is null && slot.attachment.type == spAttachmentType.REGION)
+                if(slot.attachment !is null && slot.attachment.type == spAttachmentType.BOUNDING_BOX)
                 {
-                    auto shape = bodyToAdd.addShape(cast(spRegionAttachment*) slot.attachment);
+                    auto shape = bodyToAdd.addShape(slot);
 
                     space.cpSpaceAddShape(shape);
                 }
@@ -201,18 +200,28 @@ class Ragdoll
     }
 }
 
-private cpShape* addShape(cpBody* _body, spRegionAttachment* att)
+private cpShape* addShape(cpBody* _body, spSlot* slot)
 {
-    cpVect[4] v;
+    auto att  = cast(spBoundingBoxAttachment*) slot.attachment;
 
-    v[0] = cpVect(0, 0);
-    v[1] = cpVect(0, att.height);
-    v[2] = cpVect(att.width, att.height);
-    v[3] = cpVect(att.width, 0);
+    assert(att._super.bonesCount == 0);
+
+    cpVect[] v;
+
+    for(auto verticeIdx = att._super.verticesCount - 2; verticeIdx >= 0;  verticeIdx -= 2)
+    {
+        auto vertice = vec2f(
+                att._super.vertices[verticeIdx],
+                att._super.vertices[verticeIdx + 1]
+            );
+
+        v ~= vertice.rotated(slot.bone.worldRotation.deg2rad).gfm_chip;
+    }
 
     cpShape* shape = cpPolyShapeNew(_body, v.length.to!int, v.ptr, cpvzero);
-    shape.cpShapeSetElasticity = 0.0f;
-    shape.cpShapeSetFriction = 0.0f;
+    //~ shape.cpShapeSetElasticity = 0.0f;
+    //~ shape.cpShapeSetFriction = 0.0f;
+    shape.group = 1;
 
     return shape;
 }

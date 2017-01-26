@@ -108,6 +108,7 @@ class Soldier : SceneDamageableObject
             if(!wasDead)
             {
                 wasDead = true;
+                skeleton.y = skeleton.y - 3; // FIXME: зависит от направления осей графики
                 ragdoll.read();
                 ragdoll.applyImpulse();
             }

@@ -381,7 +381,7 @@ struct spSlotData
 	spBlendMode blendMode = spBlendMode.NORMAL;
 }
 
-struct spSlot
+public struct spSlot
 {
 	const(spSlotData)* data;
 	spBone* bone;
