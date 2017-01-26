@@ -20,6 +20,12 @@ class ChipmunkMap
 
         space.staticBody = cpBodyNewStatic();
 
+        cpVect[4] corners;
+        corners[0] = cpVect(0, 0);
+        corners[1] = cpVect(0, m.tileSize.y);
+        corners[2] = cpVect(m.tileSize.x, m.tileSize.y);
+        corners[3] = cpVect(m.tileSize.x, 0);
+
         auto l = m.physLayer;
 
         foreach(y; 0 .. l.layerSize.y)
@@ -30,15 +36,9 @@ class ChipmunkMap
 
                 if(m.tileTypeByTileCoords(tileCoords).isBulletproof)
                 {
-                    cpVect[4] v;
-                    v[0] = cpVect(0, 0);
-                    v[1] = cpVect(0, m.tileSize.y);
-                    v[2] = cpVect(m.tileSize.x, m.tileSize.y);
-                    v[3] = cpVect(m.tileSize.x, 0);
-
                     vec2f offset = m.tileCoordsToWorldCoords(tileCoords);
 
-                    cpShape* shape = cpPolyShapeNew(space.staticBody, v.length, v.ptr, offset.gfm_chip);
+                    cpShape* shape = cpPolyShapeNew(space.staticBody, corners.length, corners.ptr, offset.gfm_chip);
                 }
             }
         }
