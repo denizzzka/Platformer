@@ -202,7 +202,7 @@ class SkeletonInstance
 	spSkeleton_setSkin(sp_skeleton, skin.skin);
     }
 
-    spBone* findBoneByAttachment(ATT)(const ATT* anyAttachment)
+    spBone* findBoneByAttachment(ATT)(in ATT* anyAttachment)
     //~ if(is(ATT == spAttachment) || is(ATT == spBoundingBoxAttachment))
     {
         auto att = cast(spAttachment*) anyAttachment;

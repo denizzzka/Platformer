@@ -6,7 +6,7 @@ import spine.skeleton_bounds;
 import math;
 
 /// returns bounding box name or null
-package string checkBulletHit(Soldier soldier, in Bullet b)
+package spBoundingBoxAttachment* checkBulletHit(Soldier soldier, in Bullet b)
 {
     import std.string: fromStringz;
     import std.conv: to;
@@ -19,11 +19,11 @@ package string checkBulletHit(Soldier soldier, in Bullet b)
 
         if(aabbIntersectsSegment(bounds, b.prevPosition, b.position))
         {
-            const boundingBox = intersectsSegment(bounds, b.prevPosition, b.position);
+            auto boundingBox = intersectsSegment(bounds, b.prevPosition, b.position);
 
             if(boundingBox != null)
             {
-                return boundingBox._super._super.name.fromStringz.to!string;
+                return boundingBox;
             }
         }
     }

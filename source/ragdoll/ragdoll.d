@@ -125,12 +125,24 @@ class Ragdoll
         recursive(null, skeleton.getRootBone);
     }
 
-    void applyImpulse()
+    private RagdollBody* findRagdollBody(in spBone* bone)
     {
-        //~ bodies[1]._body.apply_impulse(cpv(10, 0), cpv(-10, 5));
+        foreach(ref rb; bodies)
+            foreach(ref b; rb.bones)
+                if(b == bone)
+                    return &rb;
 
-        size_t foot1 = skeleton.getSkeletonData.findBoneIndex("foot1");
-        bodies[foot1]._body.apply_impulse(cpv(10, 0), cpv(-10, -10));
+        return null;
+    }
+
+    void applyImpulse(in spBone* bone, vec2f impulse)
+    {
+        auto rb = findRagdollBody(bone);
+
+        rb._body.apply_impulse(impulse.gfm_chip, cpvzero);
+
+        //~ size_t foot1 = skeleton.getSkeletonData.findBoneIndex("foot1");
+        //~ bodies[foot1]._body.apply_impulse(cpv(10, 0), cpv(-10, -10));
     }
 
     void update(float dt)
@@ -220,7 +232,7 @@ private cpShape* addShape(cpBody* _body, spSlot* slot)
 
     cpShape* shape = cpPolyShapeNew(_body, v.length.to!int, v.ptr, cpvzero);
     //~ shape.cpShapeSetElasticity = 0.0f;
-    //~ shape.cpShapeSetFriction = 0.0f;
+    shape.cpShapeSetFriction = 10.0f;
     shape.group = 1;
 
     return shape;

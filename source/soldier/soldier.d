@@ -57,8 +57,6 @@ class Soldier : SceneDamageableObject
 
     private Ragdoll ragdoll;
 
-    private bool wasDead = false;
-
     static this()
     {
         skeletonData = new SkeletonData("resources/animations/actor_pretty.json", atlas);
@@ -100,21 +98,9 @@ class Soldier : SceneDamageableObject
     void update(float dt)
     {
         if(!isDead)
-        {
             _update(dt);
-        }
         else
-        {
-            if(!wasDead)
-            {
-                wasDead = true;
-                skeleton.y = skeleton.y - 3; // FIXME: зависит от направления осей графики
-                ragdoll.read();
-                ragdoll.applyImpulse();
-            }
-
             ragdoll.update(dt);
-        }
     }
 
     private void _update(float deltaTime)
@@ -362,7 +348,29 @@ class Soldier : SceneDamageableObject
     {
         import soldier.injuries;
 
-        return checkBulletHit(this, b) !is null;
+        if(!isDead)
+        {
+            auto bba = checkBulletHit(this, b);
+
+            if(bba !is null)
+            {
+                decreaseHealth(40);
+                _scene.blood.createSpray(b.position, b.speed);
+
+                if(isDead)
+                {
+                    skeleton.y = skeleton.y - 6; // FIXME: зависит от направления осей графики
+
+                    ragdoll.read();
+
+                    spBone* bone = skeleton.findBoneByAttachment(bba);
+
+                    ragdoll.applyImpulse(bone, b.speed * 0.01);
+                }
+            }
+        }
+
+        return false;
     }
 
     void decreaseHealth(float decrement)

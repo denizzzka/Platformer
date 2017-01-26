@@ -17,12 +17,9 @@ class Bullets : PhysParticles!Bullet
         callForEach(
             (ref Bullet b)
             {
-                if(o.checkIfBulletHit(b) && !o.isDead)
+                if(o.checkIfBulletHit(b))
                 {
                     b.markAsRemoved();
-
-                    o.decreaseHealth(50);
-                    super.scene.blood.createSpray(b.position, b.speed);
                 }
             }
         );
