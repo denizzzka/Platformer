@@ -227,7 +227,16 @@ private cpShape* addShape(cpBody* _body, spSlot* slot)
                 att._super.vertices[verticeIdx + 1]
             );
 
-        v ~= vertice.rotated(slot.bone.worldRotation.deg2rad).gfm_chip;
+        vertice = vertice.rotated(slot.bone.worldRotation.deg2rad);
+
+        auto offset = vec2f(
+                slot.bone.worldX - _body.p.x,
+                slot.bone.worldY - _body.p.y
+            );
+
+        vertice += offset;
+
+        v ~= vertice.gfm_chip;
     }
 
     cpShape* shape = cpPolyShapeNew(_body, v.length.to!int, v.ptr, cpvzero);
