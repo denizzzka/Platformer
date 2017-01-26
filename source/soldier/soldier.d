@@ -344,7 +344,7 @@ class Soldier : SceneDamageableObject
         return _aimingDirection;
     }
 
-    bool checkIfBulletHit(Bullet b)
+    bool checkIfBulletHit(inout Bullet b)
     {
         import soldier.injuries;
 
@@ -354,7 +354,7 @@ class Soldier : SceneDamageableObject
 
             if(bba !is null)
             {
-                decreaseHealth(40);
+                decreaseHealth(50);
                 _scene.blood.createSpray(b.position, b.speed);
 
                 if(isDead)
@@ -367,6 +367,8 @@ class Soldier : SceneDamageableObject
 
                     ragdoll.applyImpulse(bone, b.speed * 0.01);
                 }
+
+                return true;
             }
         }
 
