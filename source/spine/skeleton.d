@@ -201,6 +201,18 @@ class SkeletonInstance
     {
 	spSkeleton_setSkin(sp_skeleton, skin.skin);
     }
+
+    spBone* findBoneByAttachment(ATT)(const ATT* anyAttachment)
+    //~ if(is(ATT == spAttachment) || is(ATT == spBoundingBoxAttachment))
+    {
+        auto att = cast(spAttachment*) anyAttachment;
+
+	foreach(i; 0 .. sp_skeleton.slotsCount)
+	    if(sp_skeleton.slots[i].attachment == att)
+		return sp_skeleton.slots[i].bone;
+
+	return null;
+    }
 }
 
 package extern(C):
