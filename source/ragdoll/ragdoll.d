@@ -191,7 +191,7 @@ class Ragdoll
 
     debug void draw(RenderTarget target, RenderStates states)
     {
-        foreach(ref const ragdollBody; bodies)
+        foreach(ref ragdollBody; bodies)
         {
             foreach(ref const curr; ragdollBody.bones)
             {
@@ -206,7 +206,43 @@ class Ragdoll
                     points ~= f.gfm_dsfml.Vertex(Color.Green);
                 }
 
-                target.draw(points, PrimitiveType.Lines, states);
+                //~ target.draw(points, PrimitiveType.Lines, states);
+            }
+
+            // draw shapes
+            {
+                import chipmunk_map.extensions;
+
+                cpVect[] vertices;
+
+                ragdollBody._body.cpBodyEachShape
+                (
+                    (bdy, shape, data)
+                    {
+                        cpVect[]* _vertices = cast(cpVect[]*) data;
+                        shape.forEachShapeVertice
+                        (
+                            (ref cpVect v)
+                            {
+                                *_vertices ~= v;
+                            }
+                        );
+                    },
+                    cast(void*) &vertices
+                );
+
+                //~ writeln("vertices.length=", vertices.length);
+                //~ writeln("vertices=", vertices);
+
+                Vertex[] points;
+
+                foreach(ref v; vertices)
+                    points ~= v.gfm_chip.gfm_dsfml.Vertex(Color.Blue);
+
+                if(vertices.length > 0)
+                    points ~= vertices[0].gfm_chip.gfm_dsfml.Vertex(Color.Blue);
+
+                target.draw(points, PrimitiveType.LinesStrip, states);
             }
         }
     }
