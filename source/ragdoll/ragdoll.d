@@ -39,19 +39,19 @@ class Ragdoll
 
         immutable size_t[] fixturesIdx = [
             f("root"),
-            f("head"),
-            f("leg1"),
-            f("leg2"),
-            f("knee1"),
-            f("knee2"),
-            f("foot1"),
-            f("foot2"),
-            f("hand1"),
-            f("hand2"),
-            f("palm1"),
-            f("palm2"),
-            f("holder-primary"),
-            f("holder-secondary"),
+            //~ f("head"),
+            //~ f("leg1"),
+            //~ f("leg2"),
+            //~ f("knee1"),
+            //~ f("knee2"),
+            //~ f("foot1"),
+            //~ f("foot2"),
+            //~ f("hand1"),
+            //~ f("hand2"),
+            //~ f("palm1"),
+            //~ f("palm2"),
+            //~ f("holder-primary"),
+            //~ f("holder-secondary"),
         ];
 
         spBone*[] fixtures;
@@ -213,36 +213,43 @@ class Ragdoll
             {
                 import chipmunk_map.extensions;
 
-                cpVect[] vertices;
+                struct DrawArgs
+                {
+                    RenderTarget target;
+                    RenderStates states;
+                }
+
+                DrawArgs drawArgs;
+                drawArgs.target = target;
+                drawArgs.states = states;
 
                 ragdollBody._body.cpBodyEachShape
                 (
                     (bdy, shape, data)
                     {
-                        cpVect[]* _vertices = cast(cpVect[]*) data;
+                        cpVect[] vertices;
+
                         shape.forEachShapeVertice
                         (
                             (ref cpVect v)
                             {
-                                *_vertices ~= v;
+                                vertices ~= v;
                             }
                         );
+
+                        Vertex[] points;
+
+                        foreach(ref v; vertices)
+                            points ~= v.gfm_chip.gfm_dsfml.Vertex(Color.Blue);
+
+                        if(vertices.length > 0)
+                            points ~= vertices[0].gfm_chip.gfm_dsfml.Vertex(Color.Blue);
+
+                        DrawArgs* drawArgs = cast(DrawArgs*) data;
+                        drawArgs.target.draw(points, PrimitiveType.LinesStrip, drawArgs.states);
                     },
-                    cast(void*) &vertices
+                    cast(void*) &drawArgs
                 );
-
-                //~ writeln("vertices.length=", vertices.length);
-                //~ writeln("vertices=", vertices);
-
-                Vertex[] points;
-
-                foreach(ref v; vertices)
-                    points ~= v.gfm_chip.gfm_dsfml.Vertex(Color.Blue);
-
-                if(vertices.length > 0)
-                    points ~= vertices[0].gfm_chip.gfm_dsfml.Vertex(Color.Blue);
-
-                target.draw(points, PrimitiveType.LinesStrip, states);
             }
         }
     }
