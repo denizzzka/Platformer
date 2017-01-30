@@ -10,5 +10,7 @@ dependency "dchip" version="~>0.1.2"
 dependency "gen-package-version" version="~>1.0.5"
 preGenerateCommands "dub run gen-package-version -- ver --root=$PACKAGE_DIR --src=source"
 subConfiguration "dlangui" "sfml"
-versions "CHIP_ALLOW_PRIVATE_ACCESS"
 sourceFiles "spine-runtimes/spine-c/libspine-c.a"
+buildType "debug" {
+    versions "CHIP_ALLOW_PRIVATE_ACCESS"
+}

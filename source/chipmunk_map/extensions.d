@@ -3,7 +3,7 @@ module chipmunk_map.extensions;
 import dchip.all;
 import std.conv: to;
 
-void forEachShapeVertice(cpShape* shape, void delegate(ref cpVect verts) dg)
+debug void forEachShapeVertice(cpShape* shape, void delegate(ref cpVect verts) dg)
 {
     with(cpShapeType)
     switch (shape.klass.type)
