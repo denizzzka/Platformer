@@ -83,7 +83,7 @@ class Ragdoll
                 RagdollBody* oldBody = currRagdollBody;
 
                 currBody = space.cpSpaceAddBody(cpBodyNew(1.0f, 10.0f));
-                currBody.setAngle = currBone.worldRotation.deg2rad;
+                currBody.setAngle = (currBone.worldRotation - 90).deg2rad;
 
                 RagdollBody newB;
                 newB._body = currBody;
@@ -138,6 +138,7 @@ class Ragdoll
     void applyImpulse(in spBone* bone, vec2f impulse)
     {
         auto rb = findRagdollBody(bone);
+        assert(rb !is null);
 
         rb._body.apply_impulse(impulse.gfm_chip, cpvzero);
 
@@ -155,13 +156,13 @@ class Ragdoll
             {
                 assert(ragdollBody.parent is null);
 
-                ragdollBody.bones[0].rotation = ragdollBody._body.a.rad2deg;
+                ragdollBody.bones[0].rotation = -ragdollBody._body.a.rad2deg + 90;
             }
             else
             {
                 RagdollBody* parent = ragdollBody.parent;
 
-                ragdollBody.bones[0].rotation = (ragdollBody._body.a - parent._body.a).rad2deg;
+                ragdollBody.bones[0].rotation = (-(ragdollBody._body.a + parent._body.a)).rad2deg;
             }
         }
 
@@ -206,7 +207,7 @@ class Ragdoll
                     points ~= f.gfm_dsfml.Vertex(Color.Green);
                 }
 
-                //~ target.draw(points, PrimitiveType.Lines, states);
+                target.draw(points, PrimitiveType.Lines, states);
             }
 
             // draw shapes
