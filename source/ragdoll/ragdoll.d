@@ -23,7 +23,7 @@ class Ragdoll
     private cpSpace* space;
     private SkeletonInstance skeleton;
     private RagdollBody[] bodies;
-    vec2f rootOffset;
+    private vec2f rootOffset;
 
     this(cpSpace* sp, SkeletonInstance si)
     {
