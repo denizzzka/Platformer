@@ -23,6 +23,7 @@ class Ragdoll
     private cpSpace* space;
     private SkeletonInstance skeleton;
     private RagdollBody[] bodies;
+    vec2f rootOffset;
 
     this(cpSpace* sp, SkeletonInstance si)
     {
@@ -60,7 +61,7 @@ class Ragdoll
         foreach(idx; fixturesIdx)
             fixtures ~= skeleton.getBoneByIndex(idx);
 
-        const rootOffset = vec2f(
+        rootOffset = vec2f(
                 skeleton.getRootBone.worldX - skeleton.x,
                 skeleton.getRootBone.worldY - skeleton.y
             );
@@ -92,8 +93,8 @@ class Ragdoll
                 bodies ~= newB;
 
                 currBody.cpBodySetPos = cpv(
-                        currBone.worldX - rootOffset.x,
-                        currBone.worldY - rootOffset.y
+                        currBone.worldX,
+                        currBone.worldY
                     );
 
                 if(oldBody !is null)
@@ -141,9 +142,6 @@ class Ragdoll
         assert(rb !is null);
 
         rb._body.apply_impulse(impulse.gfm_chip, cpvzero);
-
-        //~ size_t foot1 = skeleton.getSkeletonData.findBoneIndex("foot1");
-        //~ bodies[foot1]._body.apply_impulse(cpv(10, 0), cpv(-10, -10));
     }
 
     void update(float dt)
@@ -166,8 +164,8 @@ class Ragdoll
             }
         }
 
-        skeleton.x = bodies[0]._body.p.x;
-        skeleton.y = bodies[0]._body.p.y;
+        skeleton.x = bodies[0]._body.p.x - rootOffset.x;
+        skeleton.y = bodies[0]._body.p.y - rootOffset.y;
 
         skeleton.updateWorldTransform();
     }
