@@ -11,6 +11,4 @@ dependency "gen-package-version" version="~>1.0.5"
 preGenerateCommands "dub run gen-package-version -- ver --root=$PACKAGE_DIR --src=source"
 subConfiguration "dlangui" "sfml"
 sourceFiles "spine-runtimes/spine-c/libspine-c.a"
-buildType "debug" {
-    versions "CHIP_ALLOW_PRIVATE_ACCESS"
-}
+versions "CHIP_ALLOW_PRIVATE_ACCESS" #TODO: enable it only for debug builds
