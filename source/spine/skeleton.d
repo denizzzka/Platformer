@@ -269,15 +269,15 @@ public struct spBone
 
 	float worldRotation() const
 	{
-	    float ret = rotation;
+	    float ret = 0;
+	    const(spBone)* curr = &this;
 
-	    const(spBone)* curr = parent;
-
-	    while(curr !is null)
+	    do
 	    {
 		ret += curr.rotation;
 		curr = curr.parent;
 	    }
+	    while(curr !is null);
 
 	    return ret;
 	}
