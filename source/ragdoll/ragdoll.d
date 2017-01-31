@@ -6,6 +6,7 @@ import dchip.all;
 import std.conv: to;
 import math;
 import chipmunk_map.gfm_interaction;
+import chipmunk_map.extensions;
 import std.array;
 debug import dsfml.graphics;
 debug import std.stdio;
@@ -16,6 +17,24 @@ private struct RagdollBody
     cpBody* _body;
 
     RagdollBody* parent;
+
+    ~this()
+    {
+        if(_body !is null)
+        {
+            cpBodyDestroy(_body);
+
+            _body.forEachShape(
+                (_body, shape)
+                {
+                    cpShapeDestroy(shape);
+                    cpShapeFree(shape);
+                }
+            );
+
+            cpBodyFree(_body);
+        }
+    }
 }
 
 class Ragdoll
@@ -196,10 +215,8 @@ class Ragdoll
     {
         // draw all bodies of space
         {
-            import chipmunk_map.extensions;
-
             space.forEachBody(
-                (ref cpBody _body)
+                (_body)
                 {
                     enum radius = 50;
                     auto c = new CircleShape(radius, 30);
@@ -209,8 +226,6 @@ class Ragdoll
                     c.outlineThickness = 1;
 
                     target.draw(c, states);
-
-                    destroy(c);
                 }
             );
         }
@@ -219,8 +234,6 @@ class Ragdoll
         {
             // draw bodies
             {
-                import chipmunk_map.extensions;
-
                 enum radius = 50;
                 auto c = new CircleShape(radius, 30);
                 c.position = (ragdollBody._body.p.gfm_chip - radius).gfm_dsfml;

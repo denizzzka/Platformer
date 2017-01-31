@@ -23,7 +23,7 @@ debug void forEachShapeVertice(cpShape* shape, void delegate(ref cpVect) dg)
     }
 }
 
-debug void forEachBody(cpSpace* space, void delegate(ref cpBody) dg)
+debug void forEachBody(cpSpace* space, void delegate(cpBody*) dg)
 {
     static void bodyIterFunction(cpBody* bdy, void* data)
     {
