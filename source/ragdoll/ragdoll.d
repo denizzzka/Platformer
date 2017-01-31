@@ -47,7 +47,7 @@ class Ragdoll
             //~ f("knee2"),
             //~ f("foot1"),
             //~ f("foot2"),
-            //~ f("hand1"),
+            f("hand1"),
             //~ f("hand2"),
             //~ f("palm1"),
             //~ f("palm2"),
@@ -146,7 +146,7 @@ class Ragdoll
 
     void update(float dt)
     {
-        cpSpaceStep(space, dt);
+        //~ cpSpaceStep(space, dt);
 
         foreach(i, ref ragdollBody; bodies)
         {
@@ -160,8 +160,7 @@ class Ragdoll
             {
                 RagdollBody* parent = ragdollBody.parent;
 
-                //~ ragdollBody.bones[0].rotation = -ragdollBody._body.a.rad2deg + 90;
-                ragdollBody.bones[0].rotation = (-ragdollBody._body.a + parent._body.a).rad2deg;
+                ragdollBody.bones[0].rotation = -(ragdollBody._body.a - parent._body.a).rad2deg + 90;
             }
         }
 
@@ -193,22 +192,6 @@ class Ragdoll
     {
         foreach(ref ragdollBody; bodies)
         {
-            foreach(ref const curr; ragdollBody.bones)
-            {
-                Vertex[] points;
-
-                if(curr.parent !is null)
-                {
-                    auto s = vec2f(curr.worldX, curr.worldY);
-                    auto f = vec2f(curr.parent.worldX, curr.parent.worldY);
-
-                    points ~= s.gfm_dsfml.Vertex(Color.Blue);
-                    points ~= f.gfm_dsfml.Vertex(Color.Green);
-                }
-
-                target.draw(points, PrimitiveType.Lines, states);
-            }
-
             // draw shapes
             {
                 import chipmunk_map.extensions;
@@ -251,6 +234,23 @@ class Ragdoll
                     cast(void*) &drawArgs
                 );
             }
+
+            // draw bones connections
+            foreach(ref const curr; ragdollBody.bones)
+            {
+                Vertex[] points;
+
+                if(curr.parent !is null)
+                {
+                    auto s = vec2f(curr.worldX, curr.worldY);
+                    auto f = vec2f(curr.parent.worldX, curr.parent.worldY);
+
+                    points ~= s.gfm_dsfml.Vertex(Color.Red);
+                    points ~= f.gfm_dsfml.Vertex(Color.Red);
+                }
+
+                target.draw(points, PrimitiveType.Lines, states);
+            }
         }
     }
 }
@@ -270,7 +270,7 @@ private cpShape* addShape(cpBody* _body, in spSlot* slot)
                 att._super.vertices[verticeIdx + 1]
             );
 
-        vertice = vertice.rotated(-slot.bone.worldRotation.deg2rad);
+        vertice = vertice.rotated(-((slot.bone.worldRotation + 0).deg2rad + _body.a));
 
         auto offset = vec2f(
                 slot.bone.worldX - _body.p.x,
