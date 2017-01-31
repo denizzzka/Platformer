@@ -36,3 +36,15 @@ debug void forEachBody(cpSpace* space, void delegate(ref cpBody) dg)
 {
     cpSpaceEachBody(space, &bodyIterFunction, cast(void*) &dg);
 }
+
+debug void forEachShape(cpBody* _body, void delegate(cpBody*, cpShape*) dg)
+{
+    static shapeIteratorFunc(cpBody* bdy, cpShape* shape, void* data)
+    {
+        auto dg = cast(void delegate(cpBody*, cpShape*)*) data;
+
+        (*dg)(bdy, shape);
+    }
+
+    cpBodyEachShape(_body, &shapeIteratorFunc, cast(void*) &dg);
+}
