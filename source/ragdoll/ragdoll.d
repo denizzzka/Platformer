@@ -87,6 +87,7 @@ class Ragdoll
                 currBody.setAngle = (currBone.worldRotation - 90).deg2rad;
 
                 RagdollBody newB;
+                newB.bone = currBone;
                 newB._body = currBody;
                 newB.parent = oldBody;
 
@@ -109,8 +110,6 @@ class Ragdoll
                 }
 
                 currRagdollBody = &bodies[$-1];
-
-                currRagdollBody.bone = currBone;
             }
 
             //~ checkForAttachment(currBone, currBody);
@@ -162,7 +161,10 @@ class Ragdoll
             {
                 RagdollBody* parent = ragdollBody.parent;
 
+                //~ ragdollBody.bone.rotation = -parent._body.a.rad2deg + 180;
                 ragdollBody.bone.rotation = -(ragdollBody._body.a - parent._body.a).rad2deg + 90;
+
+                writeln(ragdollBody.bone.rotation);
             }
         }
 
@@ -192,8 +194,43 @@ class Ragdoll
 
     debug void draw(RenderTarget target, RenderStates states)
     {
+        // draw all bodies of space
+        {
+            import chipmunk_map.extensions;
+
+            space.forEachBody(
+                (ref cpBody _body)
+                {
+                    enum radius = 50;
+                    auto c = new CircleShape(radius, 30);
+                    c.position = (_body.p.gfm_chip - radius).gfm_dsfml;
+                    c.fillColor = Color.Transparent;
+                    c.outlineColor = Color.Green;
+                    c.outlineThickness = 1;
+
+                    target.draw(c, states);
+
+                    destroy(c);
+                }
+            );
+        }
+
         foreach(ref ragdollBody; bodies)
         {
+            // draw bodies
+            {
+                import chipmunk_map.extensions;
+
+                enum radius = 50;
+                auto c = new CircleShape(radius, 30);
+                c.position = (ragdollBody._body.p.gfm_chip - radius).gfm_dsfml;
+                c.fillColor = Color.Transparent;
+                c.outlineColor = Color.Green;
+                c.outlineThickness = 2;
+
+                //~ target.draw(c, states);
+            }
+
             // draw shapes
             {
                 import chipmunk_map.extensions;
