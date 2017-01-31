@@ -22,10 +22,14 @@ class ChipBody
 
     ~this()
     {
-        {
-            cpConstraint*[] constraints;
-            constraints.length = 0;
+        cpConstraint*[] constraints;
+        constraints.length = 0;
 
+        cpShape*[] shapes;
+        shapes.length = 0;
+
+        // fill
+        {
             _body.forEachConstraint(
                 (_body, c)
                 {
@@ -33,36 +37,35 @@ class ChipBody
                 }
             );
 
-            foreach(c; constraints)
-            {
-                space.cpSpaceRemoveConstraint(c);
-                cpConstraintDestroy(c);
-                cpConstraintFree(c);
-            }
+            //~ _body.forEachShape(
+                //~ (_body, shape)
+                //~ {
+                    //~ shapes ~= shape;
+                //~ }
+            //~ );
         }
 
-        {
-            cpShape*[] shapes;
-            shapes.length = 0;
+        //~ // remove stuff from space
+        //~ {
+            //~ foreach(c; constraints)
+                //~ space.cpSpaceRemoveConstraint(c);
 
-            _body.forEachShape(
-                (_body, shape)
-                {
-                    shapes ~= shape;
-                }
-            );
+            //~ foreach(s; shapes)
+                //~ space.cpSpaceRemoveShape(s);
 
-            foreach(s; shapes)
-            {
-                space.cpSpaceRemoveShape(s);
-                cpShapeDestroy(s);
-                cpShapeFree(s);
-            }
-        }
+            //~ space.cpSpaceRemoveBody(_body);
+        //~ }
 
-        space.cpSpaceRemoveBody(_body);
-        cpBodyDestroy(_body);
-        cpBodyFree(_body);
+        //~ // free objects
+        //~ {
+            //~ foreach(c; constraints)
+                //~ cpConstraintFree(c);
+
+            //~ foreach(s; shapes)
+                //~ cpShapeFree(s);
+
+            //~ cpBodyFree(_body);
+        //~ }
     }
 
     cpSpace* space()
