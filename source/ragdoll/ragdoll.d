@@ -160,7 +160,8 @@ class Ragdoll
             {
                 RagdollBody* parent = ragdollBody.parent;
 
-                ragdollBody.bones[0].rotation = (-(ragdollBody._body.a + parent._body.a)).rad2deg;
+                //~ ragdollBody.bones[0].rotation = -ragdollBody._body.a.rad2deg + 90;
+                ragdollBody.bones[0].rotation = (-ragdollBody._body.a + parent._body.a).rad2deg;
             }
         }
 
@@ -254,7 +255,7 @@ class Ragdoll
     }
 }
 
-private cpShape* addShape(cpBody* _body, spSlot* slot)
+private cpShape* addShape(cpBody* _body, in spSlot* slot)
 {
     auto att  = cast(spBoundingBoxAttachment*) slot.attachment;
 
@@ -269,7 +270,7 @@ private cpShape* addShape(cpBody* _body, spSlot* slot)
                 att._super.vertices[verticeIdx + 1]
             );
 
-        vertice = vertice.rotated(slot.bone.worldRotation.deg2rad);
+        vertice = vertice.rotated(-slot.bone.worldRotation.deg2rad);
 
         auto offset = vec2f(
                 slot.bone.worldX - _body.p.x,
