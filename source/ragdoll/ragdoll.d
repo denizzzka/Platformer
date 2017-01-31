@@ -236,8 +236,10 @@ class Ragdoll
             }
 
             // draw bones connections
-            foreach(ref const curr; ragdollBody.bones)
+            foreach(idx; 0 .. skeleton.getSpSkeleton.bonesCount)
             {
+                const spBone* curr = skeleton.getSpSkeleton.bones[idx];
+
                 Vertex[] points;
 
                 if(curr.parent !is null)
