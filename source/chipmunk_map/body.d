@@ -23,20 +23,40 @@ class ChipBody
     {
         cpBodyDestroy(_body);
 
-        cpShape*[] shapes;
-        shapes.length = 0;
-
-        _body.forEachShape(
-            (_body, shape)
-            {
-                shapes ~= shape;
-            }
-        );
-
-        foreach(s; shapes)
         {
-            cpShapeDestroy(s);
-            cpShapeFree(s);
+            cpShape*[] shapes;
+            shapes.length = 0;
+
+            _body.forEachShape(
+                (_body, shape)
+                {
+                    shapes ~= shape;
+                }
+            );
+
+            foreach(s; shapes)
+            {
+                cpShapeDestroy(s);
+                cpShapeFree(s);
+            }
+        }
+
+        {
+            cpConstraint*[] constraints;
+            constraints.length = 0;
+
+            _body.forEachConstraint(
+                (_body, c)
+                {
+                    constraints ~= c;
+                }
+            );
+
+            foreach(c; constraints)
+            {
+                cpConstraintDestroy(c);
+                cpConstraintFree(c);
+            }
         }
 
         cpBodyFree(_body);

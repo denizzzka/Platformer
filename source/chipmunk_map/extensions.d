@@ -46,3 +46,15 @@ void forEachShape(cpBody* _body, void delegate(cpBody*, cpShape*) dg)
 
     cpBodyEachShape(_body, &shapeIteratorFunc, cast(void*) &dg);
 }
+
+void forEachConstraint(cpBody* _body, void delegate(cpBody*, cpConstraint*) dg)
+{
+    static iteratorFunc(cpBody* bdy, cpConstraint* constraint, void* data)
+    {
+        auto dg = cast(void delegate(cpBody*, cpConstraint*)*) data;
+
+        (*dg)(bdy, constraint);
+    }
+
+    cpBodyEachConstraint(_body, &iteratorFunc, cast(void*) &dg);
+}
