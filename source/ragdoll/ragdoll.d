@@ -17,24 +17,6 @@ private struct RagdollBody
     cpBody* _body;
 
     RagdollBody* parent;
-
-    ~this()
-    {
-        if(_body !is null)
-        {
-            cpBodyDestroy(_body);
-
-            _body.forEachShape(
-                (_body, shape)
-                {
-                    cpShapeDestroy(shape);
-                    cpShapeFree(shape);
-                }
-            );
-
-            cpBodyFree(_body);
-        }
-    }
 }
 
 class Ragdoll
@@ -84,6 +66,12 @@ class Ragdoll
                 skeleton.getRootBone.worldX - skeleton.x,
                 skeleton.getRootBone.worldY - skeleton.y
             );
+
+        foreach(ref b; bodies)
+        {
+            if(b._body !is null)
+                b._body.purgeBody;
+        }
 
         bodies.length = 0;
 
