@@ -23,17 +23,15 @@ debug void forEachShapeVertice(cpShape* shape, void delegate(ref cpVect) dg)
     }
 }
 
-debug alias bodyDelegate = void delegate(ref cpBody);
-
-debug private void bodyIterFunction(cpBody* bdy, void* data)
-{
-    auto dg = cast(bodyDelegate*) data;
-
-    (*dg)(*bdy);
-}
-
 debug void forEachBody(cpSpace* space, void delegate(ref cpBody) dg)
 {
+    static void bodyIterFunction(cpBody* bdy, void* data)
+    {
+        auto dg = cast(void delegate(cpBody*)*) data;
+
+        (*dg)(bdy);
+    }
+
     cpSpaceEachBody(space, &bodyIterFunction, cast(void*) &dg);
 }
 
