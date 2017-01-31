@@ -37,7 +37,7 @@ debug void forEachBody(cpSpace* space, void delegate(cpBody*) dg)
 
 void forEachShape(cpBody* _body, void delegate(cpBody*, cpShape*) dg)
 {
-    static iteratorFunc(cpBody* bdy, cpShape* shape, void* data)
+    static void iteratorFunc(cpBody* bdy, cpShape* shape, void* data)
     {
         auto dg = cast(void delegate(cpBody*, cpShape*)*) data;
 
@@ -49,7 +49,7 @@ void forEachShape(cpBody* _body, void delegate(cpBody*, cpShape*) dg)
 
 void forEachConstraint(cpBody* _body, void delegate(cpBody*, cpConstraint*) dg)
 {
-    static iteratorFunc(cpBody* bdy, cpConstraint* constraint, void* data)
+    static void iteratorFunc(cpBody* bdy, cpConstraint* constraint, void* data)
     {
         auto dg = cast(void delegate(cpBody*, cpConstraint*)*) data;
 
@@ -61,7 +61,7 @@ void forEachConstraint(cpBody* _body, void delegate(cpBody*, cpConstraint*) dg)
 
 void forEachArbiter(cpBody* _body, void delegate(cpBody*, cpArbiter*) dg)
 {
-    static iteratorFunc(cpBody* bdy, cpArbiter* ar, void* data)
+    static void iteratorFunc(cpBody* bdy, cpArbiter* ar, void* data)
     {
         auto dg = cast(void delegate(cpBody*, cpArbiter*)*) data;
 

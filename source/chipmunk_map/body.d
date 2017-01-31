@@ -30,19 +30,19 @@ class ChipBody
 
         // fill
         {
-            _body.forEachConstraint(
-                (_body, c)
-                {
-                    constraints ~= c;
-                }
-            );
-
-            //~ _body.forEachShape(
-                //~ (_body, shape)
+            //~ _body.forEachConstraint(
+                //~ (_body, c)
                 //~ {
-                    //~ shapes ~= shape;
+                    //~ constraints ~= c;
                 //~ }
             //~ );
+
+            _body.forEachShape(
+                (_body, shape)
+                {
+                    shapes ~= shape;
+                }
+            );
         }
 
         //~ // remove stuff from space
