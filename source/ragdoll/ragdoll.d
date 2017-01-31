@@ -12,7 +12,7 @@ debug import std.stdio;
 
 private struct RagdollBody
 {
-    spBone*[] bones;
+    spBone* bone;
     cpBody* _body;
 
     RagdollBody* parent;
@@ -109,10 +109,11 @@ class Ragdoll
                 }
 
                 currRagdollBody = &bodies[$-1];
+
+                currRagdollBody.bone = currBone;
             }
 
-            currRagdollBody.bones ~= currBone;
-            checkForAttachment(currBone, currBody);
+            //~ checkForAttachment(currBone, currBody);
 
             foreach(idx; 0 .. skeleton.getSpSkeleton.bonesCount)
             {
@@ -124,14 +125,15 @@ class Ragdoll
         }
 
         recursive(null, skeleton.getRootBone);
+
+        assert(fixturesIdx.length == bodies.length);
     }
 
     private RagdollBody* findRagdollBody(in spBone* bone)
     {
         foreach(ref rb; bodies)
-            foreach(ref b; rb.bones)
-                if(b == bone)
-                    return &rb;
+            if(rb.bone == bone)
+                return &rb;
 
         return null;
     }
@@ -154,13 +156,13 @@ class Ragdoll
             {
                 assert(ragdollBody.parent is null);
 
-                ragdollBody.bones[0].rotation = -ragdollBody._body.a.rad2deg + 90;
+                ragdollBody.bone.rotation = -ragdollBody._body.a.rad2deg + 90;
             }
             else
             {
                 RagdollBody* parent = ragdollBody.parent;
 
-                ragdollBody.bones[0].rotation = -(ragdollBody._body.a - parent._body.a).rad2deg + 90;
+                ragdollBody.bone.rotation = -(ragdollBody._body.a - parent._body.a).rad2deg + 90;
             }
         }
 
@@ -229,15 +231,17 @@ class Ragdoll
                             points ~= vertices[0].gfm_chip.gfm_dsfml.Vertex(Color.Blue);
 
                         DrawArgs* drawArgs = cast(DrawArgs*) data;
-                        drawArgs.target.draw(points, PrimitiveType.LinesStrip, drawArgs.states);
+                        //~ drawArgs.target.draw(points, PrimitiveType.LinesStrip, drawArgs.states);
                     },
                     cast(void*) &drawArgs
                 );
             }
 
             // draw bones connections
-            foreach(ref const curr; ragdollBody.bones)
+            foreach(idx; 0 .. skeleton.getSpSkeleton.bonesCount)
             {
+                const spBone* curr = skeleton.getSpSkeleton.bones[idx];
+
                 Vertex[] points;
 
                 if(curr.parent !is null)
