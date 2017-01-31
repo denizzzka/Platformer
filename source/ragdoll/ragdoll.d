@@ -7,6 +7,7 @@ import std.conv: to;
 import math;
 import chipmunk_map.gfm_interaction;
 import chipmunk_map.extensions;
+import chipmunk_map.chipbodyclass;
 import std.array;
 debug import dsfml.graphics;
 debug import std.stdio;
@@ -14,7 +15,7 @@ debug import std.stdio;
 private struct RagdollBody
 {
     spBone* bone;
-    cpBody* _body;
+    ChipBody _body;
 
     RagdollBody* parent;
 }
@@ -67,17 +68,11 @@ class Ragdoll
                 skeleton.getRootBone.worldY - skeleton.y
             );
 
-        foreach(ref b; bodies)
-        {
-            if(b._body !is null)
-                b._body.purgeBody;
-        }
-
         bodies.length = 0;
 
         void recursive(RagdollBody* currRagdollBody, spBone* currBone)
         {
-            cpBody* currBody = currRagdollBody is null ? null : currRagdollBody._body;
+            ChipBody currBody = currRagdollBody is null ? null : currRagdollBody._body;
 
             import std.algorithm.searching;
 
@@ -90,7 +85,7 @@ class Ragdoll
 
                 RagdollBody* oldBody = currRagdollBody;
 
-                currBody = space.cpSpaceAddBody(cpBodyNew(1.0f, 10.0f));
+                currBody = new ChipBody(space);
                 currBody.setAngle = (currBone.worldRotation - 90).deg2rad;
 
                 RagdollBody newB;
@@ -171,7 +166,7 @@ class Ragdoll
                 //~ ragdollBody.bone.rotation = -parent._body.a.rad2deg + 180;
                 ragdollBody.bone.rotation = -(ragdollBody._body.a - parent._body.a).rad2deg + 90;
 
-                writeln(ragdollBody.bone.rotation);
+                //~ writeln(ragdollBody.bone.rotation);
             }
         }
 

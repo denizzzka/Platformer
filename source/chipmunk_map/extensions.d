@@ -46,26 +46,3 @@ void forEachShape(cpBody* _body, void delegate(cpBody*, cpShape*) dg)
 
     cpBodyEachShape(_body, &shapeIteratorFunc, cast(void*) &dg);
 }
-
-void purgeBody(cpBody* _body)
-{
-    cpBodyDestroy(_body);
-
-    cpShape*[] shapes;
-    shapes.length = 0;
-
-    _body.forEachShape(
-        (_body, shape)
-        {
-            shapes ~= shape;
-        }
-    );
-
-    foreach(s; shapes)
-    {
-        cpShapeDestroy(s);
-        cpShapeFree(s);
-    }
-
-    cpBodyFree(_body);
-}
