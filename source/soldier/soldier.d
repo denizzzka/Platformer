@@ -98,7 +98,11 @@ class Soldier : SceneDamageableObject
     void update(float dt)
     {
         if(!isDead)
+        {
             _update(dt);
+            ragdoll.read();
+            ragdoll.update(dt);
+        }
         else
             ragdoll.update(dt);
     }
@@ -238,7 +242,10 @@ class Soldier : SceneDamageableObject
     void draw(RenderTarget renderTarget, RenderStates renderStates = RenderStates.Default)
     {
         if(!isDead)
-            skeleton.draw(renderTarget, renderStates);
+        {
+            //~ skeleton.draw(renderTarget, renderStates);
+            debug ragdoll.draw(renderTarget, renderStates);
+        }
         else
         {
             //~ skeleton.draw(renderTarget, renderStates);
