@@ -124,6 +124,19 @@ class Ragdoll
         }
 
         recursive(null, skeleton.getRootBone);
+
+        assert(fixturesIdx.length == bodies.length);
+
+        version(assert)
+        {
+            size_t bonesCount = 0;
+
+            foreach(ref b; bodies)
+                bonesCount += b.bones.length;
+
+            writeln(bonesCount, " ", skeleton.getSpSkeleton.bonesCount);
+            assert(bonesCount == skeleton.getSpSkeleton.bonesCount);
+        }
     }
 
     private RagdollBody* findRagdollBody(in spBone* bone)
