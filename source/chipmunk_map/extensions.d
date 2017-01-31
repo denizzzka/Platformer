@@ -58,3 +58,15 @@ void forEachConstraint(cpBody* _body, void delegate(cpBody*, cpConstraint*) dg)
 
     cpBodyEachConstraint(_body, &iteratorFunc, cast(void*) &dg);
 }
+
+void forEachArbiter(cpBody* _body, void delegate(cpBody*, cpArbiter*) dg)
+{
+    static iteratorFunc(cpBody* bdy, cpArbiter* ar, void* data)
+    {
+        auto dg = cast(void delegate(cpBody*, cpArbiter*)*) data;
+
+        (*dg)(bdy, ar);
+    }
+
+    cpBodyEachArbiter(_body, &iteratorFunc, cast(void*) &dg);
+}

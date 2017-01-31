@@ -21,7 +21,23 @@ class ChipBody
 
     ~this()
     {
-        cpBodyDestroy(_body);
+        {
+            cpConstraint*[] constraints;
+            constraints.length = 0;
+
+            _body.forEachConstraint(
+                (_body, c)
+                {
+                    constraints ~= c;
+                }
+            );
+
+            foreach(c; constraints)
+            {
+                cpConstraintDestroy(c);
+                cpConstraintFree(c);
+            }
+        }
 
         {
             cpShape*[] shapes;
@@ -41,24 +57,7 @@ class ChipBody
             }
         }
 
-        {
-            cpConstraint*[] constraints;
-            constraints.length = 0;
-
-            _body.forEachConstraint(
-                (_body, c)
-                {
-                    constraints ~= c;
-                }
-            );
-
-            foreach(c; constraints)
-            {
-                cpConstraintDestroy(c);
-                cpConstraintFree(c);
-            }
-        }
-
+        cpBodyDestroy(_body);
         cpBodyFree(_body);
     }
 }
