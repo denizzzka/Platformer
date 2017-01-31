@@ -229,7 +229,7 @@ class Ragdoll
                             points ~= vertices[0].gfm_chip.gfm_dsfml.Vertex(Color.Blue);
 
                         DrawArgs* drawArgs = cast(DrawArgs*) data;
-                        drawArgs.target.draw(points, PrimitiveType.LinesStrip, drawArgs.states);
+                        //~ drawArgs.target.draw(points, PrimitiveType.LinesStrip, drawArgs.states);
                     },
                     cast(void*) &drawArgs
                 );
