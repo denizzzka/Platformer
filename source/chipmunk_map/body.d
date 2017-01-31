@@ -6,6 +6,7 @@ import chipmunk_map.extensions;
 class ChipBody
 {
     private cpBody* __body;
+    private cpSpace* _space;
 
     cpBody* _body()
     {
@@ -34,6 +35,7 @@ class ChipBody
 
             foreach(c; constraints)
             {
+                space.cpSpaceRemoveConstraint(c);
                 cpConstraintDestroy(c);
                 cpConstraintFree(c);
             }
@@ -52,12 +54,19 @@ class ChipBody
 
             foreach(s; shapes)
             {
+                space.cpSpaceRemoveShape(s);
                 cpShapeDestroy(s);
                 cpShapeFree(s);
             }
         }
 
+        space.cpSpaceRemoveBody(_body);
         cpBodyDestroy(_body);
         cpBodyFree(_body);
+    }
+
+    cpSpace* space()
+    {
+        return _space;
     }
 }

@@ -25,26 +25,26 @@ debug void forEachShapeVertice(cpShape* shape, void delegate(ref cpVect) dg)
 
 debug void forEachBody(cpSpace* space, void delegate(cpBody*) dg)
 {
-    static void bodyIterFunction(cpBody* bdy, void* data)
+    static void iteratorFunc(cpBody* bdy, void* data)
     {
         auto dg = cast(void delegate(cpBody*)*) data;
 
         (*dg)(bdy);
     }
 
-    cpSpaceEachBody(space, &bodyIterFunction, cast(void*) &dg);
+    cpSpaceEachBody(space, &iteratorFunc, cast(void*) &dg);
 }
 
 void forEachShape(cpBody* _body, void delegate(cpBody*, cpShape*) dg)
 {
-    static shapeIteratorFunc(cpBody* bdy, cpShape* shape, void* data)
+    static iteratorFunc(cpBody* bdy, cpShape* shape, void* data)
     {
         auto dg = cast(void delegate(cpBody*, cpShape*)*) data;
 
         (*dg)(bdy, shape);
     }
 
-    cpBodyEachShape(_body, &shapeIteratorFunc, cast(void*) &dg);
+    cpBodyEachShape(_body, &iteratorFunc, cast(void*) &dg);
 }
 
 void forEachConstraint(cpBody* _body, void delegate(cpBody*, cpConstraint*) dg)
