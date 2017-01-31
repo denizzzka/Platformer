@@ -39,9 +39,9 @@ void forEachShape(cpBody* _body, void delegate(cpBody*, cpShape*) dg)
 {
     static void iteratorFunc(cpBody* bdy, cpShape* shape, void* data)
     {
-        auto dg = cast(void delegate(cpBody*, cpShape*)*) data;
+        auto _dg = cast(void delegate(cpBody*, cpShape*)*) data;
 
-        (*dg)(bdy, shape);
+        (*_dg)(bdy, shape);
     }
 
     cpBodyEachShape(_body, &iteratorFunc, cast(void*) &dg);
