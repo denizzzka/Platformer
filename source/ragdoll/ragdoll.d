@@ -86,6 +86,7 @@ class Ragdoll
                 RagdollBody* oldBody = currRagdollBody;
 
                 currBody = new ChipBody(space);
+
                 currBody.setAngle = (currBone.worldRotation - 90).deg2rad;
 
                 RagdollBody newB;
@@ -114,7 +115,7 @@ class Ragdoll
                 currRagdollBody = &bodies[$-1];
             }
 
-            //~ checkForAttachment(currBone, currBody);
+            checkForAttachment(currBone, currBody);
 
             foreach(idx; 0 .. skeleton.getSpSkeleton.bonesCount)
             {
@@ -126,6 +127,7 @@ class Ragdoll
         }
 
         recursive(null, skeleton.getRootBone);
+        bodies[0]._body.test();
 
         assert(fixturesIdx.length == bodies.length);
     }

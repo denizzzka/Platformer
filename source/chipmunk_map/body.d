@@ -2,6 +2,7 @@ module chipmunk_map.chipbodyclass;
 
 import dchip.all;
 import chipmunk_map.extensions;
+debug import std.stdio;
 
 class ChipBody
 {
@@ -18,58 +19,79 @@ class ChipBody
     this(cpSpace* space)
     {
         __body = space.cpSpaceAddBody(cpBodyNew(1.0f, 10.0f));
+        _space = space;
     }
 
     ~this()
     {
-        cpConstraint*[] constraints;
-        constraints.length = 0;
-
-        cpShape*[] shapes;
-        shapes.length = 0;
-
-        // fill
-        {
-            //~ _body.forEachConstraint(
-                //~ (_body, c)
-                //~ {
-                    //~ constraints ~= c;
-                //~ }
-            //~ );
-
-            _body.forEachShape(
-                (_body, shape)
-                {
-                    shapes ~= shape;
-                }
-            );
-        }
-
-        //~ // remove stuff from space
-        //~ {
-            //~ foreach(c; constraints)
-                //~ space.cpSpaceRemoveConstraint(c);
-
-            //~ foreach(s; shapes)
-                //~ space.cpSpaceRemoveShape(s);
-
-            //~ space.cpSpaceRemoveBody(_body);
-        //~ }
-
-        //~ // free objects
-        //~ {
-            //~ foreach(c; constraints)
-                //~ cpConstraintFree(c);
-
-            //~ foreach(s; shapes)
-                //~ cpShapeFree(s);
-
-            //~ cpBodyFree(_body);
-        //~ }
+        __body.purgeBodyFromSpace;
     }
 
     cpSpace* space()
     {
         return _space;
     }
+
+    void test()
+    {
+        import std.stdio;
+
+        auto s = "xyz";
+
+        _body.forEachShape(
+            (_body, shape)
+            {
+                writeln(s);
+            }
+        );
+    }
+}
+
+private void purgeBodyFromSpace(cpBody* _body)
+{
+    //~ cpConstraint*[] constraints;
+    cpShape*[] shapes;
+    //~ size_t shapesCount;
+
+    // fill
+    {
+        _body.cpBodyEachShape(
+            (cpBody* bdy, cpShape* shape, void* data)
+            {
+                auto _shapes = cast(cpShape*[]*) data;
+                *_shapes ~= shape;
+            },
+            cast(void*) &shapes
+        );
+
+        //~ _body.forEachShape(
+            //~ (bdy, shape)
+            //~ {
+                //~ shapes[shapesCount] = shape;
+                //~ shapesCount++;
+            //~ }
+        //~ );
+    }
+
+    //~ // remove stuff from space
+    {
+        //~ foreach(c; constraints)
+            //~ space.cpSpaceRemoveConstraint(c);
+
+        //~ foreach(s; shapes)
+            //~ space.cpSpaceRemoveShape(s);
+
+        //~ space.cpSpaceRemoveBody(_body);
+    }
+
+    //~ // free objects
+    //~ {
+        //~ foreach(c; constraints)
+            //~ cpConstraintFree(c);
+
+        //~ foreach(s; shapes)
+            //~ cpShapeFree(s);
+
+        //~ cpBodyFree(_body);
+    //~ }
 }

@@ -9,6 +9,7 @@ import math: vec2f;
 import controls_reader;
 import ver.packageVersion;
 import std.stdio: writeln;
+import core.memory;
 
 void main(string[] args)
 {
@@ -36,6 +37,8 @@ void main(string[] args)
 
         //~ testScene.addDamageable(target);
     //~ }
+
+    GC.disable;
 
     while (window.isOpen())
     {
@@ -74,6 +77,8 @@ void main(string[] args)
         testScene.update();
 
         window.clear();
+
+        GC.collect;
 
 		testScene.draw(w.wnd, RenderStates.Default);
 
