@@ -87,7 +87,11 @@ class Ragdoll
 
                 currBody = new ChipBody(space);
 
-                currBody.setAngle = (currBone.worldRotation - 90).deg2rad;
+                currBody.setAngle = (
+                    currBone.worldRotation *
+                    (skeleton.flipX ? -1 : 1) *
+                    (skeleton.flipY ? -1 : 1)
+                ).deg2rad;
 
                 RagdollBody newB;
                 newB.bone = currBone;
@@ -154,21 +158,26 @@ class Ragdoll
 
         foreach(i, ref ragdollBody; bodies)
         {
+            float angle;
+
             if(i == 0)
             {
                 assert(ragdollBody.parent is null);
 
-                ragdollBody.bone.rotation = -ragdollBody._body.a.rad2deg + 90;
+                angle = ragdollBody._body.a;
             }
             else
             {
                 RagdollBody* parent = ragdollBody.parent;
+                assert(parent !is null);
 
-                //~ ragdollBody.bone.rotation = -parent._body.a.rad2deg + 180;
-                ragdollBody.bone.rotation = -(ragdollBody._body.a - parent._body.a).rad2deg + 90;
-
-                //~ writeln(ragdollBody.bone.rotation);
+                angle = ragdollBody._body.a - parent._body.a;
             }
+
+            ragdollBody.bone.rotation =
+                angle.rad2deg *
+                (skeleton.flipX ? -1 : 1) *
+                (skeleton.flipY ? -1 : 1);
         }
 
         skeleton.x = bodies[0]._body.p.x - rootOffset.x;
