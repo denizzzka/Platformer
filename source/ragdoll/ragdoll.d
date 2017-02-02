@@ -192,7 +192,7 @@ class Ragdoll
             {
                 if(slot.attachment !is null && slot.attachment.type == spAttachmentType.BOUNDING_BOX)
                 {
-                    auto shape = bodyToAdd.addShape(slot, mirrorFactor);
+                    auto shape = bodyToAdd.addShape(slot, spineAngleIsMirorred, mirrorFactor);
 
                     space.cpSpaceAddShape(shape);
                 }
@@ -267,7 +267,7 @@ class Ragdoll
                             points ~= vertices[0].gfm_chip.gfm_dsfml.Vertex(Color.Blue);
 
                         DrawArgs* drawArgs = cast(DrawArgs*) data;
-                        //~ drawArgs.target.draw(points, PrimitiveType.LinesStrip, drawArgs.states);
+                        drawArgs.target.draw(points, PrimitiveType.LinesStrip, drawArgs.states);
                     },
                     cast(void*) &drawArgs
                 );
@@ -294,14 +294,18 @@ class Ragdoll
         }
     }
 
-    float mirrorFactor() const
+    private bool spineAngleIsMirorred() const
     {
-        return  (skeleton.flipX ? -1 : 1) *
-                (skeleton.flipY ? -1 : 1);
+        return skeleton.flipX != skeleton.flipY;
+    }
+
+    private float mirrorFactor() const
+    {
+        return spineAngleIsMirorred ? -1 : 1;
     }
 }
 
-private cpShape* addShape(cpBody* _body, in spSlot* slot, in float mirrorFactor)
+private cpShape* addShape(cpBody* _body, in spSlot* slot, in bool spineAngleIsMirorred, in float mirrorFactor)
 {
     auto att  = cast(spBoundingBoxAttachment*) slot.attachment;
 
@@ -316,12 +320,17 @@ private cpShape* addShape(cpBody* _body, in spSlot* slot, in float mirrorFactor)
                 att._super.vertices[verticeIdx + 1]
             );
 
-        vertice = vertice.rotated(((slot.bone.worldRotation + 0).deg2rad + _body.a) * mirrorFactor);
+        auto worldRotation = slot.bone.worldRotation + (spineAngleIsMirorred ? 0 : 180);
+
+        vertice = vertice.rotated((worldRotation.deg2rad + _body.a) * mirrorFactor);
 
         auto offset = vec2f(
                 slot.bone.worldX - _body.p.x,
                 slot.bone.worldY - _body.p.y
             );
+
+        if(spineAngleIsMirorred)
+            offset = offset.rotated(PI);
 
         vertice += offset;
 
