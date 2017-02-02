@@ -326,14 +326,20 @@ private cpShape* addShape(cpBody* _body, in spSlot* slot, in bool angleIsMirorre
                 att._super.vertices[verticeIdx + 1]
             );
 
-        vertice = vertice.rotated(slot.bone.worldRotation.deg2rad); // - _body.a);
+        // наклоняем точку сообразно наклону кости, к которой она привязана
+        vertice = vertice.rotated(slot.bone.worldRotation.deg2rad -_body.a);
 
+        // отражаем по каждой из осей если скелет отражён по этой оси
         vertice.flipVect(sk);
 
+        // расположение относительно начала кости
         auto offset = vec2f(
                 slot.bone.worldX - _body.p.x,
                 slot.bone.worldY - _body.p.y
             );
+
+        // доворачиваем назад на угол, на который уже повёрнуто тело, к которому будет прикреплена кривая
+        offset = offset.rotated(-_body.a);
 
         vertice += offset;
 
