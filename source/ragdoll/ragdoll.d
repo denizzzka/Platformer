@@ -49,7 +49,7 @@ class Ragdoll
             //~ f("knee2"),
             //~ f("foot1"),
             //~ f("foot2"),
-            f("hand1"),
+            //~ f("hand1"),
             //~ f("hand2"),
             //~ f("palm1"),
             //~ f("palm2"),
@@ -88,7 +88,7 @@ class Ragdoll
                 currBody = new ChipBody(space);
 
                 currBody.setAngle = (
-                    currBone.worldRotation * mirrorFactor - 90
+                    currBone.worldRotation * spineAngleMirrorFactor - 90
                 ).deg2rad;
 
                 RagdollBody newB;
@@ -173,7 +173,7 @@ class Ragdoll
                 angle = ragdollBody._body.a - parent._body.a;
             }
 
-            ragdollBody.bone.rotation = (angle.rad2deg + 90) * mirrorFactor;
+            ragdollBody.bone.rotation = (angle.rad2deg + 90) * spineAngleMirrorFactor;
         }
 
         skeleton.x = bodies[0]._body.p.x - rootOffset.x;
@@ -192,7 +192,7 @@ class Ragdoll
             {
                 if(slot.attachment !is null && slot.attachment.type == spAttachmentType.BOUNDING_BOX)
                 {
-                    auto shape = bodyToAdd.addShape(slot, spineAngleIsMirorred, mirrorFactor);
+                    auto shape = bodyToAdd.addShape(slot, spineAngleIsMirorred, spineAngleMirrorFactor, skeleton);
 
                     space.cpSpaceAddShape(shape);
                 }
@@ -299,13 +299,19 @@ class Ragdoll
         return skeleton.flipX != skeleton.flipY;
     }
 
-    private float mirrorFactor() const
+    private float spineAngleMirrorFactor() const
     {
         return spineAngleIsMirorred ? -1 : 1;
     }
 }
 
-private cpShape* addShape(cpBody* _body, in spSlot* slot, in bool spineAngleIsMirorred, in float mirrorFactor)
+private void flipVect(ref vec2f v, in SkeletonInstance sk)
+{
+    v.x *= sk.flipX ? -1 : 1;
+    v.y *= sk.flipY ? -1 : 1;
+}
+
+private cpShape* addShape(cpBody* _body, in spSlot* slot, in bool angleIsMirorred, in float mirrorFactor, in SkeletonInstance sk)
 {
     auto att  = cast(spBoundingBoxAttachment*) slot.attachment;
 
@@ -313,28 +319,32 @@ private cpShape* addShape(cpBody* _body, in spSlot* slot, in bool spineAngleIsMi
 
     cpVect[] v;
 
-    for(auto verticeIdx = att._super.verticesCount - 2; verticeIdx >= 0;  verticeIdx -= 2)
+    for(auto verticeIdx = 0; verticeIdx < att._super.verticesCount; verticeIdx += 2)
     {
         auto vertice = vec2f(
                 att._super.vertices[verticeIdx],
                 att._super.vertices[verticeIdx + 1]
             );
 
-        auto worldRotation = slot.bone.worldRotation + (spineAngleIsMirorred ? 0 : 180);
+        vertice = vertice.rotated(slot.bone.worldRotation.deg2rad); // - _body.a);
 
-        vertice = vertice.rotated((worldRotation.deg2rad + _body.a) * mirrorFactor);
+        vertice.flipVect(sk);
 
         auto offset = vec2f(
                 slot.bone.worldX - _body.p.x,
                 slot.bone.worldY - _body.p.y
             );
 
-        if(spineAngleIsMirorred)
-            offset = offset.rotated(PI);
-
         vertice += offset;
 
-        v ~= vertice.gfm_chip;
+        {
+            import std.array: insertInPlace;
+
+            if(!angleIsMirorred)
+                v.insertInPlace(0, vertice.gfm_chip);
+            else
+                v ~= vertice.gfm_chip;
+        }
     }
 
     cpShape* shape = cpPolyShapeNew(_body, v.length.to!int, v.ptr, cpvzero);
