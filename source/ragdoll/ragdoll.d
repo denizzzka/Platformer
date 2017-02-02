@@ -43,7 +43,7 @@ class Ragdoll
         immutable size_t[] fixturesIdx = [
             f("root"),
             //~ f("head"),
-            //~ f("leg1"),
+            f("leg1"),
             //~ f("leg2"),
             //~ f("knee1"),
             //~ f("knee2"),
@@ -267,7 +267,7 @@ class Ragdoll
                             points ~= vertices[0].gfm_chip.gfm_dsfml.Vertex(Color.Blue);
 
                         DrawArgs* drawArgs = cast(DrawArgs*) data;
-                        drawArgs.target.draw(points, PrimitiveType.LinesStrip, drawArgs.states);
+                        //~ drawArgs.target.draw(points, PrimitiveType.LinesStrip, drawArgs.states);
                     },
                     cast(void*) &drawArgs
                 );
