@@ -209,25 +209,22 @@ class Ragdoll
                     c.outlineColor = Color.Green;
                     c.outlineThickness = 1;
 
+                    Vertex[2] v;
+                    v[0] = _body.p.gfm_chip.gfm_dsfml.Vertex(Color.Green);
+
+                    auto vect = _body.rot.gfm_chip.normalized * radius;
+                    vect += _body.p.gfm_chip;
+
+                    v[1] = vect.gfm_dsfml.Vertex(Color.Green);
+
                     target.draw(c, states);
+                    target.draw(v, PrimitiveType.Lines, states);
                 }
             );
         }
 
         foreach(ref ragdollBody; bodies)
         {
-            // draw bodies
-            {
-                enum radius = 50;
-                auto c = new CircleShape(radius, 30);
-                c.position = (ragdollBody._body.p.gfm_chip - radius).gfm_dsfml;
-                c.fillColor = Color.Transparent;
-                c.outlineColor = Color.Green;
-                c.outlineThickness = 2;
-
-                //~ target.draw(c, states);
-            }
-
             // draw shapes
             {
                 import chipmunk_map.extensions;
