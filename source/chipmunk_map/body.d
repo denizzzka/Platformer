@@ -24,45 +24,31 @@ class ChipBody
 
     ~this()
     {
-        __body.purgeBodyFromSpace;
+        space.purgeBodyFromSpace(_body);
     }
 
     cpSpace* space()
     {
         return _space;
     }
-
-    void test()
-    {
-        import std.stdio;
-
-        auto s = "xyz";
-
-        _body.forEachShape(
-            (_body, shape)
-            {
-                writeln(s);
-            }
-        );
-    }
 }
 
-private void purgeBodyFromSpace(cpBody* _body)
+private void purgeBodyFromSpace(cpSpace* space, cpBody* _body)
 {
     //~ cpConstraint*[] constraints;
-    cpShape*[] shapes;
+    //~ cpShape*[] shapes;
     //~ size_t shapesCount;
 
     // fill
-    {
-        _body.cpBodyEachShape(
-            (cpBody* bdy, cpShape* shape, void* data)
-            {
-                auto _shapes = cast(cpShape*[]*) data;
-                *_shapes ~= shape;
-            },
-            cast(void*) &shapes
-        );
+    //~ {
+        //~ _body.cpBodyEachShape(
+            //~ (cpBody* bdy, cpShape* shape, void* data)
+            //~ {
+                //~ auto _shapes = cast(cpShape*[]*) data;
+                //~ *_shapes ~= shape;
+            //~ },
+            //~ cast(void*) &shapes
+        //~ );
 
         //~ _body.forEachShape(
             //~ (bdy, shape)
@@ -71,18 +57,18 @@ private void purgeBodyFromSpace(cpBody* _body)
                 //~ shapesCount++;
             //~ }
         //~ );
-    }
+    //~ }
 
     //~ // remove stuff from space
-    {
+    //~ {
         //~ foreach(c; constraints)
             //~ space.cpSpaceRemoveConstraint(c);
 
         //~ foreach(s; shapes)
             //~ space.cpSpaceRemoveShape(s);
 
-        //~ space.cpSpaceRemoveBody(_body);
-    }
+        space.cpSpaceRemoveBody(_body);
+    //~ }
 
     //~ // free objects
     //~ {

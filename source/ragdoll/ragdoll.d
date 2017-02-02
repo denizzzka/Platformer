@@ -127,7 +127,6 @@ class Ragdoll
         }
 
         recursive(null, skeleton.getRootBone);
-        bodies[0]._body.test();
 
         assert(fixturesIdx.length == bodies.length);
     }
