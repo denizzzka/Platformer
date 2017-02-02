@@ -90,7 +90,7 @@ class Ragdoll
                 currBody.setAngle = (
                     currBone.worldRotation *
                     (skeleton.flipX ? -1 : 1) *
-                    (skeleton.flipY ? -1 : 1)
+                    (skeleton.flipY ? -1 : 1) - 90
                 ).deg2rad;
 
                 RagdollBody newB;
@@ -168,14 +168,15 @@ class Ragdoll
             }
             else
             {
+                assert(ragdollBody.parent !is null);
+
                 RagdollBody* parent = ragdollBody.parent;
-                assert(parent !is null);
 
                 angle = ragdollBody._body.a - parent._body.a;
             }
 
             ragdollBody.bone.rotation =
-                angle.rad2deg *
+                (angle.rad2deg + 90) *
                 (skeleton.flipX ? -1 : 1) *
                 (skeleton.flipY ? -1 : 1);
         }
