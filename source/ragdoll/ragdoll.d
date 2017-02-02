@@ -88,9 +88,7 @@ class Ragdoll
                 currBody = new ChipBody(space);
 
                 currBody.setAngle = (
-                    currBone.worldRotation *
-                    (skeleton.flipX ? -1 : 1) *
-                    (skeleton.flipY ? -1 : 1) - 90
+                    currBone.worldRotation * mirrorFactor - 90
                 ).deg2rad;
 
                 RagdollBody newB;
@@ -175,10 +173,7 @@ class Ragdoll
                 angle = ragdollBody._body.a - parent._body.a;
             }
 
-            ragdollBody.bone.rotation =
-                (angle.rad2deg + 90) *
-                (skeleton.flipX ? -1 : 1) *
-                (skeleton.flipY ? -1 : 1);
+            ragdollBody.bone.rotation = (angle.rad2deg + 90) * mirrorFactor;
         }
 
         skeleton.x = bodies[0]._body.p.x - rootOffset.x;
@@ -197,7 +192,7 @@ class Ragdoll
             {
                 if(slot.attachment !is null && slot.attachment.type == spAttachmentType.BOUNDING_BOX)
                 {
-                    auto shape = bodyToAdd.addShape(slot);
+                    auto shape = bodyToAdd.addShape(slot, mirrorFactor);
 
                     space.cpSpaceAddShape(shape);
                 }
@@ -298,9 +293,15 @@ class Ragdoll
             }
         }
     }
+
+    float mirrorFactor() const
+    {
+        return  (skeleton.flipX ? -1 : 1) *
+                (skeleton.flipY ? -1 : 1);
+    }
 }
 
-private cpShape* addShape(cpBody* _body, in spSlot* slot)
+private cpShape* addShape(cpBody* _body, in spSlot* slot, in float mirrorFactor)
 {
     auto att  = cast(spBoundingBoxAttachment*) slot.attachment;
 
@@ -315,7 +316,7 @@ private cpShape* addShape(cpBody* _body, in spSlot* slot)
                 att._super.vertices[verticeIdx + 1]
             );
 
-        vertice = vertice.rotated(-((slot.bone.worldRotation + 0).deg2rad + _body.a));
+        vertice = vertice.rotated(((slot.bone.worldRotation + 0).deg2rad + _body.a) * mirrorFactor);
 
         auto offset = vec2f(
                 slot.bone.worldX - _body.p.x,
