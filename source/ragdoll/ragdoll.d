@@ -49,13 +49,15 @@ class Ragdoll
             //~ f("knee2"),
             //~ f("foot1"),
             //~ f("foot2"),
-            //~ f("hand1"),
+            f("hand1"),
             //~ f("hand2"),
             //~ f("palm1"),
             //~ f("palm2"),
             //~ f("holder-primary"),
             //~ f("holder-secondary"),
         ];
+
+        assert(fixturesIdx.length > 0);
 
         spBone*[] fixtures;
         fixtures.length = 0;
@@ -178,8 +180,6 @@ class Ragdoll
 
         skeleton.x = bodies[0]._body.p.x - rootOffset.x;
         skeleton.y = bodies[0]._body.p.y - rootOffset.y;
-
-        skeleton.updateWorldTransform();
     }
 
     private void checkForAttachment(in spBone* bone, cpBody* bodyToAdd)
