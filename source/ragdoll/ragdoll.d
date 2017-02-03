@@ -160,7 +160,7 @@ class Ragdoll
 
     void update(float dt)
     {
-        //~ cpSpaceStep(space, dt);
+        cpSpaceStep(space, dt);
 
         foreach(i, ref ragdollBody; bodies)
         {
