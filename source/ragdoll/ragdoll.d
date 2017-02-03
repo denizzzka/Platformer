@@ -372,7 +372,7 @@ private cpShape* addShape(cpBody* _body, in spSlot* slot, in bool angleIsMirorre
 
     cpShape* shape = cpPolyShapeNew(_body, v.length.to!int, v.ptr, cpvzero);
     shape.group = 1;
-    shape.cpShapeSetElasticity = 0.01f;
+    shape.cpShapeSetElasticity = 0.8f;
     shape.cpShapeSetFriction = 0.6f;
 
     return shape;
