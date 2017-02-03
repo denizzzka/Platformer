@@ -100,8 +100,12 @@ class Soldier : SceneDamageableObject
         if(!isDead)
         {
             update_(dt);
-            ragdoll.read();
-            ragdoll.update(dt);
+
+            debug(ragdoll_debug_draw)
+            {
+                ragdoll.read();
+                ragdoll.update(dt);
+            }
         }
         else
         {
@@ -246,12 +250,14 @@ class Soldier : SceneDamageableObject
         if(!isDead)
         {
             skeleton.draw(renderTarget, renderStates);
-            debug ragdoll.draw(renderTarget, renderStates);
+
+            debug(ragdoll_debug_draw) ragdoll.draw(renderTarget, renderStates);
         }
         else
         {
             skeleton.draw(renderTarget, renderStates);
-            debug ragdoll.draw(renderTarget, renderStates);
+
+            debug(ragdoll_debug_draw) ragdoll.draw(renderTarget, renderStates);
         }
     }
 
