@@ -39,6 +39,8 @@ class ChipmunkMap
                     vec2f offset = m.tileCoordsToWorldCoords(tileCoords);
 
                     cpShape* shape = cpPolyShapeNew(space.staticBody, corners.length, corners.ptr, offset.gfm_chip);
+                    shape.cpShapeSetElasticity = 0.1f;
+                    shape.cpShapeSetFriction = 0.1f;
 
                     space.cpSpaceAddShape(shape);
                 }

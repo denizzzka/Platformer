@@ -115,8 +115,8 @@ class Ragdoll
                         )
                     );
 
-                    const float angle = currBody._body.a - oldBody._body.a;
-                    const float bias = PI_2 / 1.5;
+                    const float angle = oldBody._body.a - currBody._body.a;
+                    const float bias = PI_2 / 2;
 
                     space.cpSpaceAddConstraint(
                         cpRotaryLimitJointNew(
@@ -364,8 +364,8 @@ private cpShape* addShape(cpBody* _body, in spSlot* slot, in bool angleIsMirorre
     }
 
     cpShape* shape = cpPolyShapeNew(_body, v.length.to!int, v.ptr, cpvzero);
-    //~ shape.cpShapeSetElasticity = 0.0f;
-    shape.cpShapeSetFriction = 10.0f;
+    shape.cpShapeSetElasticity = 0.1f;
+    shape.cpShapeSetFriction = 0.5f;
     shape.group = 1;
 
     return shape;
