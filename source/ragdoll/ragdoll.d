@@ -5,6 +5,7 @@ import spine.skeleton_bounds;
 import dchip.all;
 import std.conv: to;
 import math;
+import std.math;
 import chipmunk_map.gfm_interaction;
 import chipmunk_map.extensions;
 import chipmunk_map.chipbodyclass;
