@@ -17,6 +17,9 @@ class ChipmunkMap
         space = cpSpaceNew();
 
         space.gravity = cpv(0, 100); //TODO: должно храниться в сцене
+        space.damping = 0.6;
+        space.idleSpeedThreshold = 2.0;
+        space.sleepTimeThreshold = 0.05;
 
         space.staticBody = cpBodyNewStatic();
 
