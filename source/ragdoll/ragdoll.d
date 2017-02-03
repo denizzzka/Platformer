@@ -170,18 +170,16 @@ class Ragdoll
             {
                 assert(ragdollBody.parent is null);
 
-                angle = ragdollBody._body.a;
+                angle = ragdollBody._body.a.rad2deg;
             }
             else
             {
                 assert(ragdollBody.parent !is null);
 
-                RagdollBody* parent = ragdollBody.parent;
-
-                angle = ragdollBody._body.a - parent._body.a;
+                angle = ragdollBody._body.a.rad2deg - ragdollBody.bone.parent.worldRotation * spineAngleMirrorFactor;
             }
 
-            ragdollBody.bone.rotation = angle.rad2deg * spineAngleMirrorFactor;
+            ragdollBody.bone.rotation = angle * spineAngleMirrorFactor;
         }
 
         skeleton.x = bodies[0]._body.p.x - rootOffset.x;
