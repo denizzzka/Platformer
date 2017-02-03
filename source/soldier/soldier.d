@@ -100,11 +100,14 @@ class Soldier : SceneDamageableObject
         if(!isDead)
         {
             _update(dt);
-            ragdoll.read();
-            ragdoll.update(dt);
+            //~ ragdoll.read();
+            //~ ragdoll.update(dt);
         }
         else
+        {
             ragdoll.update(dt);
+            skeleton.updateWorldTransform();
+        }
     }
 
     private void _update(float deltaTime)
@@ -243,7 +246,7 @@ class Soldier : SceneDamageableObject
     {
         if(!isDead)
         {
-            //~ skeleton.draw(renderTarget, renderStates);
+            skeleton.draw(renderTarget, renderStates);
             debug ragdoll.draw(renderTarget, renderStates);
         }
         else
@@ -371,6 +374,7 @@ class Soldier : SceneDamageableObject
                     ragdoll.read();
 
                     spBone* bone = skeleton.findBoneByAttachment(bba);
+                    assert(bone !is null);
 
                     ragdoll.applyImpulse(bone, b.speed * 0.01);
                 }

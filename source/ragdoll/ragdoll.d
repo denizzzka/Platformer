@@ -43,7 +43,7 @@ class Ragdoll
         immutable size_t[] fixturesIdx = [
             f("root"),
             //~ f("head"),
-            f("leg1"),
+            //~ f("leg1"),
             //~ f("leg2"),
             //~ f("knee1"),
             //~ f("knee2"),
@@ -154,7 +154,7 @@ class Ragdoll
 
     void update(float dt)
     {
-        //~ cpSpaceStep(space, dt);
+        cpSpaceStep(space, dt);
 
         foreach(i, ref ragdollBody; bodies)
         {
