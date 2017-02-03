@@ -135,11 +135,17 @@ class Ragdoll
         assert(fixturesIdx.length == bodies.length);
     }
 
-    private RagdollBody* findRagdollBody(in spBone* bone)
+    private RagdollBody* findRagdollBody(const(spBone)* bone)
     {
-        foreach(ref rb; bodies)
-            if(rb.bone == bone)
-                return &rb;
+        do
+        {
+            foreach(ref rb; bodies)
+                if(rb.bone == bone)
+                    return &rb;
+
+            bone = bone.parent;
+        }
+        while(bone !is null);
 
         return null;
     }
