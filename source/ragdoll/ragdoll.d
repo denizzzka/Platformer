@@ -88,7 +88,7 @@ class Ragdoll
                 currBody = new ChipBody(space);
 
                 currBody.setAngle = (
-                    currBone.worldRotation * spineAngleMirrorFactor - 90
+                    currBone.worldRotation * spineAngleMirrorFactor
                 ).deg2rad;
 
                 RagdollBody newB;
@@ -173,7 +173,7 @@ class Ragdoll
                 angle = ragdollBody._body.a - parent._body.a;
             }
 
-            ragdollBody.bone.rotation = (angle.rad2deg + 90) * spineAngleMirrorFactor;
+            ragdollBody.bone.rotation = angle.rad2deg * spineAngleMirrorFactor;
         }
 
         skeleton.x = bodies[0]._body.p.x - rootOffset.x;
@@ -267,7 +267,7 @@ class Ragdoll
                             points ~= vertices[0].gfm_chip.gfm_dsfml.Vertex(Color.Blue);
 
                         DrawArgs* drawArgs = cast(DrawArgs*) data;
-                        //~ drawArgs.target.draw(points, PrimitiveType.LinesStrip, drawArgs.states);
+                        drawArgs.target.draw(points, PrimitiveType.LinesStrip, drawArgs.states);
                     },
                     cast(void*) &drawArgs
                 );
@@ -327,7 +327,7 @@ private cpShape* addShape(cpBody* _body, in spSlot* slot, in bool angleIsMirorre
             );
 
         // наклоняем точку сообразно наклону кости, к которой она привязана
-        vertice = vertice.rotated(slot.bone.worldRotation.deg2rad -_body.a);
+        vertice = vertice.rotated(slot.bone.worldRotation.deg2rad -_body.a * mirrorFactor);
 
         // отражаем по каждой из осей если скелет отражён по этой оси
         vertice.flipVect(sk);
