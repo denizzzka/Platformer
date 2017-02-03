@@ -31,12 +31,13 @@ void main(string[] args)
 
     testScene.addDamageable(soldier);
 
-    //~ {
-        //~ auto target = new Soldier(testScene);
-        //~ target.position = vec2f(600, 100);
+    {
+        auto target = new Soldier(testScene);
+        target.skin = "green";
+        target.position = vec2f(600, 100);
 
-        //~ testScene.addDamageable(target);
-    //~ }
+        testScene.addDamageable(target);
+    }
 
     GC.disable;
 

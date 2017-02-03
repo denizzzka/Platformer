@@ -72,7 +72,7 @@ class Soldier : SceneDamageableObject
         _scene = placeToScene;
         skeleton = new SkeletonInstanceDrawable(skeletonData);
 
-        skeleton.setSkin(skeletonData.findSkin("xmas"));
+        skin = "xmas";
 
         skeleton.flipY = true; // FIXME: зависит от направления осей графики
         holderPrimary = skeleton.getSlotByIndex(spineSlotPrimaryIdx);
@@ -87,6 +87,11 @@ class Soldier : SceneDamageableObject
         weaponHolder = new HoldWeapon(this);
 
         ragdoll = new Ragdoll(_scene.physMap.space, skeleton);
+    }
+
+    void skin(string name)
+    {
+        skeleton.setSkin(skeletonData.findSkin(name));
     }
 
     private void skeletonPosition(vec2f pos)

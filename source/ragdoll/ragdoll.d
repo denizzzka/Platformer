@@ -114,6 +114,18 @@ class Ragdoll
                             currBody.p
                         )
                     );
+
+                    const float angle = currBody._body.a - oldBody._body.a;
+                    const float bias = PI_2 / 1.5;
+
+                    space.cpSpaceAddConstraint(
+                        cpRotaryLimitJointNew(
+                            currBody,
+                            oldBody._body,
+                            angle - bias,
+                            angle + bias
+                        )
+                    );
                 }
 
                 currRagdollBody = &bodies[$-1];
