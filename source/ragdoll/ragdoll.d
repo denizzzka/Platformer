@@ -164,16 +164,16 @@ class Ragdoll
 
         foreach(i, ref ragdollBody; bodies)
         {
-            float worldDegAngle = ragdollBody._body.a.rad2deg;
+            float worldDegAngle = ragdollBody._body.a.rad2deg * spineAngleMirrorFactor;
 
             if(i != 0)
             {
                 assert(ragdollBody.parent !is null);
 
-                worldDegAngle -= ragdollBody.bone.parent.worldRotation * spineAngleMirrorFactor;
+                worldDegAngle -= ragdollBody.bone.parent.worldRotation;
             }
 
-            ragdollBody.bone.rotation = worldDegAngle * spineAngleMirrorFactor;
+            ragdollBody.bone.rotation = worldDegAngle;
         }
 
         skeleton.x = bodies[0]._body.p.x - rootOffset.x;
