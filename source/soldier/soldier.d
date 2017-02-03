@@ -379,9 +379,9 @@ class Soldier : SceneDamageableObject
 
                 if(isDead)
                 {
-                    //~ skeleton.y = skeleton.y - 6; // FIXME: зависит от направления осей графики
-
                     ragdoll.read();
+
+                    ragdoll.setVelocity = physicalPerson.speed;
 
                     spBone* bone = skeleton.findBoneByAttachment(bba);
                     assert(bone !is null);

@@ -171,6 +171,12 @@ class Ragdoll
         rb._body.apply_impulse(impulse.gfm_chip, cpvzero);
     }
 
+    void setVelocity(vec2f velocity)
+    {
+        foreach(ref rb; bodies)
+            rb._body.v = velocity.gfm_chip;
+    }
+
     void update(float dt)
     {
         cpSpaceStep(space, dt);

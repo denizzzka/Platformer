@@ -36,7 +36,7 @@ abstract class PhysicalObjectBase
     const Map _map;
 
     vec2f position;
-    vec2f speed = vec2f(0, 0);
+    vec2f speed = vec2f(0, 0); //TODO: rename to velocity
 
     States states;
     debug States oldStates;
