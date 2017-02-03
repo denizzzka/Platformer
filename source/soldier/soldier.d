@@ -100,8 +100,8 @@ class Soldier : SceneDamageableObject
         if(!isDead)
         {
             update_(dt);
-            //~ ragdoll.read();
-            //~ ragdoll.update(dt);
+            ragdoll.read();
+            ragdoll.update(dt);
         }
         else
         {
