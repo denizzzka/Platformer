@@ -42,19 +42,19 @@ class Ragdoll
 
         immutable size_t[] fixturesIdx = [
             f("root"),
-            //~ f("head"),
-            //~ f("leg1"),
-            //~ f("leg2"),
-            //~ f("knee1"),
-            //~ f("knee2"),
-            //~ f("foot1"),
-            //~ f("foot2"),
+            f("head"),
+            f("leg1"),
+            f("leg2"),
+            f("knee1"),
+            f("knee2"),
+            f("foot1"),
+            f("foot2"),
             f("hand1"),
-            //~ f("hand2"),
-            //~ f("palm1"),
-            //~ f("palm2"),
-            //~ f("holder-primary"),
-            //~ f("holder-secondary"),
+            f("hand2"),
+            f("palm1"),
+            f("palm2"),
+            f("holder-primary"),
+            f("holder-secondary"),
         ];
 
         assert(fixturesIdx.length > 0);
