@@ -99,18 +99,19 @@ class Soldier : SceneDamageableObject
     {
         if(!isDead)
         {
-            _update(dt);
-            //~ ragdoll.read();
-            //~ ragdoll.update(dt);
+            update_(dt);
+            ragdoll.read();
+            ragdoll.update(dt);
         }
         else
         {
             ragdoll.update(dt);
-            skeleton.updateWorldTransform();
         }
+
+        skeleton.updateWorldTransform();
     }
 
-    private void _update(float deltaTime)
+    private void update_(float deltaTime)
     {
         const bool looksToRight = aimingDirection.isRightDirection;
 
@@ -147,7 +148,6 @@ class Soldier : SceneDamageableObject
         state.state.update(deltaTime);
         state.state.apply(skeleton);
         updateSkeletonAimingDirection();
-        skeleton.updateWorldTransform();
 
         weaponHolder.update(deltaTime);
     }
@@ -194,8 +194,8 @@ class Soldier : SceneDamageableObject
     {
         import std.math;
 
-        auto hands = skeleton.getBoneByIndex(spineHandsBoneIdx);
-        auto head = skeleton.getBoneByIndex(spineHeadBoneIdx);
+        spBone* hands = skeleton.getBoneByIndex(spineHandsBoneIdx);
+        spBone* head = skeleton.getBoneByIndex(spineHeadBoneIdx);
 
         // FIXME: дальнейший код зависит от направления осей графики
         auto angle = atan(aimingDirection.x / aimingDirection.y);
@@ -211,12 +211,11 @@ class Soldier : SceneDamageableObject
         if(aimingDirection.x < 0)
             angle = -(angle + PI);
 
-        const spineDefaultRotation = PI/2;
-        auto degrees = (angle + spineDefaultRotation) * (180 / PI);
+        const degrees = angle.rad2deg + 180;
 
-        hands.rotation = degrees;
-        head.rotation = degrees;
-        holderPrimary.bone.rotation = weaponHolder.skeleton.flipX ? degrees : -degrees;
+        hands.rotation = degrees - hands.parent.worldRotation;
+        head.rotation = degrees - head.parent.worldRotation;
+        holderPrimary.bone.rotation = (weaponHolder.skeleton.flipX ? 1 : -1) * hands.rotation;
 
         debug(weapons) writeln("aim x=", aimingDirection.x, " y=", aimingDirection.y, " aim angle=", angle, " degrees=", degrees);
         debug(weapons) writeln("holder.bone:", *holderPrimary.bone);
