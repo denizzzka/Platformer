@@ -20,7 +20,7 @@ class HoldWeapon
     private BaseWeapon weapon;
     private BaseWeapon[] availableWeapons;
     typeof(availableWeapons.cycle) weaponsRange;
-    private Bone fireBone;
+    private spBone* fireBone;
 
     this(Soldier soldier)
     {

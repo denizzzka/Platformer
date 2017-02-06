@@ -72,17 +72,6 @@ struct Skin
     spSkin* skin; // TODO: rename to sp_skin
 }
 
-struct Bone
-{
-    spBone* bone;
-    alias bone this;
-
-    this(inout(spBone)* b)
-    {
-	bone = cast(spBone*) b;
-    }
-}
-
 struct Slot
 {
     spSlot* slot;
@@ -144,24 +133,20 @@ class SkeletonInstance
     float x() const { return sp_skeleton.x; }
     float y() const { return sp_skeleton.y; }
 
-    Bone getRootBone()
+    spBone* getRootBone()
     {
-	return Bone(sp_skeleton.root);
+	return sp_skeleton.root;
     }
 
-    Bone getBoneByIndex(int idx)
+    spBone* getBoneByIndex(int idx)
     {
         assert(idx >= 0);
         assert(idx < sp_skeleton.bonesCount);
 
-        Bone ret;
-
-        ret.bone = sp_skeleton.bones[idx];
-
-        return ret;
+        return sp_skeleton.bones[idx];
     }
 
-    Bone getBoneByIndex(size_t idx)
+    spBone* getBoneByIndex(size_t idx)
     {
 	import std.conv: to;
 
@@ -411,7 +396,7 @@ struct spSkeleton
 
     int bonesCount;
     spBone** bones;
-    const spBone* root;
+    spBone* root;
 
     int slotsCount;
     spSlot** slots;
