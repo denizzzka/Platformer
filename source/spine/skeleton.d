@@ -63,12 +63,6 @@ class SkeletonData
     }
 }
 
-struct Slot
-{
-    spSlot* slot;
-    alias slot this;
-}
-
 class SkeletonInstance
 {
     private SkeletonData skeletonData;
@@ -150,15 +144,12 @@ class SkeletonInstance
 	return getBoneByIndex(idx.to!int);
     }
 
-    Slot getSlotByIndex(int idx)
+    spSlot* getSlotByIndex(int idx)
     {
         assert(idx >= 0);
         assert(idx < sp_skeleton.slotsCount);
 
-        Slot ret;
-        ret.slot = sp_skeleton.slots[idx];
-
-        return ret;
+        return sp_skeleton.slots[idx];
     }
 
     /// @param attachmentName May be null

@@ -51,7 +51,7 @@ class Soldier : SceneDamageableObject
     private static const int spineHeadBoneIdx;
     private static const int spineSlotPrimaryIdx;
 
-    package Slot holderPrimary;
+    package spSlot* holderPrimary;
 
     float _health = 100;
 
