@@ -74,6 +74,12 @@ class SkeletonInstance
     private SkeletonData skeletonData;
     package spSkeleton* sp_skeleton;
 
+    /// Useful for custom implementations of Skeleton.draw()
+    protected const (spSkeleton)* sp_skeleton_protected() const
+    {
+	return sp_skeleton;
+    }
+
     this(SkeletonData sd)
     {
         skeletonData = sd;

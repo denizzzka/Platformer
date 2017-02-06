@@ -21,15 +21,7 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
     {
         super(sd);
 
-        debug(spine_dsfml)
-        {
-            writeln("Loaded bones:");
-
-            foreach(j; 0 .. sd.sp_skeletonData.bonesCount)
-                writeln("bones["~j.to!string~"]=", *sd.sp_skeletonData.bones[j]);
-        }
-
-        vertexArray = new VertexArray(PrimitiveType.Triangles, sp_skeleton.bonesCount * 4);
+        vertexArray = new VertexArray(PrimitiveType.Triangles, sp_skeleton_protected.bonesCount * 4);
     }
 
     void draw(RenderTarget target, RenderStates states = RenderStates.Default)
@@ -40,11 +32,11 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
         Vertex[4] vertices;
         Vertex vertex;
 
-        foreach(i; 0 .. sp_skeleton.slotsCount)
+        foreach(i; 0 .. sp_skeleton_protected.slotsCount)
         {
             debug(spine_dsfml) writeln("slot num=", i);
 
-            const spSlot* slot = sp_skeleton.drawOrder[i];
+            const spSlot* slot = sp_skeleton_protected.drawOrder[i];
             debug(spine_dsfml) writeln("slot=", *slot);
             debug(spine_dsfml) writeln("slot.bone=", *slot.bone);
             assert(!slot.bone.a.isNaN);
@@ -101,7 +93,7 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
                     spRegionAttachment_computeWorldVertices(regionAttachment, slot.bone, worldVertices.ptr);
 
                     debug(spine_dsfml) writeln("call colorize");
-                    Color _c = colorize(sp_skeleton, slot);
+                    Color _c = colorize(sp_skeleton_protected, slot);
 
                     debug(spine_dsfml) writeln("call texture.getSize()");
                     Vector2u size = texture.getSize();
@@ -171,7 +163,7 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
                     //~ texture = cast(size_t)(cast(spAtlasRegion*)mesh.rendererObject).page.rendererObject;
                     //~ spMeshAttachment_computeWorldVertices(mesh, slot, worldVertices.ptr);
 
-                    //~ vertex.color = colorize(sp_skeleton, slot);
+                    //~ vertex.color = colorize(sp_skeleton_protected, slot);
                     //~ Vector2u size = texture.getSize();
 
                     //~ foreach(_i; 0 .. mesh.trianglesCount)
