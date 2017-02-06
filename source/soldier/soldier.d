@@ -91,7 +91,7 @@ class Soldier : SceneDamageableObject
 
     void skin(string name)
     {
-        skeleton.setSkin(skeletonData.findSkin(name));
+        skeleton.skin = skeletonData.findSkin(name);
     }
 
     private void skeletonPosition(vec2f pos)

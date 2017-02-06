@@ -26,18 +26,14 @@ class SkeletonData
         return sp_skeletonData;
     }
 
-    Skin findSkin(string name)
+    spSkin* findSkin(string name)
     {
-        Skin ret;
-
-        ret.skin = spSkeletonData_findSkin(sp_skeletonData, name.toStringz);
-
-        return ret;
+        return spSkeletonData_findSkin(sp_skeletonData, name.toStringz);
     }
 
-    void defaultSkin(Skin s)
+    void defaultSkin(spSkin* s)
     {
-        sp_skeletonData.defaultSkin = s.skin;
+        sp_skeletonData.defaultSkin = s;
     }
 
     int findBoneIndex(string boneName) const
@@ -65,11 +61,6 @@ class SkeletonData
 
         return sp_skeletonData.slots[idx];
     }
-}
-
-struct Skin
-{
-    spSkin* skin; // TODO: rename to sp_skin
 }
 
 struct Slot
@@ -182,9 +173,9 @@ class SkeletonInstance
         enforce(ret != 0, "Slot or attachment is not found");
     }
 
-    void setSkin(Skin skin)
+    void skin(spSkin* skin)
     {
-	spSkeleton_setSkin(sp_skeleton, skin.skin);
+	spSkeleton_setSkin(sp_skeleton, skin);
     }
 
     spBone* findBoneByAttachment(ATT)(in ATT* anyAttachment)
