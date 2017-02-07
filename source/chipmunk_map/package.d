@@ -1,6 +1,6 @@
 module chipmunk_map;
 
-import map;
+import scene;
 import map.segment_intersection: isBulletproof;
 import math;
 import dchip.all;
@@ -12,11 +12,12 @@ class ChipmunkMap
 {
     public cpSpace* space;
 
-    this(Map m)
+    this(Scene sc)
     {
         space = cpSpaceNew();
+        auto m = sc.sceneMap;
 
-        space.gravity = cpv(0, 100); //TODO: должно храниться в сцене
+        space.gravity = cpv(0, sc.g_force);
         space.cpSpaceSetIterations = 30;
         space.damping = 0.80;
         space.idleSpeedThreshold = 3.0;

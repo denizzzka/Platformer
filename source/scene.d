@@ -70,7 +70,7 @@ class Scene
         bullets = new Bullets(this);
         blood = new Blood(this);
         frameClock = new Clock();
-        physMap = new ChipmunkMap(m);
+        physMap = new ChipmunkMap(this);
     }
 
     Map sceneMap(){ return _sceneMap; }
