@@ -61,6 +61,8 @@ class Scene
 
     ChipmunkMap physMap;
 
+    static immutable g_force = 1200.0f;
+
     this(Map m)
     {
         _sceneMap = m;

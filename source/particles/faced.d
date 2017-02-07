@@ -57,13 +57,11 @@ struct FacedParticle
 
     void update(float dt)
     {
-        immutable float g_force = 1200.0f; // FIXME: это нужно хранить в сцене
-
         prevPosition = position;
         position += speed * dt;
         speed -= speed * windage * dt;
 
-        speed.y += g_force * dt;
+        speed.y += scene.Scene.g_force * dt;
 
         timeToLive -= dt;
         distanceToLive -= (position - prevPosition).length;
