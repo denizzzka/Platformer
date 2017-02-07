@@ -385,7 +385,7 @@ class Soldier : SceneDamageableObject
                     spBone* bone = skeleton.findBoneByAttachment(bba);
                     assert(bone !is null);
 
-                    ragdoll.applyImpulse(bone, b.speed * 0.01);
+                    ragdoll.applyImpulse(bone, b.speed * 0.1);
                 }
 
                 return true;

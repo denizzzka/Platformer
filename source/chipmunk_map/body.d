@@ -26,7 +26,7 @@ class ChipBody
 
     this(cpSpace* space)
     {
-        __body = space.cpSpaceAddBody(cpBodyNew(1.0f, 10.0f));
+        __body = space.cpSpaceAddBody(cpBodyNew(1.0f, 100.0f));
         _space = space;
     }
 
