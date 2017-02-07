@@ -69,7 +69,7 @@ class Grenade : PhysicalObjectBase, SceneObject
         }
         else
         {
-            super.update(dt, 1200.0f); // FIXME: это нужно хранить в сцене
+            super.update(dt, scene.g_force);
 
             if(states.unitState == UnitState.OnGround)
             {
