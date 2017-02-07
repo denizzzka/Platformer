@@ -130,8 +130,7 @@ class Soldier : SceneDamageableObject
 
         auto oldPhysicalState = movingState;
 
-        const float g_force = 1200.0f;
-        auto acceleration = readKeys(g_force);
+        auto acceleration = readKeys(_scene.g_force);
 
         _aimingDirection = controls.worldMouseCoords - position;
         debug(weapons) writeln("aim dir=", aimingDirection);
@@ -144,7 +143,7 @@ class Soldier : SceneDamageableObject
                 movingState = PhysicalState.CrawlBackwards;
         }
 
-        applyMotion(acceleration, deltaTime, g_force);
+        applyMotion(acceleration, deltaTime, _scene.g_force);
 
         skeletonPosition = position - renderCenter;
 
