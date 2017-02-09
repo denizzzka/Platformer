@@ -77,7 +77,7 @@ struct spAtlasPage
 
 struct spAtlas;
 
-struct spAtlasRegion
+public struct spAtlasRegion
 {
     const(char)* name;
     int x, y, width, height;
