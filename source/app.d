@@ -2,7 +2,7 @@ import dsfml.graphics: RenderWindow, RenderStates;
 import dlangui.platforms.dsfml.dsfmlapp : DSFMLWindow, DSFMLPlatform, initDSFMLApp, dsfmlPlatform, uninitDSFMLApp;
 import myui;
 import map;
-import scene;
+import scene.scene;
 import soldier.soldier;
 import dsfml.window;
 import math: vec2f;

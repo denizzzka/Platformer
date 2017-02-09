@@ -1,7 +1,7 @@
 module particles.faced;
 
 import particles.storage;
-import scene;
+import scene.scene;
 import math;
 import map: Map;
 import map.segment_intersection;
@@ -61,7 +61,7 @@ struct FacedParticle
         position += speed * dt;
         speed -= speed * windage * dt;
 
-        speed.y += scene.Scene.g_force * dt;
+        speed.y += scene.scene.Scene.g_force * dt;
 
         timeToLive -= dt;
         distanceToLive -= (position - prevPosition).length;

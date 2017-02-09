@@ -3,7 +3,7 @@ module soldier.weapon;
 import spine.skeleton;
 import spine.animation;
 import spine.dsfml;
-import scene: atlas, Scene, SceneObject;
+import scene.scene: atlas, Scene, SceneObject;
 import soldier.soldier: Soldier;
 import soldier.animation;
 import std.container;

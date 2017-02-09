@@ -1,7 +1,7 @@
 module particles.bullets;
 
 import particles.faced;
-import scene;
+import scene.scene;
 import math: gfm_dsfml;
 import dsfml.graphics;
 

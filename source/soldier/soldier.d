@@ -1,6 +1,5 @@
 module soldier.soldier;
 
-import scene: atlas;
 import soldier.physics;
 import soldier.weapon;
 import soldier.animation;
@@ -11,7 +10,7 @@ import dsfml.graphics: RenderTarget, RenderStates;
 import map;
 import math;
 import controls_reader;
-import scene;
+import scene.scene;
 import particles.bullets;
 import ragdoll;
 debug(weapons) import std.stdio: writeln;

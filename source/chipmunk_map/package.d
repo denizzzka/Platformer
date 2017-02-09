@@ -1,6 +1,6 @@
 module chipmunk_map;
 
-import scene;
+import scene.scene;
 import map.segment_intersection: isBulletproof;
 import math;
 import dchip.all;

@@ -1,4 +1,4 @@
-module scene;
+module scene.scene;
 
 import spine.atlas;
 import spine.dsfml;

@@ -1,7 +1,7 @@
 module particles.blood;
 
 import particles.faced;
-import scene;
+import scene.scene;
 import math;
 import dsfml.graphics;
 import std.random;

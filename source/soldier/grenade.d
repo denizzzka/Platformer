@@ -2,7 +2,7 @@ module soldier.grenade;
 
 import math;
 public import physics;
-import scene;
+import scene.scene;
 import spine.skeleton;
 import spine.animation;
 import spine.dsfml;
