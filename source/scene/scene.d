@@ -120,6 +120,8 @@ class Scene
             foreach(ref o; toRemove)
                 objects.remove(o);
 
+            // FIXME: what about damageable objects removing?
+
             toRemove.length = 0;
         }
 

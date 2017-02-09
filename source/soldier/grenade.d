@@ -113,6 +113,12 @@ class Grenade : PhysicalObjectBase, SceneObject
         }
 
         explosionSound.play(position);
+
+        {
+            import scene.explosion: ExplosionSprite;
+
+            scene.add(new ExplosionSprite(scene, position));
+        }
     }
 
     void draw(RenderTarget renderTarget, RenderStates renderStates)
