@@ -5,7 +5,7 @@ import soldier.weapon;
 import soldier.animation;
 import spine.skeleton;
 import spine.animation;
-import spine.dsfml;
+import spine.dsfml.drawable_skeleton;
 import dsfml.graphics: RenderTarget, RenderStates;
 import map;
 import math;

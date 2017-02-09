@@ -1,4 +1,4 @@
-module spine.dsfml;
+module spine.dsfml.drawable_skeleton;
 
 import spine.atlas;
 import spine.dsfml2.textures_storage;

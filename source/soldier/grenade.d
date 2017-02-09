@@ -5,7 +5,7 @@ public import physics;
 import scene.scene;
 import spine.skeleton;
 import spine.animation;
-import spine.dsfml;
+import spine.dsfml.drawable_skeleton;
 import dsfml.graphics;
 import sound.library;
 

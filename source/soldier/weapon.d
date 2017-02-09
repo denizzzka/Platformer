@@ -2,7 +2,7 @@ module soldier.weapon;
 
 import spine.skeleton;
 import spine.animation;
-import spine.dsfml;
+import spine.dsfml.drawable_skeleton;
 import scene.scene: atlas, Scene, SceneObject;
 import soldier.soldier: Soldier;
 import soldier.animation;

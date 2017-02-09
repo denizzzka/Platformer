@@ -1,7 +1,7 @@
 module scene.scene;
 
 import spine.atlas;
-import spine.dsfml;
+import spine.dsfml.drawable_skeleton;
 import dsfml.graphics: RenderTarget, RenderStates, RenderWindow;
 import dsfml.system.clock;
 import dsfml.audio: Listener;
