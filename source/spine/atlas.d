@@ -19,6 +19,11 @@ class Atlas
     {
         spAtlas_dispose(atlas);
     }
+
+    spAtlasRegion* findRegion (string name) const
+    {
+	return spAtlas_findRegion (atlas, name.toStringz);
+    }
 }
 
 extern(C):
@@ -175,3 +180,5 @@ char* _spUtil_readFile(const(char)* path, int* length)
 }
 
 char* _readFile (const(char)* path, int* length);
+
+spAtlasRegion* spAtlas_findRegion (const(spAtlas)* self, const(char)* name);
