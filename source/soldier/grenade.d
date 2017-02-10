@@ -23,7 +23,12 @@ class Grenade : PhysicalObjectBase, SceneObject
 
     private float rotationSpeed;
 
-    private Sound explosionSound;
+    static private Sound explosionSound;
+
+    static this()
+    {
+        explosionSound = loadSound("resources/sounds/explosion.flac");
+    }
 
     this(Scene sc, vec2f startPosition, vec2f launcherSpeed, vec2f direction)
     {
@@ -45,8 +50,6 @@ class Grenade : PhysicalObjectBase, SceneObject
             skeleton = new SkeletonInstanceDrawable(skeletonData);
             state = new AnimationStateInstance(stateData);
         }
-
-        explosionSound = loadSound("resources/sounds/explosion.flac");
     }
 
     override float rebound() const { return 0.45; }
