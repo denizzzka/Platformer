@@ -66,7 +66,7 @@ class AnimationStateInstance
         spAnimationState_update(sp_animationState, deltaTime);
     }
 
-    void apply(SkeletonInstance skeleton)
+    void apply(Skeleton skeleton)
     {
         spAnimationState_apply(sp_animationState, skeleton.sp_skeleton);
     }

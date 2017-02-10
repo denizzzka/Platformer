@@ -34,7 +34,7 @@ class HoldWeapon
         changeWeapon(weaponsRange.front);
     }
 
-    package SkeletonInstanceDrawable skeleton() { return weapon.skeleton; }
+    package SkeletonDrawable skeleton() { return weapon.skeleton; }
 
     void update(float deltaTime)
     {
@@ -150,7 +150,7 @@ abstract class BaseWeapon
     private SkeletonData skeletonData;
     private AnimationStateData stateData;
 
-    private SkeletonInstanceDrawable skeleton;
+    private SkeletonDrawable skeleton;
     private AnimationStateInstance state;
 
     BaseWeapon createInstanceOfWeapon();
@@ -264,7 +264,7 @@ class Ak74 : BaseGun
         skeletonData.defaultSkin = skeletonData.findSkin("weapon-black");
         stateData = new AnimationStateData(skeletonData);
 
-        skeleton = new SkeletonInstanceDrawable(skeletonData);
+        skeleton = new SkeletonDrawable(skeletonData);
         state = new AnimationStateInstance(stateData);
 
         foreach(i; 1 .. 7)
@@ -303,7 +303,7 @@ class Colt : HandGun
         skeletonData.defaultSkin = skeletonData.findSkin("weapon-pro");
         stateData = new AnimationStateData(skeletonData);
 
-        skeleton = new SkeletonInstanceDrawable(skeletonData);
+        skeleton = new SkeletonDrawable(skeletonData);
         state = new AnimationStateInstance(stateData);
 
         foreach(i; 1 .. 7)
@@ -336,7 +336,7 @@ class Grenade : Throwing
         skeletonData.defaultSkin = skeletonData.findSkin("throwable-default");
         stateData = new AnimationStateData(skeletonData);
 
-        skeleton = new SkeletonInstanceDrawable(skeletonData);
+        skeleton = new SkeletonDrawable(skeletonData);
         state = new AnimationStateInstance(stateData);
     }
 

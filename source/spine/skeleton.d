@@ -63,7 +63,7 @@ class SkeletonData
     }
 }
 
-class SkeletonInstance
+class Skeleton
 {
     private SkeletonData skeletonData;
     package spSkeleton* sp_skeleton;

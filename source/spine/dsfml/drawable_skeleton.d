@@ -13,7 +13,7 @@ debug import std.stdio;
 
 enum SPINE_MESH_VERTEX_COUNT_MAX = 1000;
 
-class SkeletonInstanceDrawable : SkeletonInstance, Drawable
+class SkeletonDrawable : Skeleton, Drawable
 {
     private VertexArray vertexArray;
     private float[SPINE_MESH_VERTEX_COUNT_MAX] worldVertices;
@@ -27,7 +27,7 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
 
     void draw(RenderTarget target, RenderStates states = RenderStates.Default)
     {
-        debug(spine_dsfml) writeln("spine.dsfml.SkeletonInstanceDrawable.draw()");
+        debug(spine_dsfml) writeln("spine.dsfml.SkeletonDrawable.draw()");
         vertexArray.clear();
 
         Vertex[4] vertices;
@@ -188,7 +188,7 @@ class SkeletonInstanceDrawable : SkeletonInstance, Drawable
                     spSkeletonAttachment_unofficial* att = cast(spSkeletonAttachment_unofficial*) attachment;
                     debug(spine_dsfml_skeleton) writeln("Skeleton ", att._super.name.to!string, " draw: attachedSkeletonIdx=", att.attachedSkeletonIdx);
 
-                    SkeletonInstanceDrawable si = cast(SkeletonInstanceDrawable) attachedSkeletons[att.attachedSkeletonIdx];
+                    SkeletonDrawable si = cast(SkeletonDrawable) attachedSkeletons[att.attachedSkeletonIdx];
 
                     auto boneStates = states;
                     boneStates.transform.translate(slot.bone.worldX, slot.bone.worldY);
@@ -242,8 +242,8 @@ unittest
     auto sd = new SkeletonData("resources/animations/actor_pretty.json", a);
     sd.defaultSkin = sd.findSkin("default");
 
-    auto si1 = new SkeletonInstance(sd);
-    auto si2 = new SkeletonInstanceDrawable(sd);
+    auto si1 = new Skeleton(sd);
+    auto si2 = new SkeletonDrawable(sd);
 
     auto bounds = new SkeletonBounds;
     bounds.update(si2, true);
@@ -263,7 +263,7 @@ unittest
             // skeleton attached to skeleton test
 
             auto ak74data = new SkeletonData("resources/animations/weapon-ak74.json", a);
-            auto ak74 = new SkeletonInstanceDrawable(ak74data);
+            auto ak74 = new SkeletonDrawable(ak74data);
 
             auto oldNum = attachedSkeletons.length;
 

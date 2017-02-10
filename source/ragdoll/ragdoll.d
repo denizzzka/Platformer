@@ -24,11 +24,11 @@ private struct RagdollBody
 class Ragdoll
 {
     private cpSpace* space;
-    private SkeletonInstance skeleton;
+    private Skeleton skeleton;
     private RagdollBody[] bodies;
     private vec2f rootOffset;
 
-    this(cpSpace* sp, SkeletonInstance si)
+    this(cpSpace* sp, Skeleton si)
     {
         space = sp;
         skeleton = si;
@@ -322,13 +322,13 @@ class Ragdoll
     }
 }
 
-private void flipVect(ref vec2f v, in SkeletonInstance sk)
+private void flipVect(ref vec2f v, in Skeleton sk)
 {
     v.x *= sk.flipX ? -1 : 1;
     v.y *= sk.flipY ? -1 : 1;
 }
 
-private cpShape* addShape(cpBody* _body, in spSlot* slot, in bool angleIsMirorred, in float mirrorFactor, in SkeletonInstance sk)
+private cpShape* addShape(cpBody* _body, in spSlot* slot, in bool angleIsMirorred, in float mirrorFactor, in Skeleton sk)
 {
     auto att  = cast(spBoundingBoxAttachment*) slot.attachment;
 
@@ -388,7 +388,7 @@ unittest
     auto sd = new SkeletonData("resources/animations/actor_pretty.json", a);
     sd.defaultSkin = sd.findSkin("default");
 
-    auto si1 = new SkeletonInstance(sd);
+    auto si1 = new Skeleton(sd);
 
     auto space = cpSpaceNew();
     auto r = new Ragdoll(space, si1);

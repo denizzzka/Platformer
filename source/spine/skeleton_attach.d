@@ -4,12 +4,12 @@ import spine.skeleton;
 import std.string: toStringz;
 import std.exception: enforce;
 
-package static SkeletonInstance[size_t] attachedSkeletons;
+package static Skeleton[size_t] attachedSkeletons;
 private static size_t skeletonsCount = 0;
 
 alias SkAtt = spSkeletonAttachment_unofficial;
 
-void setAttachment(SkeletonInstance si, string name, spSlot* slot, SkeletonInstance addingSkeleton)
+void setAttachment(Skeleton si, string name, spSlot* slot, Skeleton addingSkeleton)
 {
     // It is need to remove old skeleton attachment from array?
     if(slot.attachment !is null && slot.attachment.type == spAttachmentType.SKELETON)

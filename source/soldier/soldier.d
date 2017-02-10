@@ -34,7 +34,7 @@ class Soldier : SceneDamageableObject
 
     package Scene _scene;
 
-    package SkeletonInstanceDrawable skeleton;
+    package SkeletonDrawable skeleton;
     package SoldierAnimation state;
 
     HoldWeapon weaponHolder;
@@ -69,7 +69,7 @@ class Soldier : SceneDamageableObject
     this(Scene placeToScene)
     {
         _scene = placeToScene;
-        skeleton = new SkeletonInstanceDrawable(skeletonData);
+        skeleton = new SkeletonDrawable(skeletonData);
 
         skin = "xmas";
 

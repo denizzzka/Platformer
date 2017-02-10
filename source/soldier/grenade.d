@@ -16,7 +16,7 @@ class Grenade : PhysicalObjectBase, SceneObject
     private float timeCounter = 2;
 
     private SkeletonData skeletonData;
-    private SkeletonInstanceDrawable skeleton;
+    private SkeletonDrawable skeleton;
 
     private AnimationStateData stateData;
     private AnimationStateInstance state;
@@ -47,7 +47,7 @@ class Grenade : PhysicalObjectBase, SceneObject
             skeletonData.defaultSkin = skeletonData.findSkin("throwable-default");
             stateData = new AnimationStateData(skeletonData);
 
-            skeleton = new SkeletonInstanceDrawable(skeletonData);
+            skeleton = new SkeletonDrawable(skeletonData);
             state = new AnimationStateInstance(stateData);
         }
     }

@@ -16,7 +16,7 @@ class SkeletonBounds
         spSkeletonBounds_dispose(sp_skeletonBounds);
     }
 
-    void update(SkeletonInstance sk, bool updateAabb)
+    void update(Skeleton sk, bool updateAabb)
     {
         spSkeletonBounds_update(sp_skeletonBounds, sk.sp_skeleton, updateAabb);
     }
