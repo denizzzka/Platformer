@@ -2,7 +2,7 @@ module scene.explosion;
 
 import scene.scene;
 import math;
-import spine.dsfml.draw_region;
+import spine.dsfml.drawable_region;
 import dsfml.graphics;
 
 class ExplosionSprite : SceneObject

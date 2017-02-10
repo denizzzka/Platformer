@@ -1,4 +1,4 @@
-module spine.dsfml.draw_region;
+module spine.dsfml.drawable_region;
 
 import math;
 import spine.atlas;
