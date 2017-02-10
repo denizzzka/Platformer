@@ -5,8 +5,9 @@ import spine.atlas;
 import spine.dsfml.textures_storage;
 import scene.scene: atlas;
 import dsfml.graphics;
+import std.conv: to;
 
-class RegionDrawable : Drawable
+class RegionDrawable
 {
     Sprite sprite;
 
@@ -31,8 +32,11 @@ class RegionDrawable : Drawable
             return vec2f(width, height);
     }
 
-    void draw(RenderTarget target, RenderStates states)
+    void draw(RenderTarget target, RenderStates states, float alpha = 1.0f)
     {
+        ubyte alphaByte = (255u * alpha).to!ubyte;
+        sprite.color = Color(0xFF, 0xFF, 0xFF, alphaByte);
+
         target.draw(sprite, states);
     }
 }

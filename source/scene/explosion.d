@@ -9,7 +9,8 @@ class ExplosionSprite : SceneObject
 {
     private static RegionDrawable sprite;
 
-    private float ttl = 2.0f;
+    enum maxTTL = 0.1f;
+    private float ttl = maxTTL;
     private vec2f coords;
     private Scene scene;
 
@@ -35,11 +36,9 @@ class ExplosionSprite : SceneObject
     void draw(RenderTarget target, RenderStates states)
     {
         vec2f pos = coords - vec2f(sprite.size.x, sprite.size.y) / 2;
-        import std.stdio;
-        writeln(pos);
 
         states.transform.translate(pos.x, pos.y);
 
-        sprite.draw(target, states);
+        sprite.draw(target, states, ttl / maxTTL);
     }
 }
