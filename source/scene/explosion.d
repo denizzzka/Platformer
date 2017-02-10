@@ -11,7 +11,7 @@ class ExplosionSprite : SceneObject
 
     enum maxTTL = 0.1f;
     private float ttl = maxTTL;
-    private vec2f coords;
+    private const vec2f coords;
     private Scene scene;
 
     static this()
@@ -19,7 +19,7 @@ class ExplosionSprite : SceneObject
         sprite = new RegionDrawable("explosion");
     }
 
-    this(Scene sc, vec2f _coords)
+    this(Scene sc, in vec2f _coords)
     {
         scene = sc;
         coords = _coords;
