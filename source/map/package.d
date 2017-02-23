@@ -4,7 +4,7 @@ import dsfml.graphics: Sprite, Texture, RenderWindow, View, IntRect, FloatRect, 
 import std.exception: enforce;
 import std.conv: to;
 import math;
-import misc: loadTexture;
+import spine.dsfml.textures_storage: loadTexture;
 import vibe.data.json;
 
 struct Layer

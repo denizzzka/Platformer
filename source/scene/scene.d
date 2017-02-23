@@ -15,6 +15,8 @@ import chipmunk_map;
 
 static Atlas atlas()
 {
+    import spine.dsfml.textures_storage: enforceSmooth;
+
     static Atlas atlas;
 
     if(atlas is null)

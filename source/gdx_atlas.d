@@ -42,7 +42,7 @@ class TextureAtlas
                 case ReadState.SEARCH_NEW:
                     if(__l.length > 0)
                     {
-                        import misc: loadTexture;
+                        import spine.dsfml.textures_storage: loadTexture;
 
                         texturesNames ~= l;
 
