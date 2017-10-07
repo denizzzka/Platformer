@@ -58,7 +58,7 @@ class Soldier : SceneDamageableObject
 
     static this()
     {
-        skeletonData = new SkeletonData("resources/animations/actor_pretty.json", atlas);
+        skeletonData = new SkeletonData("resources/animations/actor.json", atlas);
         SoldierAnimation.init(skeletonData);
 
         spineHandsBoneIdx = skeletonData.findBoneIndex("root-hands");

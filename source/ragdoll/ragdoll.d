@@ -385,7 +385,7 @@ unittest
     import spine.skeleton_bounds;
 
     auto a = new Atlas("resources/textures/GAME.atlas");
-    auto sd = new SkeletonData("resources/animations/actor_pretty.json", a);
+    auto sd = new SkeletonData("resources/animations/actor.json", a);
     sd.defaultSkin = sd.findSkin("default");
 
     auto si1 = new Skeleton(sd);
